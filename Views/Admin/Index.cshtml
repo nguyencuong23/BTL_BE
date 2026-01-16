@@ -1,0 +1,28 @@
+﻿@{
+    ViewData["Title"] = "Trang quản trị";
+}
+
+<h1 class="mb-4">Trang quản trị</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Quản lý sinh viên</h5>
+                <p class="card-text">
+                    Xem danh sách, thêm mới, quản lý thông tin sinh viên.
+                </p>
+                <a asp-controller="Admin"
+                   asp-action="DanhSachSinhVien"
+                   class="btn btn-primary">
+                    Danh sách sinh viên
+                </a>
+                <a asp-controller="Admin"
+                   asp-action="ThemSinhVien"
+                   class="btn btn-outline-primary ms-2">
+                    Thêm sinh viên
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,54 @@
+﻿@using QuanLyThuVienTruongHoc.Models.Users
+@model SinhVien
+
+@{
+    ViewData["Title"] = "Thêm sinh viên";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="mb-3">@ViewData["Title"]</h2>
+
+<form asp-action="ThemSinhVien" method="post" class="row g-3">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="col-md-6">
+        <label asp-for="MaSinhVien" class="form-label"></label>
+        <input asp-for="MaSinhVien" class="form-control" />
+        <span asp-validation-for="MaSinhVien" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="HoVaTen" class="form-label"></label>
+        <input asp-for="HoVaTen" class="form-control" />
+        <span asp-validation-for="HoVaTen" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="Email" class="form-label"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="SoDienThoai" class="form-label"></label>
+        <input asp-for="SoDienThoai" class="form-control" />
+        <span asp-validation-for="SoDienThoai" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="NgaySinh" class="form-label"></label>
+        <input asp-for="NgaySinh" type="date" class="form-control" />
+        <span asp-validation-for="NgaySinh" class="text-danger"></span>
+    </div>
+
+    <div class="col-12 mt-3">
+        <button type="submit" class="btn btn-primary">Lưu</button>
+        <a asp-action="DanhSachSinhVien" class="btn btn-secondary ms-2">Quay lại</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

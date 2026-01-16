@@ -1,0 +1,19 @@
+:root {
+  --orange: #f58220;
+}
+
+.bg-orange {
+  background-color: var(--orange);
+}
+
+.nav-link {
+  font-weight: 500;
+}
+
+.navbar-brand img {
+  max-height: 45px;
+}
+
+.footer {
+  font-size: 14px;
+}

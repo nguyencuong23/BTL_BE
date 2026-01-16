@@ -1,0 +1,23 @@
+﻿@model QuanLyThuVienTruongHoc.Models.ViewModels.LoginViewModel
+
+<form asp-action="Login" method="post">
+    <div>
+        <label>Tên đăng nhập</label>
+        <input asp-for="Username" />
+        <span asp-validation-for="Username"></span>
+    </div>
+
+    <div>
+        <label>Mật khẩu</label>
+        <input asp-for="Password" type="password" />
+        <span asp-validation-for="Password"></span>
+    </div>
+
+    <div>
+        <input asp-for="RememberMe" /> Nhớ đăng nhập
+    </div>
+
+    <button type="submit">Đăng nhập</button>
+
+    <div asp-validation-summary="All"></div>
+</form>

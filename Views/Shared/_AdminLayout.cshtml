@@ -1,0 +1,108 @@
+﻿@* Views/Shared/_AdminLayout.cshtml *@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - Admin</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <style>
+        /* Có thể chuyển sang site.css nếu muốn */
+        .admin-wrapper {
+            min-height: 100vh;
+        }
+
+        .admin-sidebar {
+            width: 250px;
+        }
+
+        .admin-sidebar .nav-link {
+            color: #ced4da;
+        }
+
+        .admin-sidebar .nav-link.active,
+        .admin-sidebar .nav-link:hover {
+            color: #fff;
+            background-color: #495057;
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex admin-wrapper">
+        <!-- SIDEBAR -->
+        <nav class="admin-sidebar bg-dark text-white d-flex flex-column p-3">
+            <a asp-controller="Admin"
+               asp-action="Index"
+               class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                <span class="fs-4">Quản trị</span>
+            </a>
+            <hr class="text-secondary" />
+
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li class="nav-item">
+                    <a asp-controller="Admin"
+                       asp-action="Index"
+                       class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "text-white")">
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a asp-controller="Admin"
+                       asp-action="DanhSachSinhVien"
+                       class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "DanhSachSinhVien" ? "active" : "text-white")">
+                        <span>Danh sách sinh viên</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a asp-controller="Admin"
+                       asp-action="ThemSinhVien"
+                       class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "ThemSinhVien" ? "active" : "text-white")">
+                        <span>Thêm sinh viên</span>
+                    </a>
+                </li>
+                <li class="mt-3">
+                    <a asp-controller="Client"
+                       asp-action="Index"
+                       target="_blank"
+                       class="nav-link text-white">
+                        <span>Giao diện Client</span>
+                    </a>
+                </li>
+
+
+                @* Sau này bạn có thể thêm: Quản lý sách, mượn trả, tài khoản,... *@
+            </ul>
+
+            <hr class="text-secondary" />
+            <div class="mt-auto small">
+                &copy; @DateTime.Now.Year - Admin
+            </div>
+        </nav>
+
+        <!-- MAIN CONTENT -->
+        <div class="flex-grow-1 bg-light">
+            <!-- Thanh top bar (tùy chọn) -->
+            <nav class="navbar navbar-light bg-white border-bottom">
+                <div class="container-fluid">
+                    <span class="navbar-brand mb-0 h5">@ViewData["Title"]</span>
+                    @* Chỗ này có thể thêm thông tin user, nút logout... *@
+                </div>
+            </nav>
+
+            <main class="container-fluid py-4">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
