@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyThuVienTruongHoc.Data;
@@ -31,10 +32,10 @@ namespace QuanLyThuVienTruongHoc.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
+            var passwordHasher = new PasswordHasher<User>();
             var user = new User
             {
                 Username = model.Username,
-                PasswordHash = model.Password, // CHƯA hash để test
                 FullName = model.FullName,
                 Email = model.Email,
                 PhoneNumber = model.PhoneNumber,
@@ -42,6 +43,7 @@ namespace QuanLyThuVienTruongHoc.Controllers
                 IsActive = true,
                 TotalFine = 0
             };
+            user.Password = passwordHasher.HashPassword(user, model.Password);
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
@@ -71,8 +73,15 @@ namespace QuanLyThuVienTruongHoc.Controllers
                 return View(model);
             }
 
-            // So sánh mật khẩu (đơn giản cho BTL)
-            if (user.PasswordHash != model.Password)
+            // So sánh mật khẩu
+            var passwordHasher = new PasswordHasher<User>();
+            var result = passwordHasher.VerifyHashedPassword(
+                user,
+                user.Password,
+                model.Password
+            );
+
+            if (result == PasswordVerificationResult.Failed)
             {
                 ModelState.AddModelError("", "Sai mật khẩu");
                 return View(model);
