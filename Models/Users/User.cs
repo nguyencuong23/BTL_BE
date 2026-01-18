@@ -15,7 +15,7 @@ namespace QuanLyThuVienTruongHoc.Models.Users
         public string Username { get; set; } = null!;
 
         [Required]
-        public string PasswordHash { get; set; } = null!;
+        public string Password { get; set; } = null!;
 
         // Thông tin cá nhân
         [Required]
