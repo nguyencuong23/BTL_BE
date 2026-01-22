@@ -1,23 +1,167 @@
 ﻿@model QuanLyThuVienTruongHoc.Models.ViewModels.LoginViewModel
 
-<form asp-action="Login" method="post">
-    <div>
-        <label>Tên đăng nhập</label>
-        <input asp-for="Username" />
-        <span asp-validation-for="Username"></span>
+@{
+    ViewData["Title"] = "Đăng nhập hệ thống";
+}
+
+<style>
+    .login-body {
+        background-color: #f4f6f9; 
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Khung chứa form (Card) */
+    .login-card {
+        background: white;
+        width: 100%;
+        max-width: 450px;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1); /* Đổ bóng mềm */
+        text-align: center;
+    }
+
+    .login-header h2 {
+        color: #333;
+        margin-bottom: 10px;
+        font-weight: 700;
+    }
+
+    .login-header p {
+        color: #666;
+        margin-bottom: 30px;
+        font-size: 0.9rem;
+    }
+
+    /* Style cho input */
+    .form-group {
+        margin-bottom: 20px;
+        text-align: left;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #444;
+        font-size: 0.95rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: all 0.3s;
+        box-sizing: border-box; /* Quan trọng để không bị vỡ khung */
+    }
+
+    .form-control:focus {
+        border-color: #f37021; /* Màu cam khi click vào */
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(243, 112, 33, 0.2);
+    }
+
+    /* Style cho checkbox nhớ đăng nhập */
+    .remember-me {
+        display: flex;
+        align-items: center;
+        margin-bottom: 25px;
+        font-size: 0.9rem;
+        color: #555;
+    }
+    .remember-me input {
+        margin-right: 8px;
+        width: 16px;
+        height: 16px;
+        accent-color: #f37021;
+    }
+
+    /* Nút đăng nhập */
+    .btn-login {
+        width: 100%;
+        padding: 12px;
+        background-color: #f37021; /* Màu cam thương hiệu */
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .btn-login:hover {
+        background-color: #d65d16; /* Màu cam đậm hơn khi di chuột */
+    }
+
+    /* Style thông báo lỗi */
+    .text-danger {
+        color: #dc3545;
+        font-size: 0.85rem;
+        margin-top: 5px;
+        display: block;
+    }
+    
+    .validation-summary-errors {
+        color: #dc3545;
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        padding: 10px;
+        border-radius: 6px;
+        margin-top: 20px;
+        font-size: 0.9rem;
+        list-style: none;
+        text-align: left;
+    }
+    .validation-summary-errors ul {
+        padding-left: 0;
+        margin: 0;
+        list-style-type: none;
+    }
+</style>
+
+<div class="login-body">
+    <div class="login-card">
+        <div class="login-header">
+            <h2 style="color: #f37021;">ĐẠI NAM LIBARY</h2> 
+            <h2>Đăng Nhập</h2>
+            <p>Hệ thống quản lý thư viện</p>
+        </div>
+
+        <form asp-action="Login" method="post">
+            
+            <div class="form-group">
+                <label class="form-label">Tên đăng nhập</label>
+                <input asp-for="Username" class="form-control" placeholder="Nhập mã sinh viên/giảng viên" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Mật khẩu</label>
+                <input asp-for="Password" type="password" class="form-control" placeholder="Nhập mật khẩu" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="remember-me">
+                <input asp-for="RememberMe" type="checkbox" />
+                <label asp-for="RememberMe" style="cursor: pointer;">Ghi nhớ đăng nhập</label>
+            </div>
+
+            <button type="submit" class="btn-login">ĐĂNG NHẬP</button>
+            <p>Hoặc</p>
+            <button type="submit" class="btn-login">ĐĂNG KÝ</button>
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        </form>
     </div>
+</div>
 
-    <div>
-        <label>Mật khẩu</label>
-        <input asp-for="Password" type="password" />
-        <span asp-validation-for="Password"></span>
-    </div>
-
-    <div>
-        <input asp-for="RememberMe" /> Nhớ đăng nhập
-    </div>
-
-    <button type="submit">Đăng nhập</button>
-
-    <div asp-validation-summary="All"></div>
-</form>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
