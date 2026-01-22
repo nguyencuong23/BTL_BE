@@ -19,7 +19,6 @@ namespace QuanLyThuVienTruongHoc.Controllers
             _context = context;
         }
 
-        // REGISTER
         [HttpGet]
         public IActionResult Register()
         {
@@ -32,7 +31,14 @@ namespace QuanLyThuVienTruongHoc.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var passwordHasher = new PasswordHasher<User>();
+            if (await _context.Users.AnyAsync(u => u.Username == model.Username))
+            {
+                ModelState.AddModelError("", "Tên đăng nhập đã tồn tại");
+                return View(model);
+            }
+
+            var hasher = new PasswordHasher<User>();
+
             var user = new User
             {
                 Username = model.Username,
@@ -43,7 +49,8 @@ namespace QuanLyThuVienTruongHoc.Controllers
                 IsActive = true,
                 TotalFine = 0
             };
-            user.Password = passwordHasher.HashPassword(user, model.Password);
+
+            user.PasswordHash = hasher.HashPassword(user, model.Password);
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
@@ -51,7 +58,6 @@ namespace QuanLyThuVienTruongHoc.Controllers
             return RedirectToAction("Login");
         }
 
-        // ===== LOGIN =====
         [HttpGet]
         public IActionResult Login()
         {
@@ -73,11 +79,10 @@ namespace QuanLyThuVienTruongHoc.Controllers
                 return View(model);
             }
 
-            // So sánh mật khẩu
-            var passwordHasher = new PasswordHasher<User>();
-            var result = passwordHasher.VerifyHashedPassword(
+            var hasher = new PasswordHasher<User>();
+            var result = hasher.VerifyHashedPassword(
                 user,
-                user.Password,
+                user.PasswordHash,
                 model.Password
             );
 
@@ -87,7 +92,6 @@ namespace QuanLyThuVienTruongHoc.Controllers
                 return View(model);
             }
 
-            // ===== TẠO CLAIMS =====
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
@@ -95,24 +99,25 @@ namespace QuanLyThuVienTruongHoc.Controllers
                 new Claim(ClaimTypes.Role, user.Role == 1 ? "Admin" : "User")
             };
 
-            var claimsIdentity = new ClaimsIdentity(
-                claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var identity = new ClaimsIdentity(
+                claims,
+                CookieAuthenticationDefaults.AuthenticationScheme
+            );
 
             var authProperties = new AuthenticationProperties
             {
                 IsPersistent = model.RememberMe
             };
 
-            // ===== ĐĂNG NHẬP =====
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity),
-                authProperties);
+                new ClaimsPrincipal(identity),
+                authProperties
+            );
 
             return RedirectToAction("Index", "Client");
         }
 
-        // ===== LOGOUT =====
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(
@@ -127,3 +132,4 @@ namespace QuanLyThuVienTruongHoc.Controllers
         }
     }
 }
+    
