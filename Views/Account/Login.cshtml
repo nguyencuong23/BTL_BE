@@ -6,7 +6,7 @@
 
 <style>
     .login-body {
-        background-color: #f4f6f9; 
+        background-color: #f4f6f9;
         min-height: 80vh;
         display: flex;
         align-items: center;
@@ -14,15 +14,27 @@
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    /* Khung chứa form (Card) */
+    @@keyframes fadeSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
     .login-card {
         background: white;
         width: 100%;
         max-width: 450px;
         padding: 40px;
         border-radius: 12px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1); /* Đổ bóng mềm */
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         text-align: center;
+        animation: fadeSlideUp 0.8s ease-out;
     }
 
     .login-header h2 {
@@ -37,7 +49,6 @@
         font-size: 0.9rem;
     }
 
-    /* Style cho input */
     .form-group {
         margin-bottom: 20px;
         text-align: left;
@@ -57,17 +68,17 @@
         border: 1px solid #ddd;
         border-radius: 6px;
         font-size: 1rem;
-        transition: all 0.3s;
-        box-sizing: border-box; /* Quan trọng để không bị vỡ khung */
+        transition: all 0.3s ease;
+        box-sizing: border-box;
     }
 
-    .form-control:focus {
-        border-color: #f37021; /* Màu cam khi click vào */
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(243, 112, 33, 0.2);
-    }
+        .form-control:focus {
+            border-color: #f37021;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(243, 112, 33, 0.2);
+            transform: scale(1.02);
+        }
 
-    /* Style cho checkbox nhớ đăng nhập */
     .remember-me {
         display: flex;
         align-items: center;
@@ -75,39 +86,45 @@
         font-size: 0.9rem;
         color: #555;
     }
-    .remember-me input {
-        margin-right: 8px;
-        width: 16px;
-        height: 16px;
-        accent-color: #f37021;
-    }
 
-    /* Nút đăng nhập */
+        .remember-me input {
+            margin-right: 8px;
+            width: 16px;
+            height: 16px;
+            accent-color: #f37021;
+        }
+
     .btn-login {
         width: 100%;
         padding: 12px;
-        background-color: #f37021; /* Màu cam thương hiệu */
+        background-color: #f37021;
         color: white;
         border: none;
         border-radius: 6px;
         font-size: 1rem;
         font-weight: 600;
         cursor: pointer;
-        transition: background 0.3s;
+        transition: all 0.25s ease;
     }
 
-    .btn-login:hover {
-        background-color: #d65d16; /* Màu cam đậm hơn khi di chuột */
-    }
+        .btn-login:hover {
+            background-color: #d65d16;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(243,112,33,0.35);
+        }
 
-    /* Style thông báo lỗi */
+        .btn-login:active {
+            transform: scale(0.97);
+            box-shadow: none;
+        }
+
     .text-danger {
         color: #dc3545;
         font-size: 0.85rem;
         margin-top: 5px;
         display: block;
     }
-    
+
     .validation-summary-errors {
         color: #dc3545;
         background-color: #f8d7da;
@@ -118,24 +135,31 @@
         font-size: 0.9rem;
         list-style: none;
         text-align: left;
+        animation: fadeSlideUp 0.6s ease-out;
     }
-    .validation-summary-errors ul {
-        padding-left: 0;
-        margin: 0;
-        list-style-type: none;
+
+        .validation-summary-errors ul {
+            padding-left: 0;
+            margin: 0;
+            list-style-type: none;
+        }
+
+    .divider {
+        margin: 20px 0;
+        color: #999;
+        font-size: 0.9rem;
     }
 </style>
 
 <div class="login-body">
     <div class="login-card">
         <div class="login-header">
-            <h2 style="color: #f37021;">ĐẠI NAM LIBARY</h2> 
+            <h2 style="color: #f37021;">ĐẠI NAM LIBARY</h2>
             <h2>Đăng Nhập</h2>
             <p>Hệ thống quản lý thư viện</p>
         </div>
 
         <form asp-action="Login" method="post">
-            
             <div class="form-group">
                 <label class="form-label">Tên đăng nhập</label>
                 <input asp-for="Username" class="form-control" placeholder="Nhập mã sinh viên/giảng viên" />
@@ -154,14 +178,14 @@
             </div>
 
             <button type="submit" class="btn-login">ĐĂNG NHẬP</button>
-            <p>Hoặc</p>
-            <button type="submit" class="btn-login">ĐĂNG KÝ</button>
 
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="divider">Hoặc</div>
+
+            <button type="button" class="btn-login" onclick="location.href='@Url.Action("Register", "Account")'">
+                ĐĂNG KÝ
+            </button>
+
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
         </form>
     </div>
 </div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
