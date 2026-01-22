@@ -9,9 +9,17 @@ namespace QuanLyThuVienTruongHoc.Data
             : base(options)
         {
         }
+
         public DbSet<SinhVien> SinhViens { get; set; }
         public DbSet<User> Users { get; set; }
-        // DbSet ở đây, ví dụ:
-        // public DbSet<User> Users { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<User>()
+                .Property(u => u.TotalFine)
+                .HasPrecision(18, 2);
+        }
     }
 }

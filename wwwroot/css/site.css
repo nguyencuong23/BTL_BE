@@ -1,19 +1,31 @@
-:root {
-  --orange: #f58220;
+.page-transition {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.bg-orange {
-  background-color: var(--orange);
+    .page-transition.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+body {
+    animation: pageFadeIn 0.5s ease;
 }
 
-.nav-link {
-  font-weight: 500;
+@keyframes pageFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.navbar-brand img {
-  max-height: 45px;
-}
-
-.footer {
-  font-size: 14px;
+a {
+    transition: color 0.2s ease;
+    outline: none;
 }
