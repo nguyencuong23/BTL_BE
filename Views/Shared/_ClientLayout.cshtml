@@ -45,7 +45,8 @@
                 position: relative;
             }
 
-                header a::after {
+                /* Chỉ áp dụng ::after cho link thông thường, không áp dụng cho dropdown */
+                header a:not(.dropdown-item)::after {
                     content: "";
                     position: absolute;
                     left: 0;
@@ -56,9 +57,39 @@
                     transition: .3s;
                 }
 
-                header a:hover::after {
+                header a:not(.dropdown-item):hover::after {
                     width: 100%;
                 }
+
+            /* Đảm bảo dropdown button không bị ảnh hưởng bởi style của header a */
+            header .dropdown-toggle {
+                margin-left: 22px;
+            }
+
+            /* Lỗi 1: Xóa mũi tên tam giác của dropdown-toggle */
+            header .dropdown-toggle::after {
+                display: none !important;
+            }
+
+            /* Lỗi 2: Fix hover bị lòi ra ngoài - đảm bảo dropdown-menu và item có padding đúng */
+            header .dropdown-menu {
+                padding: 0.25rem 0;
+                min-width: 200px;
+                margin: 0;
+            }
+
+            header .dropdown-item {
+                padding: 0.5rem 1rem;
+                margin: 0;
+                border-radius: 0;
+            }
+
+            header .dropdown-item:hover,
+            header .dropdown-item:focus {
+                background-color: var(--bs-dropdown-link-hover-bg);
+                margin: 0;
+                border-radius: 0;
+            }
 
         main {
             flex: 1;
@@ -91,22 +122,54 @@
                 THƯ VIỆN ĐẠI HỌC ĐẠI NAM
             </div>
 
-            <nav>
+            <nav class="d-flex align-items-center gap-3">
                 <a asp-controller="Client" asp-action="Index">Trang chủ</a>
                 <a asp-controller="Client" asp-action="TraCuu">Tra cứu</a>
                 <a asp-controller="Client" asp-action="News">Tin tức</a>
 
-                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                 {
-                    <span class="ms-3 me-2">
-                        <i class="fa fa-user"></i> @User.Identity.Name
-                    </span>
-                    <a asp-controller="Account" asp-action="Logout">Đăng xuất</a>
+                    <a class="text-danger fw-bold"
+                       asp-controller="Admin"
+                       asp-action="Index">
+                        Trang quản trị
+                    </a>
                 }
-                else
-                {
-                    <a asp-controller="Account" asp-action="Login">Đăng nhập</a>
-                }
+
+                <div class="ms-auto d-flex align-items-center">
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        <!-- Dropdown menu cho người dùng đã đăng nhập -->
+                        <div class="dropdown">
+                            <button class="btn btn-link text-white text-decoration-none dropdown-toggle d-flex align-items-center gap-2" 
+                                    type="button" 
+                                    id="userDropdown" 
+                                    data-bs-toggle="dropdown" 
+                                    aria-expanded="false"
+                                    style="border: none; padding: 0; font-weight: 500;">
+                                <i class="fa fa-user"></i>
+                                <span>@User.Identity.Name</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Profile" asp-action="Index">
+                                        <i class="fa fa-user-circle me-2"></i>Thông tin cá nhân
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Account" asp-action="Logout">
+                                        <i class="fa fa-sign-out-alt me-2"></i>Đăng xuất
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login">Đăng nhập</a>
+                    }
+                </div>
             </nav>
         </div>
     </header>

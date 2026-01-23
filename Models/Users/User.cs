@@ -27,6 +27,8 @@ namespace QuanLyThuVienTruongHoc.Models.Users
 
         [Required]
         public int Role { get; set; }
+        // 1 - Admin
+        // 2 - User
 
         public bool IsActive { get; set; } = true;
 
