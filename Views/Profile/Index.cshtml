@@ -1,0 +1,160 @@
+@model QuanLyThuVienTruongHoc.Models.ViewModels.ProfileViewModel
+@{
+    ViewData["Title"] = "Thông tin cá nhân";
+    Layout = "~/Views/Shared/_ClientLayout.cshtml";
+}
+
+<div class="container py-5">
+    <div class="row">
+        <!-- Tiêu đề trang -->
+        <div class="col-12 mb-4">
+            <h2 class="fw-bold text-dark">
+                <i class="fa fa-user-circle me-2"></i>Thông tin cá nhân
+            </h2>
+            <p class="text-muted">Quản lý thông tin tài khoản của bạn</p>
+        </div>
+    </div>
+
+    <!-- Hiển thị thông báo -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fa fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fa fa-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <form asp-action="Update" asp-controller="Profile" method="post">
+        @Html.AntiForgeryToken()
+
+        <div class="row">
+            <!-- Cột trái: Avatar + Thông tin cơ bản -->
+            <div class="col-lg-4 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body text-center p-4">
+                        <!-- Avatar -->
+                        <div class="mb-4">
+                            <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center"
+                                 style="width: 120px; height: 120px;">
+                                <i class="fa fa-user fa-4x text-white"></i>
+                            </div>
+                        </div>
+
+                        <!-- Username -->
+                        <h4 class="fw-bold text-dark mb-2">@Model.Username</h4>
+
+                        <!-- Role Badge -->
+                        <span class="badge @(Model.Role == "Admin" ? "bg-danger" : "bg-primary") mb-3 px-3 py-2">
+                            <i class="fa fa-shield-alt me-1"></i>@Model.Role
+                        </span>
+
+                        <!-- Thông tin chỉ đọc -->
+                        <div class="mt-4 text-start">
+                            <div class="mb-3">
+                                <small class="text-muted d-block mb-1">
+                                    <i class="fa fa-calendar-alt me-1"></i>Ngày tạo tài khoản
+                                </small>
+                                <strong>@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</strong>
+                            </div>
+
+                            <div>
+                                <small class="text-muted d-block mb-1">
+                                    <i class="fa fa-info-circle me-1"></i>Trạng thái
+                                </small>
+                                <span class="badge @(Model.Status == "Hoạt động" ? "bg-success" : "bg-secondary")">
+                                    @Model.Status
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cột phải: Form thông tin cá nhân -->
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white border-bottom">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="fa fa-edit me-2"></i>Chỉnh sửa thông tin
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <!-- Validation Summary -->
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                        <!-- Username (chỉ đọc) -->
+                        <div class="mb-4">
+                            <label asp-for="Username" class="form-label fw-semibold">
+                                <i class="fa fa-user me-1"></i>@Html.DisplayNameFor(m => m.Username)
+                            </label>
+                            <input asp-for="Username" class="form-control" readonly />
+                            <small class="text-muted">Tên đăng nhập không thể thay đổi</small>
+                        </div>
+
+                        <!-- FullName -->
+                        <div class="mb-4">
+                            <label asp-for="FullName" class="form-label fw-semibold">
+                                <i class="fa fa-id-card me-1"></i>@Html.DisplayNameFor(m => m.FullName)
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="FullName" class="form-control" placeholder="Nhập họ và tên" />
+                            <span asp-validation-for="FullName" class="text-danger"></span>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-4">
+                            <label asp-for="Email" class="form-label fw-semibold">
+                                <i class="fa fa-envelope me-1"></i>@Html.DisplayNameFor(m => m.Email)
+                            </label>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="example@email.com" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <!-- PhoneNumber -->
+                        <div class="mb-4">
+                            <label asp-for="PhoneNumber" class="form-label fw-semibold">
+                                <i class="fa fa-phone me-1"></i>@Html.DisplayNameFor(m => m.PhoneNumber)
+                            </label>
+                            <input asp-for="PhoneNumber" type="tel" class="form-control" placeholder="0123456789" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+
+                        <!-- Role (chỉ đọc) -->
+                        <div class="mb-4">
+                            <label asp-for="Role" class="form-label fw-semibold">
+                                <i class="fa fa-shield-alt me-1"></i>@Html.DisplayNameFor(m => m.Role)
+                            </label>
+                            <input asp-for="Role" class="form-control" readonly />
+                            <small class="text-muted">Vai trò không thể thay đổi</small>
+                        </div>
+
+                        <!-- Nút hành động -->
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="fa fa-save me-2"></i>Cập nhật thông tin
+                            </button>
+                            <a asp-controller="Client" asp-action="Index" class="btn btn-outline-secondary px-4">
+                                <i class="fa fa-times me-2"></i>Hủy
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Script validation -->
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
