@@ -138,19 +138,24 @@
 
             <div class="mb-3 input-animate" style="animation-delay:.05s">
                 <label class="form-label">Tên đăng nhập</label>
-                <input asp-for="Username" class="form-control" />
+                <input asp-for="Username" class="form-control"
+                       autocomplete="new-username" />
                 <span asp-validation-for="Username" class="text-danger"></span>
             </div>
 
             <div class="mb-3 input-animate" style="animation-delay:.12s">
                 <label class="form-label">Mật khẩu</label>
-                <input asp-for="Password" type="password" class="form-control" />
+                <input asp-for="Password" type="password"
+                       class="form-control"
+                       autocomplete="new-password" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
 
             <div class="mb-3 input-animate" style="animation-delay:.18s">
                 <label class="form-label">Nhập lại mật khẩu</label>
-                <input asp-for="ConfirmPassword" type="password" class="form-control" />
+                <input asp-for="ConfirmPassword" type="password"
+                       class="form-control"
+                       autocomplete="new-password" />
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
 
