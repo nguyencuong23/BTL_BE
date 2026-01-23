@@ -22,6 +22,10 @@ namespace QuanLyThuVienTruongHoc.Controllers
         [HttpGet]
         public IActionResult Register()
         {
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Client");
+            }
             return View();
         }
 
@@ -61,6 +65,10 @@ namespace QuanLyThuVienTruongHoc.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             return View();
         }
 
@@ -132,4 +140,3 @@ namespace QuanLyThuVienTruongHoc.Controllers
         }
     }
 }
-    
