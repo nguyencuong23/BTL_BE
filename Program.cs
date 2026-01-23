@@ -9,6 +9,12 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
+// 1. Đăng ký Controller cho API
+builder.Services.AddControllers();
+
+// 2. Đăng ký Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -27,6 +33,12 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Client/Error");
     app.UseHsts();
+}
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();

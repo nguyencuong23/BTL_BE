@@ -1,0 +1,205 @@
+@{
+    ViewData["Title"] = "Quản lý người dùng";
+}
+
+<!-- Page Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold mb-1">Quản lý người dùng</h2>
+        <p class="text-muted mb-0">Quản lý tài khoản và phân quyền người dùng</p>
+    </div>
+    <div>
+        <button class="btn btn-primary">
+            <i class="fas fa-user-plus me-2"></i>Thêm người dùng
+        </button>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-card-icon bg-primary bg-opacity-10 text-primary">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-card-value">856</div>
+            <div class="stat-card-label">Tổng người dùng</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-card-icon bg-success bg-opacity-10 text-success">
+                <i class="fas fa-user-check"></i>
+            </div>
+            <div class="stat-card-value">812</div>
+            <div class="stat-card-label">Đang hoạt động</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-card-icon bg-warning bg-opacity-10 text-warning">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <div class="stat-card-value">12</div>
+            <div class="stat-card-label">Quản trị viên</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-card-icon bg-danger bg-opacity-10 text-danger">
+                <i class="fas fa-user-times"></i>
+            </div>
+            <div class="stat-card-value">44</div>
+            <div class="stat-card-label">Đã khóa</div>
+        </div>
+    </div>
+</div>
+
+<!-- Users Table -->
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white border-bottom">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fw-bold">
+                <i class="fas fa-table me-2 text-primary"></i>
+                Danh sách người dùng
+            </h5>
+            <div class="input-group" style="width: 300px;">
+                <span class="input-group-text bg-white">
+                    <i class="fas fa-search text-muted"></i>
+                </span>
+                <input type="text" class="form-control" placeholder="Tìm kiếm..." />
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên đăng nhập</th>
+                        <th>Họ và tên</th>
+                        <th>Email</th>
+                        <th>Vai trò</th>
+                        <th>Trạng thái</th>
+                        <th>Ngày tạo</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td><strong>admin</strong></td>
+                        <td>Nguyễn Văn Admin</td>
+                        <td>admin@thuvien.edu.vn</td>
+                        <td><span class="badge bg-danger">Admin</span></td>
+                        <td><span class="badge bg-success">Hoạt động</span></td>
+                        <td>15/01/2024</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary me-1">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td><strong>user001</strong></td>
+                        <td>Trần Thị Hoa</td>
+                        <td>user001@email.com</td>
+                        <td><span class="badge bg-primary">User</span></td>
+                        <td><span class="badge bg-success">Hoạt động</span></td>
+                        <td>20/01/2024</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary me-1">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td><strong>user002</strong></td>
+                        <td>Lê Văn Nam</td>
+                        <td>user002@email.com</td>
+                        <td><span class="badge bg-primary">User</span></td>
+                        <td><span class="badge bg-success">Hoạt động</span></td>
+                        <td>22/01/2024</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary me-1">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td><strong>user003</strong></td>
+                        <td>Phạm Thị Lan</td>
+                        <td>user003@email.com</td>
+                        <td><span class="badge bg-primary">User</span></td>
+                        <td><span class="badge bg-secondary">Đã khóa</span></td>
+                        <td>25/01/2024</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary me-1">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td><strong>admin2</strong></td>
+                        <td>Hoàng Văn Quản</td>
+                        <td>admin2@thuvien.edu.vn</td>
+                        <td><span class="badge bg-danger">Admin</span></td>
+                        <td><span class="badge bg-success">Hoạt động</span></td>
+                        <td>10/01/2024</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary me-1">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer bg-white border-top">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <span class="text-muted">Hiển thị 1-5 của 856 người dùng</span>
+            </div>
+            <nav>
+                <ul class="pagination mb-0">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">Trước</a>
+                    </li>
+                    <li class="page-item active">
+                        <a class="page-link" href="#">1</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">2</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">3</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Sau</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
