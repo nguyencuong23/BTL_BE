@@ -12,7 +12,7 @@ namespace QuanLyThuVienTruongHoc.Models.ViewModels
         public string Password { get; set; } = null!;
 
         [Required]
-        [Compare("Password")]
+        [Compare("Password", ErrorMessage = "Mật khẩu nhập lại không khớp")]
         public string ConfirmPassword { get; set; } = null!;
 
         [Required]
