@@ -49,7 +49,7 @@
         background: rgba(255,255,255,0.92);
         backdrop-filter: blur(12px);
         box-shadow: 0 25px 60px rgba(0,0,0,.45);
-        animation: floatCard 6s ease-in-out infinite;
+        animation: floatCard 2.4s ease-in-out infinite;
     }
 
     @@keyframes floatCard {
@@ -82,22 +82,6 @@
             border-color: var(--accent);
             box-shadow: 0 0 0 3px rgba(243,112,33,.25);
         }
-
-    .input-animate {
-        animation: fadeSlide .7s ease forwards;
-    }
-
-    @@keyframes fadeSlide {
-        from {
-            opacity: 0;
-            transform: translateY(22px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
 
     .btn-register {
         background: linear-gradient(135deg, var(--accent), #ff8c42);
