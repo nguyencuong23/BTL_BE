@@ -8,229 +8,273 @@
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
-    <title>Đăng nhập - Dai Nam Library</title>
+    <title>Đăng nhập - Đại Nam Library</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 
     <style>
         :root {
             --dainam-orange: #f58220;
+            --dainam-blue: #003366;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.6);
         }
 
         body {
             margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
             height: 100vh;
-            font-family: 'Segoe UI', sans-serif;
-            background: #f2f4f7;
+            overflow: hidden;
+            background: #000; /* Nền đen để load ảnh đỡ bị chói */
         }
 
-        /* CENTER */
-        .page-center {
+        /* --- BACKGROUND --- */
+        .main-container {
+            width: 100%;
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        /* CARD */
-        .login-card {
-            width: 1540px;
-            height: 800px;
-            background: #fff;
-            border-radius: 24px;
-            display: flex;
-            overflow: hidden;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-            animation: floatIn .8s ease;
-        }
-
-        @@keyframes floatIn {
-            from
-
-        {
-            opacity: 0;
-            transform: translateY(30px) scale(.97);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-
-        }
-
-        /* IMAGE */
-        .login-image {
-            width: 50%;
-            background-image: url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da');
+            position: relative;
+            /* Ảnh nền thư viện */
+            background: url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=2028&auto=format&fit=crop') no-repeat center center;
             background-size: cover;
-            background-position: center;
+        }
+
+        /* Lớp phủ Gradient nhẹ để làm nền có chiều sâu hơn */
+        .bg-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(0, 51, 102, 0.1) 0%, rgba(0, 30, 60, 0.4) 100%);
+            z-index: 1;
+        }
+
+        /* --- ANIMATIONS (Phần Xịn) --- */
+
+        /* 1. Form trượt từ dưới lên */
+        @@keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(60px) scale(0.95);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* 2. Logo rơi nhẹ xuống */
+        @@keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* --- LOGIN CARD (Glassmorphism + Advanced Shadow) --- */
+        .login-card {
+            position: relative;
+            z-index: 2;
+            width: 460px;
+            padding: 50px 45px;
+            /* Kính mờ */
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
+            /* SHADOW XỊN: Kết hợp bóng đổ sâu và bóng phát sáng (Glow) */
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), /* Bóng đen tạo độ nổi */
+            0 0 0 1px rgba(255, 255, 255, 0.5), /* Viền sáng bên trong */
+            0 0 30px rgba(0, 229, 255, 0.15); /* Viền tỏa sáng màu xanh cyan */
+            /* Kích hoạt Animation */
+            animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        .brand-logo {
+            margin-bottom: 10px;
+            animation: fadeInDown 1s ease-out 0.3s backwards; /* Delay logo một chút */
+        }
+
+            .brand-logo h2 {
+                font-weight: 900;
+                color: var(--dainam-blue);
+                font-size: 34px;
+                margin: 0;
+                letter-spacing: -0.5px;
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+
+            .brand-logo span {
+                color: var(--dainam-orange);
+            }
+
+        .sub-title {
+            color: #666;
+            font-size: 15px;
+            margin-bottom: 35px;
+            font-weight: 500;
+            opacity: 0.9;
+            animation: fadeInDown 1s ease-out 0.4s backwards;
+        }
+
+        /* --- INPUT FIELDS (Hiệu ứng Focus) --- */
+        .form-group {
+            margin-bottom: 24px;
             position: relative;
         }
 
-        .image-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient( 135deg, rgba(245,130,32,0.88), rgba(0,0,0,0.55) );
-            color: white;
-            padding: 80px 70px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+        .form-label {
+            font-weight: 600;
+            color: #444;
+            font-size: 13px;
+            margin-bottom: 8px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-
-            .image-overlay h4 {
-                font-size: 32px;
-                font-weight: 800;
-                letter-spacing: 1px;
-                margin-bottom: 14px;
-            }
-
-            .image-overlay p {
-                font-size: 18px;
-                opacity: 0.95;
-                margin-bottom: 40px;
-            }
-
-            .image-overlay blockquote {
-                font-size: 20px;
-                line-height: 1.7;
-                max-width: 420px;
-                font-style: italic;
-                border-left: 4px solid rgba(255,255,255,.85);
-                padding-left: 18px;
-            }
-
-        /* FORM */
-        .login-form {
-            width: 50%;
-            padding: 80px 90px;
-        }
-
-            .login-form h5 {
-                font-size: 26px;
-                font-weight: 700;
-                margin-bottom: 6px;
-            }
-
-            .login-form span {
-                font-size: 15px;
-                color: #888;
-                display: block;
-                margin-bottom: 32px;
-            }
-
-            .login-form label {
-                font-size: 14px;
-                font-weight: 600;
-                color: #444;
-                margin-bottom: 6px;
-            }
 
         .form-control {
-            padding: 14px 16px;
             border-radius: 12px;
+            height: 52px;
+            border: 2px solid transparent; /* Chuẩn bị cho border khi focus */
+            padding-left: 20px;
             font-size: 15px;
+            background: rgba(255, 255, 255, 0.7);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            transition: all 0.3s ease;
         }
 
             /* Khi click vào input */
             .form-control:focus {
+                background: #fff;
                 border-color: var(--dainam-orange);
-                box-shadow: 0 0 0 .2rem rgba(245,130,32,.25);
+                box-shadow: 0 5px 15px rgba(245, 130, 32, 0.15); /* Bóng cam nhẹ */
+                transform: translateY(-2px); /* Nổi lên nhẹ */
             }
 
+        /* --- BUTTON (Gradient & Pulse) --- */
         .btn-login {
-            background: var(--dainam-orange);
+            background-image: linear-gradient(135deg, #008cb8 0%, #006699 100%);
+            background-size: 200% auto; /* Để làm hiệu ứng chuyển màu */
+            border: none;
+            width: 100%;
+            height: 54px;
+            border-radius: 27px;
             color: white;
-            border-radius: 25px;
-            padding: 14px;
-            font-weight: 500;
-            transition: .3s;
+            font-weight: 700;
+            font-size: 16px;
+            text-transform: uppercase;
+            margin-top: 10px;
+            margin-bottom: 25px;
+            cursor: pointer;
+            /* Bóng nút */
+            box-shadow: 0 10px 20px rgba(0, 102, 153, 0.3);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
             .btn-login:hover {
-                background: #e06f10;
-                transform: translateY(-2px);
-                box-shadow: 0 10px 25px rgba(245,130,32,.4);
+                background-position: right center; /* Chạy màu gradient */
+                transform: translateY(-3px) scale(1.02); /* Bay lên và to ra chút xíu */
+                box-shadow: 0 15px 30px rgba(0, 102, 153, 0.4); /* Bóng đậm hơn */
             }
 
-        .forgot {
+            .btn-login:active {
+                transform: translateY(1px); /* Ấn xuống khi click */
+                box-shadow: 0 5px 10px rgba(0, 102, 153, 0.4);
+            }
+
+        /* --- FOOTER LINK --- */
+        .footer-link {
             font-size: 14px;
-            color: var(--dainam-orange);
-            text-decoration: none;
+            color: #555;
+            transition: opacity 0.3s;
         }
 
-            .forgot:hover {
-                text-decoration: underline;
+            .footer-link a {
+                color: var(--dainam-blue);
+                text-decoration: none;
+                font-weight: 700;
+                position: relative;
             }
 
-        .divider {
-            text-align: center;
-            margin: 26px 0;
-            font-size: 13px;
-            color: #aaa;
-        }
+                /* Gạch chân chạy ra khi hover link */
+                .footer-link a::after {
+                    content: '';
+                    position: absolute;
+                    width: 0;
+                    height: 2px;
+                    bottom: -2px;
+                    left: 0;
+                    background-color: var(--dainam-orange);
+                    transition: width 0.3s;
+                }
 
-        /* RESPONSIVE */
-        @@media (max-width: 1200px) {
-            .login-card
+                .footer-link a:hover::after {
+                    width: 100%;
+                }
 
-        {
-            width: 95%;
-            height: auto;
-            flex-direction: column;
-        }
+        /* Responsive Mobile */
+        @@media (max-width: 576px) {
+            .login-card {
+                width: 90%;
+                padding: 30px 20px;
+            }
 
-        .login-image {
-            width: 100%;
-            height: 260px;
-        }
-
-        .login-form {
-            width: 100%;
-            padding: 50px;
-        }
-
+            .brand-logo h2 {
+                font-size: 28px;
+            }
         }
     </style>
-    <head>
-        <meta charset="utf-8" />
-        <title>Đăng nhập</title>
+</head>
+<body>
 
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+    <div class="main-container">
+        <div class="bg-overlay"></div>
 
-        <link rel="stylesheet" href="~/css/login.css" />
-    </head>
-    <body>
-
-        <div class="login-bg">
-            <div class="overlay"></div>
-
-            <div class="login-wrapper">
-                <div class="login-card animate-float">
-                    <h3 class="text-center mb-4">📚 Đăng nhập thư viện</h3>
-
-                    <form asp-action="Login" method="post">
-                        <div class="mb-3">
-                            <input asp-for="Username" class="form-control" placeholder="Tên đăng nhập" />
-                            <span asp-validation-for="Username" class="text-danger"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <input asp-for="Password" type="password" class="form-control" placeholder="Mật khẩu" />
-                            <span asp-validation-for="Password" class="text-danger"></span>
-                        </div>
-
-                        <button type="submit" class="btn btn-login w-100">
-                            Đăng nhập
-                        </button>
-                    </form>
-                </div>
+        <div class="login-card">
+            <div class="brand-logo">
+                <h2>DAI NAM <span>LIBRARY</span></h2>
             </div>
-        </div>
+            <p class="sub-title">Hệ thống quản lý thư viện</p>
 
-    </body>
+            <form asp-action="Login" method="post" autocomplete="off">
+                <div class="form-group">
+                    <label class="form-label">Tên đăng nhập</label>
+                    <input asp-for="Username" class="form-control" placeholder="Nhập mã sinh viên / GV..." />
+                    <span asp-validation-for="Username" class="text-danger" style="font-size: 13px; margin-top:5px; display:block"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Mật khẩu</label>
+                    <input asp-for="Password" type="password" class="form-control" placeholder="••••••••" />
+                    <span asp-validation-for="Password" class="text-danger" style="font-size: 13px; margin-top:5px; display:block"></span>
+                </div>
+
+                <button type="submit" class="btn btn-login">
+                    Đăng nhập <i class="fa-solid fa-arrow-right-to-bracket ms-2"></i>
+                </button>
+
+                <div class="footer-link">
+                    Chưa có tài khoản? <a asp-controller="Account" asp-action="Register" >Đăng ký ngay</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
 </html>
