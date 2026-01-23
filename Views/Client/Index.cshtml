@@ -13,7 +13,7 @@
         background: #f8fafc;
     }
 
-    /* ===== HERO ===== */
+    /* ================= HERO ================= */
     .hero {
         margin-top: -20px;
         padding: 130px 0;
@@ -50,7 +50,7 @@
                 box-shadow: none;
             }
 
-    /* ===== FEATURE ===== */
+    /* ================= FEATURE ================= */
     .feature-img {
         height: 230px;
         border-radius: 26px;
@@ -58,8 +58,7 @@
         background-position: center;
         position: relative;
         overflow: hidden;
-        cursor: pointer;
-        transition: .4s ease;
+        transition: .4s;
         box-shadow: 0 15px 35px rgba(0,0,0,.15);
     }
 
@@ -78,16 +77,6 @@
         justify-content: flex-end;
         padding: 22px;
         color: #fff;
-        z-index: 2;
-    }
-
-    .feature-img h5 {
-        font-weight: 600;
-    }
-
-    .feature-img p {
-        font-size: 14px;
-        color: #e5e7eb;
     }
 
     .feature-img:hover {
@@ -95,7 +84,7 @@
         box-shadow: 0 25px 50px rgba(0,0,0,.35);
     }
 
-    /* ===== CATEGORY ===== */
+    /* ================= CATEGORY ================= */
     .category {
         height: 260px;
         border-radius: 28px;
@@ -123,22 +112,90 @@
             transform: translateY(-8px);
         }
 
-    /* ===== PARTNER ===== */
+    /* ================= BOOK SLIDER ================= */
+    .book-section {
+        background: #fff;
+        padding: 70px 0;
+    }
+
+    .book-card {
+        background: #fff;
+        border-radius: 18px;
+        padding: 16px;
+        text-align: center;
+        box-shadow: 0 15px 35px rgba(0,0,0,.12);
+        transition: .35s;
+        height: 100%;
+        border: 1px solid #f0f0f0;
+        /* Thêm mới để thẻ a hiển thị đúng */
+        display: block;
+        text-decoration: none; /* Bỏ gạch chân */
+        color: inherit; /* Giữ màu chữ gốc */
+    }
+
+        .book-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 60px rgba(0,0,0,.2);
+            border-color: var(--accent);
+            color: inherit; /* Không bị đổi màu xanh của link */
+        }
+
+        .book-card img {
+            height: 230px;
+            object-fit: cover;
+            border-radius: 14px;
+            margin-bottom: 14px;
+        }
+
+        .book-card h6 {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .book-card span {
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+
+    .badge-premium {
+        margin-top: 8px;
+        font-size: 12px;
+        background: #e0f2fe;
+        color: #0284c7;
+        padding: 4px 10px;
+        border-radius: 999px;
+        display: inline-block;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 48px;
+        height: 48px;
+        background: #fff;
+        border-radius: 50%;
+        top: 45%;
+        box-shadow: 0 10px 25px rgba(0,0,0,.25);
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        filter: invert(1);
+    }
+
+    /* ================= PARTNER ================= */
     .partner-box {
         height: 100px;
         border-radius: 20px;
         background-size: cover;
         background-position: center;
         position: relative;
-        overflow: hidden;
         display: flex;
         align-items: center;
         justify-content: center;
         color: #fff;
         font-weight: 600;
-        font-size: 14px;
-        text-align: center;
-        transition: .4s ease;
+        transition: .4s;
         box-shadow: 0 12px 30px rgba(0,0,0,.2);
     }
 
@@ -152,23 +209,11 @@
         .partner-box span {
             position: relative;
             z-index: 2;
-            padding: 0 10px;
         }
 
         .partner-box:hover {
-            transform: translateY(-8px) scale(1.03);
-            box-shadow: 0 25px 50px rgba(0,0,0,.35);
+            transform: translateY(-8px);
         }
-
-    /* ===== RESPONSIVE ===== */
-    @@media (max-width: 768px) {
-        .hero h1
-
-    {
-        font-size: 32px;
-    }
-
-    }
 </style>
 
 <!-- HERO -->
@@ -186,6 +231,121 @@
                     <button class="btn btn-warning px-4 fw-semibold">Tìm</button>
                 </div>
             </div>
+        </div>
+    </div>
+</section>
+<section class="book-section">
+    <div class="container">
+        <h3 class="fw-bold text-center mb-4">
+            Kho tài liệu <br />và sách bán chạy nhất
+        </h3>
+
+        <div id="bookCarousel" class="carousel slide">
+            <div class="carousel-inner">
+
+                <div class="carousel-item active">
+                    <div class="row g-4 justify-content-center">
+                        <div class="col-6 col-md-3">
+                            <a href="/Book/Detail/1" class="book-card">
+                                <img src="https://bizweb.dktcdn.net/100/326/228/products/81hmjlt14ml-uf894-1000-ql80.jpg?v=1757049241340">
+                                <h6>Homo Deus</h6>
+                                <span>Yuval Noah Harari</span>
+                                <div class="badge-premium">Mới</div>
+                            </a>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <a href="/Book/Detail/2" class="book-card">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTv98FnKFIl1mWp2oF2YjMiVb9XCxuKExy0Gw&s">
+                                <h6>12 Rules for Life</h6>
+                                <span>Jordan Peterson</span>
+                                <div class="badge-premium">Hot</div>
+                            </a>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <a href="/Book/Detail/3" class="book-card">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgGpv1ctGy0hjdg5Htgfh7PDosTEN5kkDNrw&s">
+                                <h6>Harry Potter</h6>
+                                <span>J.K Rowling</span>
+                                <div class="badge-premium">Kinh điển</div>
+                            </a>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <a href="/Book/Detail/4" class="book-card">
+                                <img src="https://m.media-amazon.com/images/I/71F4+7rk2eL._UF894,1000_QL80_.jpg">
+                                <h6>Atomic Habits</h6>
+                                <span>James Clear</span>
+                                <div class="badge-premium">Kỹ năng</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="carousel-item">
+                    <div class="row g-4 justify-content-center">
+                        <div class="col-6 col-md-3">
+                            <a href="/Book/Detail/5" class="book-card">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEjd9cGkdABJiPQ3qfZNGvDkIXDrCr3IqOVQ&s">
+                                <h6>Rich Dad Poor Dad</h6>
+                                <span>Robert Kiyosaki</span>
+                                <div class="badge-premium">Kinh tế</div>
+                            </a>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <a href="/Book/Detail/6" class="book-card">
+                                <img src="https://m.media-amazon.com/images/I/81gC3mdNi5L._AC_UF1000,1000_QL80_.jpg">
+                                <h6>Psychology of Money</h6>
+                                <span>Morgan Housel</span>
+                                <div class="badge-premium">Tài chính</div>
+                            </a>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <a href="/Book/Detail/7" class="book-card">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTya1pYfoM-qFULZrynbW6xrmXjvg7swO0QHw&s">
+                                <h6>The Shining</h6>
+                                <span>Stephen King</span>
+                                <div class="badge-premium">Kinh dị</div>
+                            </a>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <a href="/Book/Detail/8" class="book-card">
+                                <img src="https://m.media-amazon.com/images/I/71wANojhEKL._AC_UF1000,1000_QL80_.jpg">
+                                <h6>1984</h6>
+                                <span>George Orwell</span>
+                                <div class="badge-premium">Văn học</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="carousel-item">
+                    <div class="row g-4 justify-content-center">
+                        <div class="col-6 col-md-3">
+                            <a href="/Book/Detail/9" class="book-card">
+                                <img src="https://cdn.hstatic.net/products/200001055148/51oxkwrcyyl_6e1d5c0ac22a4e158adcd0b948f2b5f5.jpg">
+                                <h6>Thinking, Fast and Slow</h6>
+                                <span>Daniel Kahneman</span>
+                                <div class="badge-premium">Tâm lý</div>
+                            </a>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <a href="https://www.fahasa.com/sapiens-a-brief-history-of-humankind.html?srsltid=AfmBOoqGj7Xm43Hn5To3y0pqXxIVPoM0uuq7qy3aTkRHeSwd8CgX9iLu" class="book-card">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSotjQPuZMiz-cVShfHXzDtvLMJ1EinP7jEDg&s">
+                                <h6>Sapiens</h6>
+                                <span>Yuval Noah Harari</span>
+                                <div class="badge-premium">Lịch sử</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#bookCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#bookCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
         </div>
     </div>
 </section>
