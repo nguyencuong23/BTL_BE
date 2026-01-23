@@ -1,28 +1,348 @@
 ﻿@{
-    ViewData["Title"] = "Trang quản trị";
+    ViewData["Title"] = "Trang chủ";
 }
 
-<h1 class="mb-4">Trang quản trị</h1>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<div class="row">
-    <div class="col-md-4">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title">Quản lý sinh viên</h5>
-                <p class="card-text">
-                    Xem danh sách, thêm mới, quản lý thông tin sinh viên.
-                </p>
-                <a asp-controller="Admin"
-                   asp-action="DanhSachSinhVien"
-                   class="btn btn-primary">
-                    Danh sách sinh viên
-                </a>
-                <a asp-controller="Admin"
-                   asp-action="ThemSinhVien"
-                   class="btn btn-outline-primary ms-2">
-                    Thêm sinh viên
-                </a>
+    <!-- BOOTSTRAP -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --main: #0b1d36;
+            --accent: #f59e0b;
+            --text-gray: #6b7280;
+        }
+
+        body {
+            background: #f8fafc;
+        }
+
+        /* ================= HERO ================= */
+        .hero {
+            margin-top: -20px;
+            padding: 130px 0;
+            background: linear-gradient(rgba(11,29,54,.85), rgba(11,29,54,.85)), url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f');
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+        }
+
+            .hero h1 {
+                font-size: 44px;
+                line-height: 1.2;
+            }
+
+            .hero span {
+                color: var(--accent);
+            }
+
+        .search-box {
+            background: #fff;
+            padding: 14px;
+            border-radius: 18px;
+            display: flex;
+            gap: 12px;
+            max-width: 520px;
+            box-shadow: 0 25px 50px rgba(0,0,0,.35);
+        }
+
+            .search-box input {
+                border: none;
+            }
+
+                .search-box input:focus {
+                    box-shadow: none;
+                }
+
+        /* ================= FEATURE ================= */
+        .feature-img {
+            height: 230px;
+            border-radius: 26px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+            transition: .4s;
+            box-shadow: 0 15px 35px rgba(0,0,0,.15);
+        }
+
+            .feature-img::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(to top, rgba(0,0,0,.65), transparent);
+            }
+
+        .feature-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 22px;
+            color: #fff;
+        }
+
+        .feature-img:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0,0,0,.35);
+        }
+
+        /* ================= CATEGORY ================= */
+        .category {
+            height: 260px;
+            border-radius: 28px;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: flex-end;
+            padding: 22px;
+            font-weight: 600;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+            transition: .4s;
+            box-shadow: 0 15px 35px rgba(0,0,0,.2);
+        }
+
+            .category::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(to top, rgba(0,0,0,.6), transparent);
+            }
+
+            .category:hover {
+                transform: translateY(-8px);
+            }
+
+        /* ================= BOOK SLIDER ================= */
+        .book-section {
+            background: #fff;
+            padding: 70px 0;
+        }
+
+        .book-card {
+            background: #fff;
+            border-radius: 18px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,.12);
+            transition: .35s;
+            height: 100%;
+        }
+
+            .book-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 30px 60px rgba(0,0,0,.25);
+            }
+
+            .book-card img {
+                height: 230px;
+                object-fit: cover;
+                border-radius: 14px;
+                margin-bottom: 14px;
+            }
+
+            .book-card h6 {
+                font-weight: 600;
+                font-size: 15px;
+            }
+
+            .book-card span {
+                font-size: 13px;
+                color: var(--text-gray);
+            }
+
+        .badge-premium {
+            margin-top: 8px;
+            font-size: 12px;
+            background: #e0f2fe;
+            color: #0284c7;
+            padding: 4px 10px;
+            border-radius: 999px;
+            display: inline-block;
+        }
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 48px;
+            height: 48px;
+            background: #fff;
+            border-radius: 50%;
+            top: 45%;
+            box-shadow: 0 10px 25px rgba(0,0,0,.25);
+        }
+
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            filter: invert(1);
+        }
+
+        /* ================= PARTNER ================= */
+        .partner-box {
+            height: 100px;
+            border-radius: 20px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 600;
+            transition: .4s;
+            box-shadow: 0 12px 30px rgba(0,0,0,.2);
+        }
+
+            .partner-box::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: rgba(11,29,54,.7);
+            }
+
+            .partner-box span {
+                position: relative;
+                z-index: 2;
+            }
+
+            .partner-box:hover {
+                transform: translateY(-8px);
+            }
+    </style>
+</head>
+
+<body>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="fw-bold mb-4">
+                Kết nối <span>tri thức</span><br />
+                tại Thư viện Đại học Đại Nam
+            </h1>
+
+            <div class="search-box">
+                <input class="form-control" placeholder="Nhập tên sách, tác giả...">
+                <button class="btn btn-warning fw-semibold px-4">Tìm</button>
             </div>
         </div>
-    </div>
-</div>
+    </section>
+
+    <!-- FEATURE -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-img" style="background-image:url('https://faceworks.vn/wp-content/uploads/2016/07/thuvien.jpg')">
+                        <div class="feature-overlay">
+                            <h5>Hướng dẫn mượn sách</h5>
+                            <p>Quy trình mượn – trả hiện đại</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-img" style="background-image:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5Y8VbBHhqNFMvQBmAy4Boicn_2-CzDiMp8Q&s')">
+                        <div class="feature-overlay">
+                            <h5>Tra cứu tài liệu</h5>
+                            <p>Tìm kiếm học liệu nhanh</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-img" style="background-image:url('https://thuvienthongminh.net/wp-content/uploads/2024/10/Thu-vien-hien-dai-nam-giua-rung-cay-o-Dai-Loan-3.webp')">
+                        <div class="feature-overlay">
+                            <h5>Danh mục chuyên ngành</h5>
+                            <p>Theo khoa & lĩnh vực</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BOOK SLIDER -->
+    <section class="book-section">
+        <div class="container">
+            <h3 class="fw-bold text-center mb-4">
+                Browse huge library filled<br />with world bestsellers
+            </h3>
+
+            <div id="bookCarousel" class="carousel slide">
+                <div class="carousel-inner">
+
+                    <div class="carousel-item active">
+                        <div class="row g-4 justify-content-center">
+                            <div class="col-6 col-md-3">
+                                <div class="book-card">
+                                    <img src="https://images-na.ssl-images-amazon.com/images/I/71cJX7D6UHL.jpg">
+                                    <h6>Homo Deus</h6>
+                                    <span>Yuval Noah Harari</span>
+                                    <div class="badge-premium">Premium</div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="book-card">
+                                    <img src="https://images-na.ssl-images-amazon.com/images/I/71KilybDOoL.jpg">
+                                    <h6>12 Rules for Life</h6>
+                                    <span>Jordan Peterson</span>
+                                    <div class="badge-premium">Premium</div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="book-card">
+                                    <img src="https://images-na.ssl-images-amazon.com/images/I/81YOuOGFCJL.jpg">
+                                    <h6>Harry Potter</h6>
+                                    <span>J.K Rowling</span>
+                                    <div class="badge-premium">Premium</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <button class="carousel-control-prev" type="button" data-bs-target="#bookCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#bookCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- PARTNER -->
+    <section class="py-5 bg-white">
+        <div class="container text-center">
+            <h4 class="fw-bold mb-4">Đối tác liên kết</h4>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="partner-box" style="background-image:url('https://images.unsplash.com/photo-1600880292089-90a7e086ee0c')">
+                        <span>Fibo Capital</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="partner-box" style="background-image:url('https://images.unsplash.com/photo-1551836022-d5d88e9218df')">
+                        <span>Manulife</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="partner-box" style="background-image:url('https://images.unsplash.com/photo-1503387762-592deb58ef4e')">
+                        <span>Xuân Hòa</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
