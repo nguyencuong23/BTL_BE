@@ -3,60 +3,94 @@
     ViewData["Title"] = "Đăng ký";
 }
 
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
 <style>
     :root {
-        --dainam-orange: #f37021;
+        --primary: #1e3a8a;
+        --accent: #f37021;
     }
 
-    .text-orange {
-        color: var(--dainam-orange);
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', sans-serif;
+        background: linear-gradient(-45deg, #0b1d36, #1e3a8a, #0f172a, #1e40af);
+        background-size: 400% 400%;
+        animation: gradientMove 16s ease infinite;
     }
 
-    .btn-orange {
-        background-color: var(--dainam-orange);
-        color: #fff;
-        font-weight: 600;
-        border-radius: 6px;
-    }
-
-        .btn-orange:hover {
-            background-color: #d65d16;
-            color: #fff;
+    @@keyframes gradientMove {
+        0% {
+            background-position: 0% 50%;
         }
 
-    .register-page {
-        position: relative;
-        min-height: calc(100vh - 56px);
-        background-image: url("https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&h=9000&w=1200&fit=clip&fm=jpg");
-        background-position: center;
-        background-size: cover;
-        background-repeat: no-repeat;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        50% {
+            background-position: 100% 50%;
+        }
+
+        100% {
+            background-position: 0% 50%;
+        }
     }
 
-    .register-overlay {
-        position: absolute;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.45);
+    .register-page {
+        min-height: calc(100vh - 56px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
     }
 
     .register-card {
-        position: relative;
-        background: #fff;
         width: 100%;
-        max-width: 520px;
-        padding: 35px;
-        border-radius: 14px;
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-        animation: fadeUp 0.6s ease;
+        max-width: 560px;
+        padding: 40px;
+        border-radius: 24px;
+        background: rgba(255,255,255,0.92);
+        backdrop-filter: blur(12px);
+        box-shadow: 0 25px 60px rgba(0,0,0,.45);
+        animation: floatCard 6s ease-in-out infinite;
     }
 
-    @@keyframes fadeUp {
+    @@keyframes floatCard {
+        0%, 100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .brand-title {
+        font-weight: 800;
+        letter-spacing: 1px;
+        color: var(--primary);
+    }
+
+        .brand-title span {
+            color: var(--accent);
+        }
+
+    .form-control {
+        border-radius: 14px;
+        padding: 12px 14px;
+        transition: .3s;
+    }
+
+        .form-control:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(243,112,33,.25);
+        }
+
+    .input-animate {
+        animation: fadeSlide .7s ease forwards;
+    }
+
+    @@keyframes fadeSlide {
         from {
             opacity: 0;
-            transform: translateY(30px);
+            transform: translateY(22px);
         }
 
         to {
@@ -64,25 +98,52 @@
             transform: translateY(0);
         }
     }
+
+    .btn-register {
+        background: linear-gradient(135deg, var(--accent), #ff8c42);
+        color: #fff;
+        font-weight: 700;
+        border-radius: 16px;
+        padding: 12px;
+        border: none;
+        transition: .35s;
+    }
+
+        .btn-register:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(243,112,33,.45);
+            color: #fff;
+        }
+
+    .login-link {
+        color: var(--primary);
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        .login-link:hover {
+            color: var(--accent);
+        }
 </style>
 
 <div class="register-page">
-    <div class="register-overlay"></div>
-
     <div class="register-card">
-        <h3 class="text-orange fw-bold mb-2">ĐẠI NAM LIBRARY</h3>
-        <h5 class="mb-4">Đăng ký tài khoản</h5>
+
+        <div class="text-center mb-4">
+            <h3 class="brand-title">ĐẠI NAM <span>LIBRARY</span></h3>
+            <p class="text-muted mb-0">Đăng ký tài khoản hệ thống</p>
+        </div>
 
         <form asp-action="Register" method="post" autocomplete="off">
 
-            <div class="mb-3">
+            <div class="mb-3 input-animate" style="animation-delay:.05s">
                 <label class="form-label">Tên đăng nhập</label>
                 <input asp-for="Username" class="form-control"
                        autocomplete="new-username" />
                 <span asp-validation-for="Username" class="text-danger"></span>
             </div>
 
-            <div class="mb-3">
+            <div class="mb-3 input-animate" style="animation-delay:.12s">
                 <label class="form-label">Mật khẩu</label>
                 <input asp-for="Password" type="password"
                        class="form-control"
@@ -90,7 +151,7 @@
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
 
-            <div class="mb-3">
+            <div class="mb-3 input-animate" style="animation-delay:.18s">
                 <label class="form-label">Nhập lại mật khẩu</label>
                 <input asp-for="ConfirmPassword" type="password"
                        class="form-control"
@@ -98,35 +159,37 @@
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
 
-            <div class="mb-3">
+            <div class="mb-3 input-animate" style="animation-delay:.24s">
                 <label class="form-label">Họ và tên</label>
                 <input asp-for="FullName" class="form-control" />
                 <span asp-validation-for="FullName" class="text-danger"></span>
             </div>
 
-            <div class="mb-3">
+            <div class="mb-3 input-animate" style="animation-delay:.30s">
                 <label class="form-label">Email</label>
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
 
-            <div class="mb-3">
+            <div class="mb-3 input-animate" style="animation-delay:.36s">
                 <label class="form-label">Số điện thoại</label>
                 <input asp-for="PhoneNumber" class="form-control" />
                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
             </div>
 
-            <button type="submit" class="btn btn-orange w-100">
+            <button type="submit" class="btn btn-register w-100 mt-3">
                 ĐĂNG KÝ
             </button>
 
-            <div class="text-center mt-3">
-                <a asp-action="Login" class="text-decoration-none text-orange fw-semibold">
-                    Đã có tài khoản? Đăng nhập
+            <div class="text-center mt-4">
+                <span class="text-muted">Đã có tài khoản?</span>
+                <a asp-action="Login" class="login-link ms-1">
+                    Đăng nhập
                 </a>
             </div>
 
             <div asp-validation-summary="ModelOnly" class="text-danger mt-3"></div>
+
         </form>
     </div>
 </div>

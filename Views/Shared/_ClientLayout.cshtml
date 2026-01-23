@@ -2,20 +2,22 @@
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
-    <title>@ViewData["Title"] - Đại Nam University Library</title>
+    <title>@ViewData["Title"] - Thư viện Đại học Đại Nam</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-    <link href="~/css/site.css" rel="stylesheet" />
 
     <style>
         :root {
-            --dainam-orange: #f58220;
+            --primary: #0b1d36;
+            --secondary: #2563eb;
+            --accent: #f59e0b;
+            --bg: #f4f7fb;
+            --text: #1f2937;
         }
 
-        /* FIX DƯ KHOẢNG TRẮNG */
         html, body {
             height: 100%;
             margin: 0;
@@ -24,151 +26,129 @@
         body {
             display: flex;
             flex-direction: column;
-            animation: pageFadeIn 0.5s ease;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', sans-serif;
         }
 
-        .dainam-nav {
-            background-color: var(--dainam-orange);
+        header {
+            background: linear-gradient(90deg, #0b1d36, #102a4d);
+            color: #fff;
         }
 
-            .dainam-nav a {
+            header a {
                 color: #fff;
-                font-weight: 500;
                 text-decoration: none;
-                margin-left: 16px;
-                padding: 10px 0;
-                display: inline-block;
+                margin-left: 22px;
+                font-weight: 500;
+                position: relative;
             }
 
-                .dainam-nav a:hover {
-                    opacity: 0.85;
+                header a::after {
+                    content: "";
+                    position: absolute;
+                    left: 0;
+                    bottom: -5px;
+                    width: 0;
+                    height: 2px;
+                    background: var(--accent);
+                    transition: .3s;
                 }
 
-        @@keyframes pageFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(8px);
-            }
+                header a:hover::after {
+                    width: 100%;
+                }
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        main {
+            flex: 1;
+            padding: 20px 0;
         }
 
-        .page-transition {
-            opacity: 0;
-            transform: translateY(10px);
-            transition: opacity 0.3s ease, transform 0.3s ease;
+        footer {
+            background: var(--primary);
+            color: #dbeafe;
         }
 
-            .page-transition.show {
-                opacity: 1;
-                transform: translateY(0);
+            footer a {
+                color: #dbeafe;
+                font-size: 20px;
+                margin-right: 14px;
             }
+
+                footer a:hover {
+                    color: var(--accent);
+                }
     </style>
 </head>
 
 <body>
 
     <!-- HEADER -->
-    <header class="dainam-nav">
-        <div class="container-fluid px-5 py-2 d-flex justify-content-between align-items-center text-white">
-            <div class="fw-semibold">
+    <header>
+        <div class="container-fluid px-5 py-3 d-flex justify-content-between align-items-center">
+            <div class="fw-bold fs-5">
                 THƯ VIỆN ĐẠI HỌC ĐẠI NAM
             </div>
 
             <nav>
-                <a asp-controller="Client" asp-action="Index">TRANG CHỦ</a>
-                <a asp-controller="Client" asp-action="TraCuu">TRA CỨU</a>
-                <a asp-controller="Client" asp-action="News">TIN TỨC</a>
+                <a asp-controller="Client" asp-action="Index">Trang chủ</a>
+                <a asp-controller="Client" asp-action="TraCuu">Tra cứu</a>
+                <a asp-controller="Client" asp-action="News">Tin tức</a>
 
                 @if (User.Identity != null && User.Identity.IsAuthenticated)
                 {
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <a asp-controller="Admin" asp-action="Index">QUẢN TRỊ</a>
-                    }
-
                     <span class="ms-3 me-2">
                         <i class="fa fa-user"></i> @User.Identity.Name
                     </span>
-
-                    <a asp-controller="Account" asp-action="Logout">ĐĂNG XUẤT</a>
+                    <a asp-controller="Account" asp-action="Logout">Đăng xuất</a>
                 }
                 else
                 {
-                    <a asp-controller="Account" asp-action="Login">ĐĂNG NHẬP</a>
+                    <a asp-controller="Account" asp-action="Login">Đăng nhập</a>
                 }
             </nav>
         </div>
     </header>
 
     <!-- MAIN -->
-    <main id="pageContent" class="page-transition flex-grow-1">
+    <main id="pageContent" class="container-fluid px-0">
         @RenderBody()
     </main>
 
-    <!-- FOOTER (ẨN VỚI LOGIN / REGISTER) -->
-    @if (!(ViewContext.RouteData.Values["action"]?.ToString() == "Login"
-        || ViewContext.RouteData.Values["action"]?.ToString() == "Register"))
-    {
-        <footer class="bg-dark text-white pt-5">
-            <div class="container">
-                <div class="row">
-
-                    <div class="col-md-4 mb-3">
-                        <h5 class="fw-bold">THƯ VIỆN ĐẠI HỌC ĐẠI NAM</h5>
-                        <p>Đại Nam University</p>
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-                        <h6>LIÊN HỆ</h6>
-                        <p>Địa chỉ: Hà Đông, Hà Nội</p>
-                        <p>Email: thuvien@dainam.edu.vn</p>
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-                        <h6>KẾT NỐI</h6>
-                        <a href="#" class="text-white fs-4 me-3"><i class="fab fa-facebook"></i></a>
-                        <a href="#" class="text-white fs-4 me-3"><i class="fab fa-youtube"></i></a>
-                        <a href="#" class="text-white fs-4"><i class="fab fa-tiktok"></i></a>
-                    </div>
-
+    <!-- FOOTER -->
+    <footer class="pt-5 mt-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <h6 class="fw-bold text-white">Đại học Đại Nam</h6>
+                    <p>Thư viện & Trung tâm tri thức</p>
                 </div>
 
-                <hr class="border-secondary">
+                <div class="col-md-4 mb-3">
+                    <h6 class="text-white">Liên hệ</h6>
+                    <p>Hà Đông, Hà Nội</p>
+                    <p>thuvien@dainam.edu.vn</p>
+                </div>
 
-                <div class="text-center pb-3">
-                    © Đại học Đại Nam. All Rights Reserved
+                <div class="col-md-4 mb-3">
+                    <h6 class="text-white">Kết nối</h6>
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
                 </div>
             </div>
-        </footer>
-    }
+
+            <hr class="border-secondary">
+            <div class="text-center pb-3">
+                © Đại học Đại Nam
+            </div>
+        </div>
+    </footer>
 
     <!-- JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const page = document.getElementById("pageContent");
-            if (page) {
-                requestAnimationFrame(() => page.classList.add("show"));
-            }
-
-            document.querySelectorAll("a[href]").forEach(link => {
-                link.addEventListener("click", function (e) {
-                    const href = this.getAttribute("href");
-                    if (!href || href.startsWith("#") || href.startsWith("javascript")) return;
-
-                    e.preventDefault();
-                    page.classList.remove("show");
-                    setTimeout(() => window.location.href = href, 200);
-                });
-            });
-        });
-    </script>
-
     @RenderSection("Scripts", required: false)
+
 </body>
 </html>
