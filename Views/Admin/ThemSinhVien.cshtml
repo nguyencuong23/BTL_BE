@@ -3,49 +3,89 @@
 
 @{
     ViewData["Title"] = "Thêm sinh viên";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h2 class="mb-3">@ViewData["Title"]</h2>
-
-<form asp-action="ThemSinhVien" method="post" class="row g-3">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-    <div class="col-md-6">
-        <label asp-for="MaSinhVien" class="form-label"></label>
-        <input asp-for="MaSinhVien" class="form-control" />
-        <span asp-validation-for="MaSinhVien" class="text-danger"></span>
+<!-- Page Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold mb-1">Thêm sinh viên mới</h2>
+        <p class="text-muted mb-0">Nhập thông tin sinh viên để thêm vào hệ thống</p>
     </div>
+    <a asp-action="DanhSachSinhVien" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-2"></i>Quay lại
+    </a>
+</div>
 
-    <div class="col-md-6">
-        <label asp-for="HoVaTen" class="form-label"></label>
-        <input asp-for="HoVaTen" class="form-control" />
-        <span asp-validation-for="HoVaTen" class="text-danger"></span>
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white border-bottom">
+        <h5 class="mb-0 fw-bold">
+            <i class="fas fa-user-plus me-2 text-primary"></i>
+            Thông tin sinh viên
+        </h5>
     </div>
+    <div class="card-body p-4">
+        <form asp-action="ThemSinhVien" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
-    <div class="col-md-6">
-        <label asp-for="Email" class="form-label"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="MaSinhVien" class="form-label fw-semibold">
+                        <i class="fas fa-id-card me-2 text-primary"></i>
+                        @Html.DisplayNameFor(m => m.MaSinhVien)
+                    </label>
+                    <input asp-for="MaSinhVien" class="form-control" placeholder="Nhập mã sinh viên" />
+                    <span asp-validation-for="MaSinhVien" class="text-danger"></span>
+                </div>
 
-    <div class="col-md-6">
-        <label asp-for="SoDienThoai" class="form-label"></label>
-        <input asp-for="SoDienThoai" class="form-control" />
-        <span asp-validation-for="SoDienThoai" class="text-danger"></span>
-    </div>
+                <div class="col-md-6">
+                    <label asp-for="HoVaTen" class="form-label fw-semibold">
+                        <i class="fas fa-user me-2 text-primary"></i>
+                        @Html.DisplayNameFor(m => m.HoVaTen)
+                    </label>
+                    <input asp-for="HoVaTen" class="form-control" placeholder="Nhập họ và tên" />
+                    <span asp-validation-for="HoVaTen" class="text-danger"></span>
+                </div>
 
-    <div class="col-md-4">
-        <label asp-for="NgaySinh" class="form-label"></label>
-        <input asp-for="NgaySinh" type="date" class="form-control" />
-        <span asp-validation-for="NgaySinh" class="text-danger"></span>
-    </div>
+                <div class="col-md-6">
+                    <label asp-for="Email" class="form-label fw-semibold">
+                        <i class="fas fa-envelope me-2 text-info"></i>
+                        @Html.DisplayNameFor(m => m.Email)
+                    </label>
+                    <input asp-for="Email" type="email" class="form-control" placeholder="example@email.com" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
 
-    <div class="col-12 mt-3">
-        <button type="submit" class="btn btn-primary">Lưu</button>
-        <a asp-action="DanhSachSinhVien" class="btn btn-secondary ms-2">Quay lại</a>
+                <div class="col-md-6">
+                    <label asp-for="SoDienThoai" class="form-label fw-semibold">
+                        <i class="fas fa-phone me-2 text-success"></i>
+                        @Html.DisplayNameFor(m => m.SoDienThoai)
+                    </label>
+                    <input asp-for="SoDienThoai" type="tel" class="form-control" placeholder="0123456789" />
+                    <span asp-validation-for="SoDienThoai" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="NgaySinh" class="form-label fw-semibold">
+                        <i class="fas fa-calendar-alt me-2 text-warning"></i>
+                        @Html.DisplayNameFor(m => m.NgaySinh)
+                    </label>
+                    <input asp-for="NgaySinh" type="date" class="form-control" />
+                    <span asp-validation-for="NgaySinh" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="fas fa-save me-2"></i>Lưu thông tin
+                </button>
+                <a asp-action="DanhSachSinhVien" class="btn btn-outline-secondary px-4">
+                    <i class="fas fa-times me-2"></i>Hủy
+                </a>
+            </div>
+        </form>
     </div>
-</form>
+</div>
 
 @section Scripts {
     @{

@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyThuVienTruongHoc.Data;
 using QuanLyThuVienTruongHoc.Models.Users;
 
 namespace QuanLyThuVienTruongHoc.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -56,6 +58,27 @@ namespace QuanLyThuVienTruongHoc.Controllers
 
             // Lưu xong quay lại trang danh sách
             return RedirectToAction(nameof(DanhSachSinhVien));
+        }
+
+        // 4. TRANG QUẢN LÝ NGƯỜI DÙNG (Tĩnh - mẫu)
+        // GET: /Admin/UserManagement
+        public IActionResult UserManagement()
+        {
+            return View();
+        }
+
+        // 5. TRANG THỐNG KÊ (Tĩnh - mẫu)
+        // GET: /Admin/Statistics
+        public IActionResult Statistics()
+        {
+            return View();
+        }
+
+        // 6. TRANG CÀI ĐẶT HỆ THỐNG (Tĩnh - mẫu)
+        // GET: /Admin/Settings
+        public IActionResult Settings()
+        {
+            return View();
         }
     }
 }
