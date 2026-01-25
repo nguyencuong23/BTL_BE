@@ -22,6 +22,11 @@ namespace QuanLyThuVienTruongHoc.Models.ViewModels
         [RegularExpression(@"^(0|\+84)\d{9,10}$", ErrorMessage = "Số điện thoại không hợp lệ")]
         public string PhoneNumber { get; set; } = null!;
 
+        [Required(ErrorMessage = "Mã sinh viên không được để trống")]
+        [StringLength(20, ErrorMessage = "Mã sinh viên không được vượt quá 20 ký tự")]
+        [Display(Name = "Mã sinh viên")]
+        public string StudentCode { get; set; } = null!;
+
         [Required(ErrorMessage = "Mật khẩu không được để trống")]
         [DataType(DataType.Password)]
         [StringLength(100, MinimumLength = 8, ErrorMessage = "Mật khẩu phải từ 8 ký tự trở lên")]

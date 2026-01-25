@@ -8,6 +8,10 @@ namespace QuanLyThuVienTruongHoc.Models.Users
         [Key]
         public int Id { get; set; }
 
+        [Display(Name = "Mã sinh viên")]
+        [StringLength(20, ErrorMessage = "Mã sinh viên không được vượt quá 20 ký tự")]
+        public string? StudentCode { get; set; }
+
         [Required(ErrorMessage = "Tên đăng nhập không được để trống")]
         [StringLength(50, ErrorMessage = "Tên đăng nhập không được vượt quá 50 ký tự")]
         [Display(Name = "Tên đăng nhập")]

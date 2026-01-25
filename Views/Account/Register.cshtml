@@ -28,23 +28,31 @@
             <p class="sub-title">Đăng ký thành viên mới</p>
 
             <form asp-action="Register" method="post" autocomplete="off">
+                @Html.AntiForgeryToken()
+
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3 small text-center"></div>
 
                 <div class="row g-3 mb-3">
                     <div class="col-12">
-                        <label class="form-label">Tên đăng nhập</label>
+                        <label asp-for="StudentCode" class="form-label"></label>
+                        <input asp-for="StudentCode" class="form-control" placeholder="VD: 12345678 / DNU-IT-0001" autocomplete="off" />
+                        <span asp-validation-for="StudentCode" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="Username" class="form-label"></label>
                         <input asp-for="Username" class="form-control" placeholder="Chọn tên đăng nhập..." autocomplete="off" />
                         <span asp-validation-for="Username" class="text-danger small"></span>
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label">Mật khẩu</label>
+                        <label asp-for="Password" class="form-label"></label>
                         <input asp-for="Password" type="password" class="form-control" placeholder="••••••••" autocomplete="new-password" />
                         <span asp-validation-for="Password" class="text-danger small"></span>
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label">Nhập lại mật khẩu</label>
+                        <label asp-for="ConfirmPassword" class="form-label"></label>
                         <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="••••••••" autocomplete="new-password" />
                         <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
                     </div>
@@ -54,19 +62,19 @@
 
                 <div class="row g-3">
                     <div class="col-12">
-                        <label class="form-label">Họ và tên</label>
+                        <label asp-for="FullName" class="form-label"></label>
                         <input asp-for="FullName" class="form-control" placeholder="Nguyễn Văn A" />
                         <span asp-validation-for="FullName" class="text-danger small"></span>
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label">Email</label>
+                        <label asp-for="Email" class="form-label"></label>
                         <input asp-for="Email" class="form-control" placeholder="example@dainam.edu.vn" />
                         <span asp-validation-for="Email" class="text-danger small"></span>
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label">Số điện thoại</label>
+                        <label asp-for="PhoneNumber" class="form-label"></label>
                         <input asp-for="PhoneNumber" class="form-control" placeholder="09xxxxxxxx" />
                         <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
                     </div>
