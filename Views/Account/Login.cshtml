@@ -1,6 +1,6 @@
-@model dynamic
+@model QuanLyThuVienTruongHoc.Models.ViewModels.LoginViewModel
 @{
-    ViewData["Title"] = "Cổng thông tin Thư viện";
+    ViewData["Title"] = "Đăng nhập";
     Layout = null;
 }
 
@@ -80,6 +80,12 @@
             display: flex;
             flex-direction: column;
             box-shadow: inset 10px 0 30px rgba(0,0,0,0.1);
+            visibility: hidden !important;
+        }
+
+        /* Hiển thị static-page khi chuyển sang đăng ký */
+        .book-container.show-register .static-page {
+            visibility: visible !important;
         }
 
         /* 2. TRANG LẬT (BÊN TRÁI/PHẢI - FORM ĐĂNG NHẬP) */
@@ -91,7 +97,7 @@
             transform-origin: left; /* Lật từ gáy trái */
             transform-style: preserve-3d;
             transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1);
-            z-index: 10;
+            z-index: 100;
         }
 
         /* TRẠNG THÁI LẬT: Xoay -180 độ sang trái */
@@ -130,6 +136,7 @@
             padding: 40px;
             text-align: center;
             box-shadow: inset -10px 0 20px rgba(0,0,0,0.1);
+            pointer-events: none;
         }
 
         /* 3. BÌA SAU CÙNG (Tạo độ dày) */
@@ -144,6 +151,11 @@
         }
 
         /* --- FORM STYLES --- */
+        form {
+            position: relative;
+            z-index: 150;
+        }
+
         .header-text {
             text-align: center;
             margin-bottom: 20px;
@@ -183,6 +195,8 @@
             font-size: 14px;
             margin-bottom: 12px;
             width: 100%;
+            position: relative;
+            z-index: 160;
         }
 
             .form-control:focus {
@@ -201,8 +215,11 @@
             letter-spacing: 1px;
             color: white;
             margin-top: 10px;
-            cursor: pointer;
+            cursor: pointer !important;
             transition: .3s;
+            position: relative;
+            z-index: 200;
+            pointer-events: auto !important;
         }
 
         .btn-login {
@@ -266,7 +283,7 @@
             cursor: pointer;
             box-shadow: 3px 3px 10px rgba(0,0,0,0.3);
             transition: .3s;
-            z-index: 100;
+            z-index: 50;
         }
 
             .page-tab:hover {
@@ -290,6 +307,7 @@
                 position: relative;
                 height: auto;
             }
+
             .book-container {
                 transform: scale(0.7) rotateX(10deg);
             }
@@ -310,37 +328,39 @@
                 <span>Thành viên mới</span>
             </div>
 
-            <form asp-action="Register" method="post" autocomplete="off">
+            <form asp-controller="Account" asp-action="Register" method="post" autocomplete="off">
+                @Html.AntiForgeryToken()
+
                 <div class="row">
                     <div class="col-6" style="padding-right: 8px;">
                         <label class="form-label">Tên đăng nhập</label>
-                        <input name="Username" class="form-control" required>
+                        <input id="Reg_Username" name="Username" class="form-control" required>
                     </div>
                     <div class="col-6" style="padding-left: 8px;">
                         <label class="form-label">Họ và tên</label>
-                        <input name="FullName" class="form-control" required>
+                        <input id="Reg_FullName" name="FullName" class="form-control" required>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-6" style="padding-right: 8px;">
                         <label class="form-label">Mật khẩu</label>
-                        <input name="Password" type="password" class="form-control" required>
+                        <input id="Reg_Password" name="Password" type="password" class="form-control" required>
                     </div>
                     <div class="col-6" style="padding-left: 8px;">
                         <label class="form-label">Nhập lại</label>
-                        <input name="ConfirmPassword" type="password" class="form-control" required>
+                        <input id="Reg_ConfirmPassword" name="ConfirmPassword" type="password" class="form-control" required>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-6" style="padding-right: 8px;">
                         <label class="form-label">Email</label>
-                        <input name="Email" type="email" class="form-control" required>
+                        <input id="Reg_Email" name="Email" type="email" class="form-control" required>
                     </div>
                     <div class="col-6" style="padding-left: 8px;">
                         <label class="form-label">Số điện thoại</label>
-                        <input name="PhoneNumber" class="form-control">
+                        <input id="Reg_PhoneNumber" name="PhoneNumber" class="form-control" required>
                     </div>
                 </div>
 
@@ -364,7 +384,9 @@
                     <img src="https://upload.wikimedia.org/wikipedia/commons/d/d3/Logo_DAI_NAM.png" style="width: 80px; opacity: 0.8;">
                 </div>
 
-                <form asp-action="Login" method="post" autocomplete="off">
+                <form asp-controller="Account" asp-action="Login" method="post" autocomplete="off">
+                    @Html.AntiForgeryToken()
+
                     <input name="Username" class="form-control" placeholder="Mã sinh viên / GV" required>
                     <input name="Password" type="password" class="form-control" placeholder="Mật khẩu" required>
                     <button type="submit" class="btn btn-main btn-login">ĐĂNG NHẬP</button>
@@ -393,11 +415,8 @@
 
     </div>
 
-    <script>
-        function togglePage() {
-            document.getElementById('theBook').classList.toggle('show-register');
-        }
-    </script>
+    <script src="~/js/login.js"></script>
+
 
 </body>
 </html>

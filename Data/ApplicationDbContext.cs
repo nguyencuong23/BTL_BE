@@ -18,8 +18,20 @@ namespace QuanLyThuVienTruongHoc.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<User>()
+                .HasIndex(u => u.Username)
+                .IsUnique();
+
+            modelBuilder.Entity<User>()
                 .Property(u => u.TotalFine)
-                .HasPrecision(18, 2);
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<User>()
+                .HasIndex(x => x.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<User>()
+                .HasIndex(x => x.PhoneNumber)
+                .IsUnique();
         }
     }
 }
