@@ -1,123 +1,10 @@
-﻿﻿@{
-ViewData["Title"] = "Trang chủ";
+@{
+    ViewData["Title"] = "Trang chủ";
 }
 
-<style>
-    .hero {
-        margin-top:-20px;
-        padding: 110px 0;
-        background: linear-gradient(rgba(11,29,54,.75), rgba(11,29,54,.75)), url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f');
-        background-size: cover;
-        background-position: center;
-        color: #fff;
-    }
+<link href="~/css/client-index.css" rel="stylesheet">
 
-        .hero span {
-            color: #f59e0b;
-        }
-
-    .search-box {
-        background: #fff;
-        padding: 14px;
-        border-radius: 14px;
-        display: flex;
-        gap: 10px;
-        max-width: 520px;
-        box-shadow: 0 20px 40px rgba(0,0,0,.25);
-    }
-
-    .feature {
-        background: #fff;
-        border-radius: 22px;
-        padding: 30px;
-        text-align: center;
-        transition: .4s;
-        box-shadow: 0 12px 30px rgba(0,0,0,.08);
-    }
-
-        .feature:hover {
-            transform: translateY(-10px);
-        }
-
-    .feature-img {
-        height: 220px;
-        background-size: cover;
-        background-position: center;
-        position: relative;
-        overflow: hidden;
-        border-radius: 22px;
-        color: #fff;
-        cursor: pointer;
-        transition: .3s;
-    }
-
-    .feature-overlay {
-        position: absolute;
-        inset: 0;
-        background: transparent;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        padding: 20px;
-    }
-
-    .feature-img:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 16px 35px rgba(0,0,0,.25);
-    }
-
-    .category {
-        height: 240px;
-        border-radius: 24px;
-        background-size: cover;
-        background-position: center;
-        display: flex;
-        align-items: end;
-        padding: 20px;
-        font-weight: 600;
-        color: #fff;
-        transition: .3s;
-    }
-
-    .client-box {
-        height: 90px;
-        border-radius: 18px;
-        background-size: cover;
-        background-position: center;
-    }
-
-    .partner-box {
-        height: 90px;
-        border-radius: 16px;
-        background-size: cover;
-        background-position: center;
-        position: relative;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #fff;
-        font-weight: 600;
-        font-size: 14px;
-        text-align: center;
-        transition: .3s ease;
-        cursor: pointer;
-    }
-
-        .partner-box::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: transparent;
-        }
-
-        .partner-box:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 14px 30px rgba(0,0,0,.25);
-        }
-</style>
-
-
+<!-- HERO -->
 <section class="hero">
     <div class="container">
         <div class="row">
@@ -126,21 +13,137 @@ ViewData["Title"] = "Trang chủ";
                     Kết nối <span>tri thức</span><br />
                     tại Thư viện Đại học Đại Nam
                 </h1>
+
                 <div class="search-box">
                     <input class="form-control" placeholder="Nhập tên sách, tác giả...">
-                    <button class="btn btn-primary px-4">Tìm kiếm</button>
+                    <button class="btn btn-warning px-4 fw-semibold">Tìm</button>
                 </div>
             </div>
         </div>
     </div>
 </section>
+<section class="book-section">
+    <div class="container">
+        <h3 class="fw-bold text-center mb-4">
+            Kho tài liệu <br />và sách bán chạy nhất
+        </h3>
 
+        <div id="bookCarousel" class="carousel slide">
+            <div class="carousel-inner">
+
+                <div class="carousel-item active">
+                    <div class="row g-4 justify-content-center">
+                        <div class="col-6 col-md-3">
+                            <a href="/Book/Detail/1" class="book-card">
+                                <img src="https://bizweb.dktcdn.net/100/326/228/products/81hmjlt14ml-uf894-1000-ql80.jpg?v=1757049241340">
+                                <h6>Homo Deus</h6>
+                                <span>Yuval Noah Harari</span>
+                                <div class="badge-premium">Mới</div>
+                            </a>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <a href="/Book/Detail/2" class="book-card">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTv98FnKFIl1mWp2oF2YjMiVb9XCxuKExy0Gw&s">
+                                <h6>12 Rules for Life</h6>
+                                <span>Jordan Peterson</span>
+                                <div class="badge-premium">Hot</div>
+                            </a>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <a href="/Book/Detail/3" class="book-card">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgGpv1ctGy0hjdg5Htgfh7PDosTEN5kkDNrw&s">
+                                <h6>Harry Potter</h6>
+                                <span>J.K Rowling</span>
+                                <div class="badge-premium">Kinh điển</div>
+                            </a>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <a href="/Book/Detail/4" class="book-card">
+                                <img src="https://m.media-amazon.com/images/I/71F4+7rk2eL._UF894,1000_QL80_.jpg">
+                                <h6>Atomic Habits</h6>
+                                <span>James Clear</span>
+                                <div class="badge-premium">Kỹ năng</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="carousel-item">
+                    <div class="row g-4 justify-content-center">
+                        <div class="col-6 col-md-3">
+                            <a href="/Book/Detail/5" class="book-card">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEjd9cGkdABJiPQ3qfZNGvDkIXDrCr3IqOVQ&s">
+                                <h6>Rich Dad Poor Dad</h6>
+                                <span>Robert Kiyosaki</span>
+                                <div class="badge-premium">Kinh tế</div>
+                            </a>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <a href="/Book/Detail/6" class="book-card">
+                                <img src="https://m.media-amazon.com/images/I/81gC3mdNi5L._AC_UF1000,1000_QL80_.jpg">
+                                <h6>Psychology of Money</h6>
+                                <span>Morgan Housel</span>
+                                <div class="badge-premium">Tài chính</div>
+                            </a>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <a href="/Book/Detail/7" class="book-card">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTya1pYfoM-qFULZrynbW6xrmXjvg7swO0QHw&s">
+                                <h6>The Shining</h6>
+                                <span>Stephen King</span>
+                                <div class="badge-premium">Kinh dị</div>
+                            </a>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <a href="/Book/Detail/8" class="book-card">
+                                <img src="https://m.media-amazon.com/images/I/71wANojhEKL._AC_UF1000,1000_QL80_.jpg">
+                                <h6>1984</h6>
+                                <span>George Orwell</span>
+                                <div class="badge-premium">Văn học</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="carousel-item">
+                    <div class="row g-4 justify-content-center">
+                        <div class="col-6 col-md-3">
+                            <a href="/Book/Detail/9" class="book-card">
+                                <img src="https://cdn.hstatic.net/products/200001055148/51oxkwrcyyl_6e1d5c0ac22a4e158adcd0b948f2b5f5.jpg">
+                                <h6>Thinking, Fast and Slow</h6>
+                                <span>Daniel Kahneman</span>
+                                <div class="badge-premium">Tâm lý</div>
+                            </a>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <a href="https://www.fahasa.com/sapiens-a-brief-history-of-humankind.html?srsltid=AfmBOoqGj7Xm43Hn5To3y0pqXxIVPoM0uuq7qy3aTkRHeSwd8CgX9iLu" class="book-card">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSotjQPuZMiz-cVShfHXzDtvLMJ1EinP7jEDg&s">
+                                <h6>Sapiens</h6>
+                                <span>Yuval Noah Harari</span>
+                                <div class="badge-premium">Lịch sử</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#bookCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#bookCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURE -->
 <section class="py-5">
     <div class="container">
         <div class="row g-4">
             <div class="col-md-4">
-                <div class="feature feature-img"
-                     style="background-image:url('https://faceworks.vn/wp-content/uploads/2016/07/thuvien.jpg')">
+                <div class="feature-img feature-img-bg-1">
                     <div class="feature-overlay">
                         <h5>Hướng dẫn mượn sách</h5>
                         <p>Quy trình mượn – trả hiện đại</p>
@@ -149,8 +152,7 @@ ViewData["Title"] = "Trang chủ";
             </div>
 
             <div class="col-md-4">
-                <div class="feature feature-img"
-                     style="background-image:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5Y8VbBHhqNFMvQBmAy4Boicn_2-CzDiMp8Q&s')">
+                <div class="feature-img feature-img-bg-2">
                     <div class="feature-overlay">
                         <h5>Tra cứu tài liệu</h5>
                         <p>Tìm kiếm học liệu nhanh</p>
@@ -159,8 +161,7 @@ ViewData["Title"] = "Trang chủ";
             </div>
 
             <div class="col-md-4">
-                <div class="feature feature-img"
-                     style="background-image:url('https://thuvienthongminh.net/wp-content/uploads/2024/10/Thu-vien-hien-dai-nam-giua-rung-cay-o-Dai-Loan-3.webp')">
+                <div class="feature-img feature-img-bg-3">
                     <div class="feature-overlay">
                         <h5>Danh mục chuyên ngành</h5>
                         <p>Theo khoa & lĩnh vực</p>
@@ -171,88 +172,62 @@ ViewData["Title"] = "Trang chủ";
     </div>
 </section>
 
+<!-- CATEGORY -->
 <section class="pb-5">
     <div class="container">
         <h4 class="fw-bold mb-4">Không gian học tập hiện đại</h4>
         <div class="row g-4">
             <div class="col-md-4">
-                <div class="category" style="background-image:url('https://atm273446-s3user.vcos.cloudstorage.com.vn/dhdainam/asset/asset/fixed/gwlxzdmw9pv8oiyta3gn20240702080924_thump.jpg')">
-                    Sứ mệnh & Vai trò
+                <div class="category category-bg-1">
+                    <span>Sứ mệnh & Vai trò</span>
                 </div>
             </div>
+
             <div class="col-md-4">
-                <div class="category" style="background-image:url('https://atm273446-s3user.vcos.cloudstorage.com.vn/dhdainam/asset/asset/fixed/w88shoi0w4fhr8hwawj620230413082650_thump.jpg')">
-                    Không gian chia sẻ
+                <div class="category category-bg-2">
+                    <span>Không gian chia sẻ</span>
                 </div>
             </div>
+
             <div class="col-md-4">
-                <div class="category" style="background-image:url('https://dainam.edu.vn/uploads/images/n266i0mjhwntjkm773tj20200528080919_thump.jpg')">
-                    Đào tạo & Nghiên cứu
+                <div class="category category-bg-3">
+                    <span>Đào tạo & Nghiên cứu</span>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
+<!-- PARTNER -->
 <section class="py-5 bg-white">
     <div class="container">
         <h4 class="fw-bold text-center mb-4">Đối tác liên kết</h4>
-
         <div class="row g-4">
+
             <div class="col-6 col-md-4">
-                <a href="https://fibocapital.vn" target="_blank" class="text-decoration-none">
-                    <div class="partner-box"
-                         style="background-image:url('https://images.unsplash.com/photo-1600880292089-90a7e086ee0c')">
+                <a href="https://fibocapital.vn" target="_blank">
+                    <div class="partner-box partner-box-bg-1">
                         <span>Fibo Capital Việt Nam</span>
                     </div>
                 </a>
             </div>
 
             <div class="col-6 col-md-4">
-                <a href="https://www.manulife.com.vn" target="_blank" class="text-decoration-none">
-                    <div class="partner-box"
-                         style="background-image:url('https://images.unsplash.com/photo-1551836022-d5d88e9218df')">
+                <a href="https://www.manulife.com.vn" target="_blank">
+                    <div class="partner-box partner-box-bg-2">
                         <span>Manulife Việt Nam</span>
                     </div>
                 </a>
             </div>
 
             <div class="col-6 col-md-4">
-                <a href="https://xuanhoa.vn" target="_blank" class="text-decoration-none">
-                    <div class="partner-box"
-                         style="background-image:url('https://images.unsplash.com/photo-1503387762-592deb58ef4e')">
+                <a href="https://xuanhoa.vn" target="_blank">
+                    <div class="partner-box partner-box-bg-3">
                         <span>Xuân Hòa Việt Nam</span>
                     </div>
                 </a>
             </div>
 
-            <div class="col-6 col-md-4">
-                <a href="https://gatelinkvietnam.com/" target="_blank" class="text-decoration-none">
-                    <div class="partner-box"
-                         style="background-image:url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d')">
-                        <span>Gatelink Việt Nam</span>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-6 col-md-4">
-                <a href="https://www.studyinkorea.go.kr" target="_blank" class="text-decoration-none">
-                    <div class="partner-box"
-                         style="background-image:url('https://images.unsplash.com/photo-1498243691581-b145c3f54a5a')">
-                        <span>Đối tác Hàn Quốc & Đài Loan</span>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-6 col-md-4">
-                <a href="https://www.luxuryhotelschool.com" target="_blank" class="text-decoration-none">
-                    <div class="partner-box"
-                         style="background-image:url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34')">
-                        <span>Luxury Hotel School Paris (Pháp)</span>
-                    </div>
-                </a>
-            </div>
         </div>
     </div>
 </section>
-

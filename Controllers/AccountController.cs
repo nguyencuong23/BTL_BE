@@ -41,6 +41,12 @@ namespace QuanLyThuVienTruongHoc.Controllers
                 return View(model);
             }
 
+            if (await _context.Users.AnyAsync(u => u.Email == model.Email))
+                ModelState.AddModelError(nameof(model.Email), "Email đã tồn tại");
+
+            if (await _context.Users.AnyAsync(u => u.PhoneNumber == model.PhoneNumber))
+                ModelState.AddModelError(nameof(model.PhoneNumber), "Số điện thoại đã tồn tại");
+
             var hasher = new PasswordHasher<User>();
 
             var user = new User

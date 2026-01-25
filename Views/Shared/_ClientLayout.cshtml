@@ -1,4 +1,4 @@
-﻿﻿
+﻿
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -9,108 +9,7 @@
     <!-- CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-
-    <style>
-        :root {
-            --primary: #0b1d36;
-            --secondary: #2563eb;
-            --accent: #f59e0b;
-            --bg: #f4f7fb;
-            --text: #1f2937;
-        }
-
-        html, body {
-            height: 100%;
-            margin: 0;
-        }
-
-        body {
-            display: flex;
-            flex-direction: column;
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        header {
-            background: linear-gradient(90deg, #0b1d36, #102a4d);
-            color: #fff;
-        }
-
-            header a {
-                color: #fff;
-                text-decoration: none;
-                margin-left: 22px;
-                font-weight: 500;
-                position: relative;
-            }
-
-                /* Chỉ áp dụng ::after cho link thông thường, không áp dụng cho dropdown */
-                header a:not(.dropdown-item)::after {
-                    content: "";
-                    position: absolute;
-                    left: 0;
-                    bottom: -5px;
-                    width: 0;
-                    height: 2px;
-                    background: var(--accent);
-                    transition: .3s;
-                }
-
-                header a:not(.dropdown-item):hover::after {
-                    width: 100%;
-                }
-
-            /* Đảm bảo dropdown button không bị ảnh hưởng bởi style của header a */
-            header .dropdown-toggle {
-                margin-left: 22px;
-            }
-
-            /* Lỗi 1: Xóa mũi tên tam giác của dropdown-toggle */
-            header .dropdown-toggle::after {
-                display: none !important;
-            }
-
-            /* Lỗi 2: Fix hover bị lòi ra ngoài - đảm bảo dropdown-menu và item có padding đúng */
-            header .dropdown-menu {
-                padding: 0.25rem 0;
-                min-width: 200px;
-                margin: 0;
-            }
-
-            header .dropdown-item {
-                padding: 0.5rem 1rem;
-                margin: 0;
-                border-radius: 0;
-            }
-
-            header .dropdown-item:hover,
-            header .dropdown-item:focus {
-                background-color: var(--bs-dropdown-link-hover-bg);
-                margin: 0;
-                border-radius: 0;
-            }
-
-        main {
-            flex: 1;
-            padding: 20px 0;
-        }
-
-        footer {
-            background: var(--primary);
-            color: #dbeafe;
-        }
-
-            footer a {
-                color: #dbeafe;
-                font-size: 20px;
-                margin-right: 14px;
-            }
-
-                footer a:hover {
-                    color: var(--accent);
-                }
-    </style>
+    <link href="~/css/client-layout.css" rel="stylesheet">
 </head>
 
 <body>
@@ -141,12 +40,11 @@
                     {
                         <!-- Dropdown menu cho người dùng đã đăng nhập -->
                         <div class="dropdown">
-                            <button class="btn btn-link text-white text-decoration-none dropdown-toggle d-flex align-items-center gap-2" 
+                            <button class="btn btn-link text-white text-decoration-none dropdown-toggle d-flex align-items-center gap-2 dropdown-toggle-custom" 
                                     type="button" 
                                     id="userDropdown" 
                                     data-bs-toggle="dropdown" 
-                                    aria-expanded="false"
-                                    style="border: none; padding: 0; font-weight: 500;">
+                                    aria-expanded="false">
                                 <i class="fa fa-user"></i>
                                 <span>@User.Identity.Name</span>
                             </button>
