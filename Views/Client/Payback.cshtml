@@ -3,101 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư viện của tôi - Đại Nam Uni</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="~/css/payback.css" rel="stylesheet" />
+    <title>Cổng Mượn Sách - DNU Universe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <link rel="stylesheet" href="~/css/payback.css">
 </head>
 <body>
-    <nav class="client-navbar">
-        <div class="container navbar-content">
+
+    <div class="background-animate">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="stars"></div>
+    </div>
+
+    <header class="glass-nav">
+        <div class="container nav-flex">
             <div class="brand">
-                <div class="brand-logo"><i class="fa-solid fa-book-open"></i></div>
-                <span>Thư viện Đại Nam</span>
+                <div class="brand-info">
+                    <h1>DNU LIBRARY</h1>
+                </div>
             </div>
-            <div class="nav-links">
-                <a href="#" class="active">Lịch sử mượn trả</a>
-                <a href="#">Sách đang quan tâm</a>
-                <div class="user-profile">
-                    <img src="https://ui-avatars.com/api/?name=Nguyen+Van+A&background=0D8ABC&color=fff" alt="User">
-                    <span>Nguyễn Văn A</span>
+
+            <div style="display: flex; gap: 15px;">
+
+                <div class="search-glass" style="width: auto;">
+                    <i class="fas fa-filter" style="margin-right: 10px; color: #00d2ff;"></i>
+                    <select id="group-filter" onchange="filterByGroup()" style="background: transparent; border: none; color: gray; outline: none; font-family: 'Montserrat'; cursor: pointer;">
+                        <option value="all" style="color: black;">Tất cả Khoa</option>
+                    </select>
+                </div>
+
+                <div class="search-glass">
+                    <input type="text" id="search-input" placeholder="Tìm kiếm tài liệu...">
+                    <button onclick="filterBooks()"><i class="fas fa-search"></i></button>
                 </div>
             </div>
         </div>
-    </nav>
+    </header>
 
-    <main class="container main-wrapper">
-        <section class="stats-overview">
-            <div class="stat-card">
-                <div class="stat-icon icon-blue"><i class="fa-solid fa-book"></i></div>
-                <div class="stat-info">
-                    <h3 id="statTotal">0</h3>
-                    <p>Tổng lượt mượn</p>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon icon-yellow"><i class="fa-solid fa-clock-rotate-left"></i></div>
-                <div class="stat-info">
-                    <h3 id="statActive">0</h3>
-                    <p>Đang mượn</p>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon icon-red"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                <div class="stat-info">
-                    <h3 id="statOverdue">0</h3>
-                    <p>Quá hạn</p>
-                </div>
-            </div>
-            <div class="stat-card icon-red-bg text-white">
-                <div class="stat-icon text-white"><i class="fa-solid fa-money-bill-wave"></i></div>
-                <div class="stat-info">
-                    <h3 id="statFine">0 đ</h3>
-                    <p>Tổng tiền phạt</p>
-                </div>
-            </div>
-        </section>
+    <div class="container">
+        <div class="glass-hero">
+            <h2>CỔNG ĐĂNG KÝ TRỰC TUYẾN</h2>
+            <p>Kết nối tri thức - Kiến tạo tương lai</p>
+        </div>
+    </div>
 
-        <section class="content-box">
-            <div class="box-header">
-                <h2>Lịch sử giao dịch sách</h2>
+    <main class="container">
+        <div id="book-grid">
+            <div class="loading-box">
+                <div class="spinner"></div>
             </div>
-
-            <div class="toolbar">
-                <div class="search-wrapper">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" id="searchInput" placeholder="Tìm tên sách hoặc mã sách...">
-                </div>
-                <div class="filter-wrapper">
-                    <select id="statusFilter">
-                        <option value="all">Tất cả trạng thái</option>
-                        <option value="DangMuon">Đang mượn</option>
-                        <option value="DaTra">Đã trả</option>
-                        <option value="QuaHan">Quá hạn</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="modern-table-container">
-                <table class="modern-table">
-                    <thead>
-                        <tr>
-                            <th>Thông tin Sách</th>
-                            <th>Ngày Mượn</th>
-                            <th>Hạn Trả</th>
-                            <th>Ngày Trả</th>
-                            <th class="text-center">Trạng Thái</th>
-                            <th class="text-right">Tiền Phạt</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="loanTableBody">
-                    </tbody>
-                </table>
-            </div>
-        </section>
+        </div>
     </main>
+
+    <footer class="glass-footer">
+        <p>&copy; 2024 Đại học Đại Nam</p>
+    </footer>
+
+    <div id="modal-overlay" class="overlay-hidden">
+        <div class="glass-modal">
+            <div class="modal-head">
+                <h3>Phiếu Đăng Ký</h3>
+                <span class="close-btn">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="book-highlight"></div>
+                <form id="borrow-form">
+                    <input type="hidden" id="book-id">
+
+                    <div class="input-group">
+                        <label>Mã Sinh Viên</label>
+                        <input type="text" id="student-id" required placeholder="Nhập mã SV...">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Ngày Hẹn Trả</label>
+                        <input type="date" id="return-date" required>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Xác Nhận</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="~/js/paypack.js"></script>
 </body>
 </html>
