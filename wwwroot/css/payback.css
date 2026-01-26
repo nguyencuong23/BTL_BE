@@ -1,0 +1,385 @@
+﻿/* --- Cài đặt chung --- */
+:root {
+    --primary-color: #0D8ABC;
+    --secondary-color: #F0F7FF;
+    --text-dark: #2D3748;
+    --text-light: #718096;
+    --success: #48BB78;
+    --warning: #ECC94B;
+    --danger: #F56565;
+    --bg-body: #F7FAFC;
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --radius-md: 12px;
+    --radius-lg: 16px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif; /* Sử dụng font Poppins hiện đại */
+}
+
+body {
+    background-color: var(--bg-body);
+    color: var(--text-dark);
+    padding-bottom: 40px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* --- Navbar Client --- */
+.client-navbar {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    padding: 16px 0;
+    margin-bottom: 40px;
+}
+
+.navbar-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--primary-color);
+}
+
+.brand-logo {
+    font-size: 24px;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+    .nav-links a {
+        text-decoration: none;
+        color: var(--text-light);
+        font-weight: 500;
+        transition: color 0.3s;
+    }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary-color);
+        }
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: var(--secondary-color);
+    padding: 6px 12px 6px 6px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+    .user-profile img {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+    }
+
+/* --- Main Content Wrapper --- */
+.main-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* --- Stats Overview (Dashboard Mini) --- */
+.stats-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+}
+
+.stat-card {
+    background: #fff;
+    padding: 24px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--card-shadow);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--hover-shadow);
+    }
+
+.stat-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.icon-blue {
+    background-color: #EBF8FF;
+    color: var(--primary-color);
+}
+
+.icon-yellow {
+    background-color: #FFFFF0;
+    color: var(--warning);
+}
+
+.icon-red {
+    background-color: #FFF5F5;
+    color: var(--danger);
+}
+
+.icon-red-bg {
+    background: linear-gradient(135deg, #F56565 0%, #C53030 100%);
+}
+
+    .icon-red-bg .stat-info p {
+        color: rgba(255,255,255,0.8);
+    }
+
+
+.stat-info h3 {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.stat-info p {
+    color: var(--text-light);
+    font-size: 14px;
+}
+
+.text-white {
+    color: #fff !important;
+}
+
+/* --- Content Box (Chứa bảng) --- */
+.content-box {
+    background: #fff;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--card-shadow);
+    padding: 32px;
+}
+
+.box-header {
+    margin-bottom: 24px;
+}
+
+    .box-header h2 {
+        font-size: 22px;
+        color: var(--text-dark);
+    }
+
+/* --- Toolbar (Search & Filter) --- */
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.search-wrapper {
+    position: relative;
+    flex: 1;
+    min-width: 300px;
+}
+
+    .search-wrapper i {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-light);
+    }
+
+    .search-wrapper input {
+        width: 100%;
+        padding: 14px 16px 14px 48px;
+        border: 2px solid #E2E8F0;
+        border-radius: var(--radius-md);
+        outline: none;
+        transition: border-color 0.3s;
+        font-size: 14px;
+    }
+
+        .search-wrapper input:focus {
+            border-color: var(--primary-color);
+        }
+
+.filter-wrapper select {
+    padding: 14px 24px;
+    border: 2px solid #E2E8F0;
+    border-radius: var(--radius-md);
+    outline: none;
+    color: var(--text-dark);
+    background-color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    appearance: none; /* Ẩn mũi tên mặc định để custom nếu cần */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23718096'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 16px;
+    padding-right: 48px;
+}
+
+/* --- Modern Table --- */
+.modern-table-container {
+    overflow-x: auto;
+}
+
+.modern-table {
+    width: 100%;
+    border-collapse: separate; /* Quan trọng để border-radius hoạt động trên tr */
+    border-spacing: 0 12px; /* Tạo khoảng cách giữa các hàng */
+}
+
+    .modern-table thead th {
+        text-align: left;
+        padding: 16px 24px;
+        color: var(--text-light);
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border: none;
+    }
+
+    .modern-table tbody tr {
+        background-color: #fff;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        transition: all 0.3s ease;
+    }
+
+        .modern-table tbody tr:hover {
+            transform: scale(1.01);
+            box-shadow: var(--hover-shadow);
+        }
+
+    .modern-table td {
+        padding: 20px 24px;
+        vertical-align: middle;
+        border: none;
+    }
+
+    /* Bo tròn góc cho hàng đầu và cuối */
+    .modern-table tbody tr td:first-child {
+        border-top-left-radius: var(--radius-md);
+        border-bottom-left-radius: var(--radius-md);
+    }
+
+    .modern-table tbody tr td:last-child {
+        border-top-right-radius: var(--radius-md);
+        border-bottom-right-radius: var(--radius-md);
+    }
+
+/* Các class tiện ích trong bảng */
+.book-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.book-name {
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 15px;
+    margin-bottom: 4px;
+}
+
+.book-code {
+    font-size: 13px;
+    color: var(--primary-color);
+    background: var(--secondary-color);
+    padding: 2px 8px;
+    border-radius: 4px;
+    width: fit-content;
+}
+
+.date-info {
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+.date-faded {
+    color: var(--text-light);
+    font-size: 13px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+/* Status Badges đẹp hơn */
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.status-success {
+    background-color: #C6F6D5;
+    color: #22543D;
+}
+
+.status-warning {
+    background-color: #FEFCBF;
+    color: #744210;
+}
+
+.status-danger {
+    background-color: #FED7D7;
+    color: #822727;
+}
+
+.fine-amount {
+    color: var(--danger);
+    font-weight: 700;
+}
+
+/* Nút xem chi tiết */
+.btn-detail {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+    .btn-detail:hover {
+        background-color: var(--primary-color);
+        color: #fff;
+    }

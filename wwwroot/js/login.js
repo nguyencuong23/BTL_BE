@@ -1,44 +1,22 @@
-// Toggle between login and register pages
+﻿// Hàm lật sách
 function togglePage() {
-    document.getElementById("theBook").classList.toggle("show-register");
+    const book = document.getElementById('theBook');
+    // Ta vẫn dùng class 'show-register' của CSS cũ để kích hoạt animation
+    // dù nội dung bây giờ là form khôi phục mật khẩu.
+    book.classList.toggle('show-register');
 }
 
-// Fix button click issue: .page-front blocking clicks due to transform-style preserve-3d
-document.addEventListener("DOMContentLoaded", function () {
-    const pageFront = document.querySelector(".page-front");
-    if (pageFront) {
-        // Make cursor pointer when over button area
-        pageFront.addEventListener("mousemove", function (e) {
-            const btn = this.querySelector(".btn-login");
-            if (btn) {
-                const rect = btn.getBoundingClientRect();
-                if (
-                    e.clientX >= rect.left &&
-                    e.clientX <= rect.right &&
-                    e.clientY >= rect.top &&
-                    e.clientY <= rect.bottom
-                ) {
-                    this.style.cursor = "pointer";
-                } else {
-                    this.style.cursor = "";
-                }
-            }
-        });
+// Xử lý sự kiện gửi yêu cầu (Optional: Tạo hiệu ứng loading)
+function handleRecovery(e) {
+    // e.preventDefault(); // Bỏ comment dòng này nếu muốn test giao diện mà không submit form
 
-        // Forward clicks to button
-        pageFront.addEventListener("click", function (e) {
-            const btn = this.querySelector(".btn-login");
-            if (btn && e.target !== btn) {
-                const rect = btn.getBoundingClientRect();
-                if (
-                    e.clientX >= rect.left &&
-                    e.clientX <= rect.right &&
-                    e.clientY >= rect.top &&
-                    e.clientY <= rect.bottom
-                ) {
-                    btn.click();
-                }
-            }
-        });
-    }
-});
+    const btn = e.target.querySelector('button');
+    const originalText = btn.innerHTML;
+
+    // Hiệu ứng nút bấm đang xử lý
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ĐANG GỬI...';
+    btn.style.opacity = '0.7';
+
+    // Form sẽ tự động submit lên server theo asp-action
+    return true;
+}

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -25,7 +25,8 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="wwwroot\images\books\IT\" />
+    <Folder Include="wwwroot\css\NewFolder\" />
+    <Folder Include="wwwroot\uploads\books\" />
   </ItemGroup>
 
 </Project>

@@ -1,34 +1,75 @@
 ﻿@{
-    ViewData["Title"] = "Tra cứu điểm";
-    Layout = "~/Views/Shared/_ClientLayout.cshtml";
+    ViewData["Title"] = "Tra cứu sinh viên";
 }
 
-<div class="row">
-    <div class="col-md-12">
-        <div class="card shadow">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0"><i class="fas fa-search"></i> Tra Cứu Điểm Sinh Viên</h4>
-            </div>
-            <div class="card-body">
-                <form method="post" asp-action="TraCuu">
-                    <div class="row">
-                        <div class="col-md-6 mx-auto">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Mã Sinh Viên</label>
-                                <input type="text" name="maSinhVien" class="form-control form-control-lg"
-                                       placeholder="Nhập mã sinh viên (VD: SV001)" required />
-                                <small class="form-text text-muted">
-                                    <i class="fas fa-info-circle"></i>
-                                    Mã sinh viên mẫu đề xuất: SV001, SV002, SV003, SV004, SV005
-                                </small>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-lg w-100">
-                                <i class="fas fa-search"></i> Tra cứu
-                            </button>
+<link rel="stylesheet" href="~/css/tracuu.css" />
+
+<section class="lookup-hero">
+    <div class="container">
+        <h1 class="hero-title">TRA CỨU THÔNG TIN</h1>
+        <p class="hero-subtitle">Cổng thông tin tra cứu sinh viên & tình trạng thư viện Đại Học Đại Nam</p>
+    </div>
+</section>
+
+<div class="container" style="min-height: 600px; padding-bottom: 50px;">
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="search-wrapper">
+                <form onsubmit="return handleSearch(event)">
+                    <div class="search-card">
+                        <div class="search-input-group">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="searchInput" class="form-control-custom" placeholder="Nhập Mã sinh viên, Họ tên hoặc Email...">
                         </div>
+                        <button type="submit" class="btn-search-custom">
+                            Tra Cứu Ngay
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-12">
+
+            <div id="resultContainer" class="result-container">
+
+                <div id="loadingState" class="loading-state" style="display: none;">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i>
+                    <p>Đang tìm kiếm dữ liệu...</p>
+                </div>
+
+                <div id="tableWrapper" style="display: none;">
+                    <div class="table-responsive">
+                        <table class="table-custom">
+                            <thead>
+                                <tr>
+                                    <th width="15%">Mã SV</th>
+                                    <th width="30%">Thông tin sinh viên</th>
+                                    <th width="20%">Email</th>
+                                    <th width="15%">SĐT</th>
+                                    <th width="10%" class="text-center">Trạng thái</th>
+                                    <th width="10%" class="text-end">Phạt</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="emptyState" class="empty-state" style="display: none;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" width="80" style="opacity: 0.5; margin-bottom: 15px;">
+                    <p>Không tìm thấy sinh viên nào phù hợp với từ khóa.</p>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
 </div>
+
+<script src="~/js/tracuu.js"></script>
