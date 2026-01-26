@@ -98,29 +98,69 @@ public static class DbSeeder
         // 3) BOOKS (50)
         // 10 sách mỗi thể loại, mã TL-NNNN
         // =====================
-        var authors = new[] { "Nguyễn Văn A", "Trần Văn B", "Lê Thị C", "Phạm Văn D", "Hoàng E" };
-        var publishers = new[] { "NXB Trẻ", "NXB Giáo Dục", "NXB Kim Đồng", "NXB Lao Động", "NXB Tổng Hợp" };
-
-        var books = new List<Book>();
-        foreach (var c in categories)
+        var books = new List<Book>
         {
-            for (int i = 1; i <= 10; i++)
-            {
-                var bookId = $"{c.CategoryId}-{i:0000}";
-                books.Add(new Book
-                {
-                    BookId = bookId,
-                    Title = $"Sách {c.CategoryId} #{i:00}",
-                    Author = authors[rnd.Next(authors.Length)],
-                    Publisher = publishers[rnd.Next(publishers.Length)],
-                    CategoryId = c.CategoryId,
-                    PublishYear = rnd.Next(2010, 2025),
-                    Quantity = rnd.Next(2, 8), // tồn kho ban đầu
-                    Location = $"Kệ {c.CategoryId}-{rnd.Next(1, 6)}",
-                    ImagePath = null
-                });
-            }
-        }
+            // ================= CNTT (IT) =================
+            new() { BookId="IT-0001", Title="Clean Code", Author="Robert C. Martin", Publisher="Prentice Hall", CategoryId="IT", PublishYear=2008, Quantity=25, Location="Kệ IT-1", ImagePath="/images/books/IT/IT-0001.jpg" },
+            new() { BookId="IT-0002", Title="Clean Architecture", Author="Robert C. Martin", Publisher="Prentice Hall", CategoryId="IT", PublishYear=2017, Quantity=22, Location="Kệ IT-1", ImagePath="/images/books/IT/IT-0002.jpg" },
+            new() { BookId="IT-0003", Title="Design Patterns", Author="Erich Gamma et al.", Publisher="Addison-Wesley", CategoryId="IT", PublishYear=1994, Quantity=20, Location="Kệ IT-1", ImagePath="/images/books/IT/IT-0003.jpg" },
+            new() { BookId="IT-0004", Title="Refactoring", Author="Martin Fowler", Publisher="Addison-Wesley", CategoryId="IT", PublishYear=2018, Quantity=24, Location="Kệ IT-2", ImagePath="/images/books/IT/IT-0004.jpg" },
+            new() { BookId="IT-0005", Title="Introduction to Algorithms", Author="Thomas H. Cormen", Publisher="MIT Press", CategoryId="IT", PublishYear=2009, Quantity=30, Location="Kệ IT-2", ImagePath="/images/books/IT/IT-0005.jpg" },
+            new() { BookId="IT-0006", Title="The Pragmatic Programmer", Author="Andrew Hunt", Publisher="Addison-Wesley", CategoryId="IT", PublishYear=1999, Quantity=23, Location="Kệ IT-2", ImagePath="/images/books/IT/IT-0006.jpg" },
+            new() { BookId="IT-0007", Title="Head First Design Patterns", Author="Eric Freeman", Publisher="O'Reilly", CategoryId="IT", PublishYear=2020, Quantity=28, Location="Kệ IT-3", ImagePath="/images/books/IT/IT-0007.jpg" },
+            new() { BookId="IT-0008", Title="Artificial Intelligence: A Modern Approach", Author="Stuart Russell", Publisher="Pearson", CategoryId="IT", PublishYear=2021, Quantity=21, Location="Kệ IT-3", ImagePath="/images/books/IT/IT-0008.jpg" },
+            new() { BookId="IT-0009", Title="Database System Concepts", Author="Silberschatz", Publisher="McGraw-Hill", CategoryId="IT", PublishYear=2019, Quantity=26, Location="Kệ IT-3", ImagePath="/images/books/IT/IT-0009.jpg" },
+            new() { BookId="IT-0010", Title="Computer Networks", Author="Andrew S. Tanenbaum", Publisher="Pearson", CategoryId="IT", PublishYear=2010, Quantity=22, Location="Kệ IT-3", ImagePath="/images/books/IT/IT-0010.jpg" },
+
+            // ================= VĂN HỌC (VH) =================
+            new() { BookId="VH-0001", Title="Trăm năm cô đơn", Author="Gabriel García Márquez", Publisher="NXB Văn Học", CategoryId="VH", PublishYear=1967, Quantity=30, Location="Kệ VH-1", ImagePath="/images/books/VH/VH-0001.jpg" },
+            new() { BookId="VH-0002", Title="Ông già và biển cả", Author="Ernest Hemingway", Publisher="NXB Văn Học", CategoryId="VH", PublishYear=1952, Quantity=28, Location="Kệ VH-1", ImagePath="/images/books/VH/VH-0002.jpg" },
+            new() { BookId="VH-0003", Title="Nhà giả kim", Author="Paulo Coelho", Publisher="NXB Lao Động", CategoryId="VH", PublishYear=1988, Quantity=25, Location="Kệ VH-1", ImagePath="/images/books/VH/VH-0003.jpg" },
+            new() { BookId="VH-0004", Title="1984", Author="George Orwell", Publisher="Secker & Warburg", CategoryId="VH", PublishYear=1949, Quantity=20, Location="Kệ VH-2", ImagePath="/images/books/VH/VH-0004.jpg" },
+            new() { BookId="VH-0005", Title="Bố già", Author="Mario Puzo", Publisher="G. P. Putnam's Sons", CategoryId="VH", PublishYear=1969, Quantity=22, Location="Kệ VH-2", ImagePath="/images/books/VH/VH-0005.jpg" },
+            new() { BookId="VH-0006", Title="Tội ác và hình phạt", Author="Fyodor Dostoevsky", Publisher="NXB Văn Học", CategoryId="VH", PublishYear=1866, Quantity=24, Location="Kệ VH-2", ImagePath="/images/books/VH/VH-0006.jpg" },
+            new() { BookId="VH-0007", Title="Giết con chim nhại", Author="Harper Lee", Publisher="J. B. Lippincott", CategoryId="VH", PublishYear=1960, Quantity=21, Location="Kệ VH-3", ImagePath="/images/books/VH/VH-0007.jpg" },
+            new() { BookId="VH-0008", Title="Cuốn theo chiều gió", Author="Margaret Mitchell", Publisher="Macmillan", CategoryId="VH", PublishYear=1936, Quantity=23, Location="Kệ VH-3", ImagePath="/images/books/VH/VH-0008.jpg" },
+            new() { BookId="VH-0009", Title="Hoàng tử bé", Author="Antoine de Saint-Exupéry", Publisher="Reynal & Hitchcock", CategoryId="VH", PublishYear=1943, Quantity=27, Location="Kệ VH-3", ImagePath="/images/books/VH/VH-0009.jpg" },
+            new() { BookId="VH-0010", Title="Những người khốn khổ", Author="Victor Hugo", Publisher="A. Lacroix", CategoryId="VH", PublishYear=1862, Quantity=25, Location="Kệ VH-3", ImagePath="/images/books/VH/VH-0010.jpg" },
+
+            // ================= KINH TẾ (KT) =================
+            new() { BookId="KT-0001", Title="Cha giàu cha nghèo", Author="Robert Kiyosaki", Publisher="NXB Trẻ", CategoryId="KT", PublishYear=1997, Quantity=30, Location="Kệ KT-1", ImagePath="/images/books/KT/KT-0001.jpg" },
+            new() { BookId="KT-0002", Title="Tư duy nhanh và chậm", Author="Daniel Kahneman", Publisher="NXB Lao Động", CategoryId="KT", PublishYear=2011, Quantity=24, Location="Kệ KT-1", ImagePath="/images/books/KT/KT-0002.jpg" },
+            new() { BookId="KT-0003", Title="The Lean Startup", Author="Eric Ries", Publisher="Crown Publishing", CategoryId="KT", PublishYear=2011, Quantity=22, Location="Kệ KT-1", ImagePath="/images/books/KT/KT-0003.jpg" },
+            new() { BookId="KT-0004", Title="Zero to One", Author="Peter Thiel", Publisher="Crown Business", CategoryId="KT", PublishYear=2014, Quantity=21, Location="Kệ KT-2", ImagePath="/images/books/KT/KT-0004.jpg" },
+            new() { BookId="KT-0005", Title="The Intelligent Investor", Author="Benjamin Graham", Publisher="HarperBusiness", CategoryId="KT", PublishYear=1949, Quantity=25, Location="Kệ KT-2", ImagePath="/images/books/KT/KT-0005.jpg" },
+            new() { BookId="KT-0006", Title="Principles", Author="Ray Dalio", Publisher="Simon & Schuster", CategoryId="KT", PublishYear=2017, Quantity=20, Location="Kệ KT-2", ImagePath="/images/books/KT/KT-0006.jpg" },
+            new() { BookId="KT-0007", Title="Marketing 4.0", Author="Philip Kotler", Publisher="Wiley", CategoryId="KT", PublishYear=2017, Quantity=23, Location="Kệ KT-3", ImagePath="/images/books/KT/KT-0007.jpg" },
+            new() { BookId="KT-0008", Title="Blue Ocean Strategy", Author="W. Chan Kim", Publisher="Harvard Business", CategoryId="KT", PublishYear=2005, Quantity=22, Location="Kệ KT-3", ImagePath="/images/books/KT/KT-0008.jpg" },
+            new() { BookId="KT-0009", Title="Start With Why", Author="Simon Sinek", Publisher="Portfolio", CategoryId="KT", PublishYear=2009, Quantity=21, Location="Kệ KT-3", ImagePath="/images/books/KT/KT-0009.jpg" },
+            new() { BookId="KT-0010", Title="Good to Great", Author="Jim Collins", Publisher="HarperBusiness", CategoryId="KT", PublishYear=2001, Quantity=24, Location="Kệ KT-3", ImagePath="/images/books/KT/KT-0010.jpg" },
+
+            // ================= KHOA HỌC (KH) =================
+            new() { BookId="KH-0001", Title="Lược sử thời gian", Author="Stephen Hawking", Publisher="Bantam", CategoryId="KH", PublishYear=1988, Quantity=30, Location="Kệ KH-1", ImagePath="/images/books/KH/KH-0001.jpg" },
+            new() { BookId="KH-0002", Title="Vũ trụ trong vỏ hạt dẻ", Author="Stephen Hawking", Publisher="Bantam", CategoryId="KH", PublishYear=2001, Quantity=25, Location="Kệ KH-1", ImagePath="/images/books/KH/KH-0002.jpg" },
+            new() { BookId="KH-0003", Title="Sapiens", Author="Yuval Noah Harari", Publisher="NXB Tri Thức", CategoryId="KH", PublishYear=2011, Quantity=28, Location="Kệ KH-1", ImagePath="/images/books/KH/KH-0003.jpg" },
+            new() { BookId="KH-0004", Title="Homo Deus", Author="Yuval Noah Harari", Publisher="NXB Tri Thức", CategoryId="KH", PublishYear=2015, Quantity=24, Location="Kệ KH-2", ImagePath="/images/books/KH/KH-0004.jpg" },
+            new() { BookId="KH-0005", Title="The Selfish Gene", Author="Richard Dawkins", Publisher="Oxford", CategoryId="KH", PublishYear=1976, Quantity=22, Location="Kệ KH-2", ImagePath="/images/books/KH/KH-0005.jpg" },
+            new() { BookId="KH-0006", Title="A Brief History of Nearly Everything", Author="Bill Bryson", Publisher="Broadway", CategoryId="KH", PublishYear=2003, Quantity=20, Location="Kệ KH-2", ImagePath="/images/books/KH/KH-0006.jpg" },
+            new() { BookId="KH-0007", Title="Cosmos", Author="Carl Sagan", Publisher="Random House", CategoryId="KH", PublishYear=1980, Quantity=23, Location="Kệ KH-3", ImagePath="/images/books/KH/KH-0007.jpg" },
+            new() { BookId="KH-0008", Title="The Elegant Universe", Author="Brian Greene", Publisher="W. W. Norton", CategoryId="KH", PublishYear=1999, Quantity=21, Location="Kệ KH-3", ImagePath="/images/books/KH/KH-0008.jpg" },
+            new() { BookId="KH-0009", Title="The Origin of Species", Author="Charles Darwin", Publisher="John Murray", CategoryId="KH", PublishYear=1859, Quantity=26, Location="Kệ KH-3", ImagePath="/images/books/KH/KH-0009.jpg" },
+            new() { BookId="KH-0010", Title="Thinking, Fast and Slow (Science)", Author="Daniel Kahneman", Publisher="Farrar", CategoryId="KH", PublishYear=2011, Quantity=20, Location="Kệ KH-3", ImagePath="/images/books/KH/KH-0010.jpg" },
+
+            // ================= NGOẠI NGỮ (NN) =================
+            new() { BookId="NN-0001", Title="English Grammar in Use", Author="Raymond Murphy", Publisher="Cambridge", CategoryId="NN", PublishYear=2019, Quantity=30, Location="Kệ NN-1", ImagePath="/images/books/NN/NN-0001.jpg" },
+            new() { BookId="NN-0002", Title="Oxford Advanced Learner's Dictionary", Author="Oxford", Publisher="Oxford", CategoryId="NN", PublishYear=2020, Quantity=25, Location="Kệ NN-1", ImagePath="/images/books/NN/NN-0002.jpg" },
+            new() { BookId="NN-0003", Title="Cambridge IELTS 16", Author="Cambridge", Publisher="Cambridge", CategoryId="NN", PublishYear=2021, Quantity=28, Location="Kệ NN-1", ImagePath="/images/books/NN/NN-0003.jpg" },
+            new() { BookId="NN-0004", Title="Minna no Nihongo I", Author="3A Corporation", Publisher="3A", CategoryId="NN", PublishYear=2018, Quantity=24, Location="Kệ NN-2", ImagePath="/images/books/NN/NN-0004.jpg" },
+            new() { BookId="NN-0005", Title="Minna no Nihongo II", Author="3A Corporation", Publisher="3A", CategoryId="NN", PublishYear=2018, Quantity=23, Location="Kệ NN-2", ImagePath="/images/books/NN/NN-0005.jpg" },
+            new() { BookId="NN-0006", Title="Genki I", Author="Eri Banno", Publisher="The Japan Times", CategoryId="NN", PublishYear=2020, Quantity=22, Location="Kệ NN-2", ImagePath="/images/books/NN/NN-0006.jpg" },
+            new() { BookId="NN-0007", Title="Genki II", Author="Eri Banno", Publisher="The Japan Times", CategoryId="NN", PublishYear=2020, Quantity=21, Location="Kệ NN-3", ImagePath="/images/books/NN/NN-0007.jpg" },
+            new() { BookId="NN-0008", Title="New Headway", Author="Liz & John Soars", Publisher="Oxford", CategoryId="NN", PublishYear=2015, Quantity=20, Location="Kệ NN-3", ImagePath="/images/books/NN/NN-0008.jpg" },
+            new() { BookId="NN-0009", Title="English Vocabulary in Use", Author="Michael McCarthy", Publisher="Cambridge", CategoryId="NN", PublishYear=2017, Quantity=26, Location="Kệ NN-3", ImagePath="/images/books/NN/NN-0009.jpg" },
+            new() { BookId="NN-0010", Title="Japanese for Busy People", Author="AJALT", Publisher="Kodansha", CategoryId="NN", PublishYear=2018, Quantity=24, Location="Kệ NN-3", ImagePath="/images/books/NN/NN-0010.jpg" }
+        };
+
         db.Books.AddRange(books);
 
         await db.SaveChangesAsync();

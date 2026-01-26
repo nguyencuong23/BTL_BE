@@ -125,6 +125,7 @@ namespace QuanLyThuVienTruongHoc.Controllers
 
                     _context.Add(user);
                     await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Thêm thủ thư thành công!";
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateException ex)
@@ -205,6 +206,7 @@ namespace QuanLyThuVienTruongHoc.Controllers
 
                     _context.Update(user);
                     await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Cập nhật thủ thư thành công!";
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
@@ -255,6 +257,7 @@ namespace QuanLyThuVienTruongHoc.Controllers
             {
                 _context.Users.Remove(user);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Xóa thủ thư thành công!";
             }
 
             return RedirectToAction(nameof(Index));
