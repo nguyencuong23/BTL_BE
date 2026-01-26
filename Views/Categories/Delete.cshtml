@@ -1,33 +1,63 @@
 @model QuanLyThuVienTruongHoc.Models.Library.Category
 
 @{
-    ViewData["Title"] = "Delete";
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Xóa thể loại sách";
 }
 
-<h1>Delete</h1>
+<!-- Page Header -->
+<div class="page-header">
+    <h1><i class="fas fa-exclamation-triangle me-2 text-danger"></i>Xác nhận xóa</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách
+    </a>
+</div>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Category</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
+<!-- Delete Warning Card -->
+<div class="delete-warning-card">
+    <div class="warning-icon">
+        <i class="fas fa-exclamation-triangle"></i>
+    </div>
+
+    <h3>Cảnh báo: Xóa thể loại sách</h3>
+    <p class="lead">Bạn có chắc chắn muốn xóa thể loại sách này không?<br />
+    <strong>Hành động này không thể hoàn tác!</strong></p>
+
+    <div class="details-card mt-4">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <strong>Mã thể loại:</strong>
+                <span class="badge bg-danger ms-2">@Model.CategoryId</span>
+            </li>
+            <li class="list-group-item">
+                <strong>Tên thể loại:</strong>
+                <span>@Model.Name</span>
+            </li>
+            <li class="list-group-item">
+                <strong>Mô tả:</strong>
+                <span>
+                    @if (string.IsNullOrEmpty(Model.Description))
+                    {
+                        <span class="text-muted fst-italic">Chưa có mô tả</span>
+                    }
+                    else
+                    {
+                        @Model.Description
+                    }
+                </span>
+            </li>
+        </ul>
+    </div>
+
+    <form asp-action="Delete" method="post" class="mt-4">
         <input type="hidden" asp-for="CategoryId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <div class="d-flex gap-2 justify-content-center">
+            <button type="submit" class="btn btn-danger btn-lg">
+                <i class="fas fa-trash me-2"></i>Xác nhận xóa
+            </button>
+            <a asp-action="Index" class="btn btn-secondary btn-lg">
+                <i class="fas fa-times me-2"></i>Hủy bỏ
+            </a>
+        </div>
     </form>
 </div>

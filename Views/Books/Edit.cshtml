@@ -1,91 +1,145 @@
 @model QuanLyThuVienTruongHoc.Models.Library.Book
 
 @{
-    ViewData["Title"] = "Edit";
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Chỉnh sửa sách";
 }
 
-<h1>Edit</h1>
-
-<h4>Book</h4>
-<hr />
-
-<div class="row">
-    <div class="col-md-5">
-
-        <form asp-action="Edit" enctype="multipart/form-data">
-            <div asp-validation-summary="All" class="text-danger"></div>
-
-            <div class="form-group mb-2">
-                <label asp-for="BookId" class="control-label"></label>
-                <input asp-for="BookId" class="form-control" readonly />
-            </div>
-
-            <div class="form-group mb-2">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mb-2">
-                <label asp-for="Author" class="control-label"></label>
-                <input asp-for="Author" class="form-control" />
-                <span asp-validation-for="Author" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mb-2">
-                <label asp-for="Publisher" class="control-label"></label>
-                <input asp-for="Publisher" class="form-control" />
-                <span asp-validation-for="Publisher" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mb-2">
-                <label asp-for="CategoryId" class="control-label"></label>
-                <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
-                <span asp-validation-for="CategoryId" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mb-2">
-                <label asp-for="PublishYear" class="control-label"></label>
-                <input asp-for="PublishYear" class="form-control" />
-                <span asp-validation-for="PublishYear" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mb-2">
-                <label asp-for="Quantity" class="control-label"></label>
-                <input asp-for="Quantity" class="form-control" />
-                <span asp-validation-for="Quantity" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mb-3">
-                <label asp-for="Location" class="control-label"></label>
-                <input asp-for="Location" class="form-control" />
-                <span asp-validation-for="Location" class="text-danger"></span>
-            </div>
-
-            @* Hiển thị ảnh hiện tại (nếu có) *@
-            @if (!string.IsNullOrWhiteSpace(Model.ImagePath))
-            {
-                <div class="mb-2">
-                    <label class="control-label">Ảnh hiện tại</label><br />
-                    <img src="@Model.ImagePath" alt="Book image" style="max-height:140px; border:1px solid #ddd; padding:4px;" />
-                </div>
-            }
-
-            @* Upload ảnh mới *@
-            <div class="form-group mb-3">
-                <label class="control-label">Đổi ảnh</label>
-                <input type="file" name="imageFile" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
-                <span class="text-danger">@Html.ValidationMessage("imageFile")</span>
-            </div>
-
-            @* giữ ImagePath khi submit (controller vẫn sẽ giữ nếu không upload mới) *@
-            <input type="hidden" asp-for="ImagePath" />
-
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-secondary ms-2">Back to List</a>
-            </div>
-        </form>
-
-    </div>
+<!-- Page Header -->
+<div class="page-header">
+    <h1><i class="fas fa-edit me-2"></i>Chỉnh sửa sách</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách
+    </a>
 </div>
+
+<!-- Form Card -->
+<div class="form-card">
+    <div class="card-header">
+        <h4><i class="fas fa-book me-2"></i>Thông tin sách</h4>
+    </div>
+
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="All" class="alert alert-danger" role="alert" style="display:none;"></div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label asp-for="BookId" class="form-label">
+                        <i class="fas fa-barcode me-1"></i>Mã sách
+                    </label>
+                    <input asp-for="BookId" class="form-control" readonly />
+                    <small class="text-muted">Mã sách không thể thay đổi</small>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label">
+                        <i class="fas fa-heading me-1"></i>Tên sách <span class="text-danger">*</span>
+                    </label>
+                    <input asp-for="Title" class="form-control" maxlength="200" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label asp-for="Author" class="form-label">
+                        <i class="fas fa-user-edit me-1"></i>Tác giả <span class="text-danger">*</span>
+                    </label>
+                    <input asp-for="Author" class="form-control" maxlength="150" />
+                    <span asp-validation-for="Author" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label asp-for="Publisher" class="form-label">
+                        <i class="fas fa-building me-1"></i>Nhà xuất bản
+                    </label>
+                    <input asp-for="Publisher" class="form-control" maxlength="150" />
+                    <span asp-validation-for="Publisher" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label asp-for="CategoryId" class="form-label">
+                        <i class="fas fa-tag me-1"></i>Thể loại <span class="text-danger">*</span>
+                    </label>
+                    <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryId"></select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label asp-for="PublishYear" class="form-label">
+                        <i class="fas fa-calendar me-1"></i>Năm xuất bản
+                    </label>
+                    <input asp-for="PublishYear" class="form-control" type="number" />
+                    <span asp-validation-for="PublishYear" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label asp-for="Quantity" class="form-label">
+                        <i class="fas fa-sort-numeric-up me-1"></i>Số lượng <span class="text-danger">*</span>
+                    </label>
+                    <input asp-for="Quantity" class="form-control" type="number" min="0" />
+                    <span asp-validation-for="Quantity" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Location" class="form-label">
+                <i class="fas fa-map-marker-alt me-1"></i>Vị trí kệ
+            </label>
+            <input asp-for="Location" class="form-control" maxlength="50" />
+            <span asp-validation-for="Location" class="text-danger"></span>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.ImagePath))
+        {
+            <div class="mb-3">
+                <label class="form-label">Ảnh hiện tại</label><br />
+                <img src="@Model.ImagePath" alt="@Model.Title" class="book-image-preview mb-2" />
+            </div>
+        }
+
+        <div class="mb-3">
+            <label class="form-label">
+                <i class="fas fa-image me-1"></i>Đổi ảnh bìa
+            </label>
+            <input type="file" name="imageFile" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
+            <small class="text-muted">Để trống nếu không muốn thay đổi ảnh</small>
+        </div>
+
+        <input type="hidden" asp-for="ImagePath" />
+
+        <hr />
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-2"></i>Cập nhật
+            </button>
+            <a asp-action="Details" asp-route-id="@Model.BookId" class="btn btn-info text-white">
+                <i class="fas fa-eye me-2"></i>Xem chi tiết
+            </a>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-times me-2"></i>Hủy bỏ
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

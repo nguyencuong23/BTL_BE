@@ -1,83 +1,130 @@
 @model IEnumerable<QuanLyThuVienTruongHoc.Models.Library.Book>
 
 @{
-    ViewData["Title"] = "Index";
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản lý sách";
 }
 
-<h1>Index</h1>
+<!-- Page Header -->
+<div class="page-header">
+    <h1><i class="fas fa-book me-2"></i>Quản lý sách</h1>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="fas fa-plus me-2"></i>Thêm sách mới
+    </a>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.BookId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Author)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Publisher)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PublishYear)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Quantity)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Location)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImagePath)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.BookId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Author)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Publisher)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PublishYear)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Quantity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Location)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImagePath)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category.CategoryId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.BookId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.BookId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.BookId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<!-- Search Bar -->
+<div class="search-bar">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <div class="search-input-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" class="form-control search-input" 
+                       placeholder="Tìm kiếm theo mã sách, tên sách hoặc tác giả...">
+            </div>
+        </div>
+        <div class="col-md-6 text-end">
+            <span class="text-muted">Tổng số: <strong>@Model.Count()</strong> cuốn sách</span>
+        </div>
+    </div>
+</div>
+
+<!-- Data Table -->
+<div class="table-card">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th style="width: 80px;">Ảnh</th>
+                    <th style="width: 110px;">Mã sách</th>
+                    <th>Tên sách</th>
+                    <th>Tác giả</th>
+                    <th>Thể loại</th>
+                    <th style="width: 100px;" class="text-center">Số lượng</th>
+                    <th style="width: 180px;" class="text-center">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.ImagePath))
+                                {
+                                    <img src="@item.ImagePath" alt="@item.Title" class="book-thumbnail" />
+                                }
+                                else
+                                {
+                                    <div class="book-thumbnail bg-secondary d-flex align-items-center justify-content-center text-white">
+                                        <i class="fas fa-book"></i>
+                                    </div>
+                                }
+                            </td>
+                            <td>
+                                <span class="badge bg-info">@item.BookId</span>
+                            </td>
+                            <td>
+                                <strong>@item.Title</strong><br />
+                                <small class="text-muted">@item.PublishYear</small>
+                            </td>
+                            <td>@item.Author</td>
+                            <td>
+                                @if (item.Category != null)
+                                {
+                                    <span class="badge bg-primary">@item.Category.CategoryId</span>
+                                    <small>@item.Category.Name</small>
+                                }
+                            </td>
+                            <td class="text-center">
+                                @if (item.Quantity > 10)
+                                {
+                                    <span class="badge badge-stock-ok">@item.Quantity</span>
+                                }
+                                else if (item.Quantity > 0)
+                                {
+                                    <span class="badge badge-stock-low">@item.Quantity</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-stock-out">Hết</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="btn-group-actions justify-content-center">
+                                    <a asp-action="Details" asp-route-id="@item.BookId" 
+                                       class="btn btn-sm btn-action-details" title="Xem chi tiết">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@item.BookId" 
+                                       class="btn btn-sm btn-action-edit" title="Chỉnh sửa">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.BookId" 
+                                       class="btn btn-sm btn-action-delete" title="Xóa">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <i class="fas fa-book-open"></i>
+                                <p>Chưa có sách nào trong thư viện</p>
+                                <a asp-action="Create" class="btn btn-primary">
+                                    <i class="fas fa-plus me-2"></i>Thêm sách đầu tiên
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

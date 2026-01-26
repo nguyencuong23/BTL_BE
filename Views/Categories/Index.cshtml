@@ -1,47 +1,97 @@
 @model IEnumerable<QuanLyThuVienTruongHoc.Models.Library.Category>
 
 @{
-    ViewData["Title"] = "Index";
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản lý thể loại sách";
 }
 
-<h1>Index</h1>
+<!-- Page Header -->
+<div class="page-header">
+    <h1><i class="fas fa-tags me-2"></i>Quản lý thể loại sách</h1>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="fas fa-plus me-2"></i>Thêm thể loại mới
+    </a>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.CategoryId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CategoryId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.CategoryId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.CategoryId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.CategoryId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<!-- Search Bar -->
+<div class="search-bar">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <div class="search-input-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" class="form-control search-input" 
+                       placeholder="Tìm kiếm theo mã, tên hoặc mô tả...">
+            </div>
+        </div>
+        <div class="col-md-6 text-end">
+            <span class="text-muted">Tổng số: <strong>@Model.Count()</strong> thể loại</span>
+        </div>
+    </div>
+</div>
+
+<!-- Data Table -->
+<div class="table-card">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th style="width: 120px;">Mã thể loại</th>
+                    <th>Tên thể loại</th>
+                    <th>Mô tả</th>
+                    <th style="width: 180px;" class="text-center">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <span class="badge bg-primary">@item.CategoryId</span>
+                            </td>
+                            <td>
+                                <strong>@item.Name</strong>
+                            </td>
+                            <td>
+                                @(string.IsNullOrEmpty(item.Description) ? 
+                                  "<span class='text-muted fst-italic'>Chưa có mô tả</span>" : 
+                                  item.Description)
+                            </td>
+                            <td>
+                                <div class="btn-group-actions justify-content-center">
+                                    <a asp-action="Details" asp-route-id="@item.CategoryId" 
+                                       class="btn btn-sm btn-action-details" title="Xem chi tiết">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@item.CategoryId" 
+                                       class="btn btn-sm btn-action-edit" title="Chỉnh sửa">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.CategoryId" 
+                                       class="btn btn-sm btn-action-delete" title="Xóa">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4">
+                            <div class="empty-state">
+                                <i class="fas fa-inbox"></i>
+                                <p>Chưa có thể loại sách nào</p>
+                                <a asp-action="Create" class="btn btn-primary">
+                                    <i class="fas fa-plus me-2"></i>Thêm thể loại đầu tiên
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

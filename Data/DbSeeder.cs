@@ -46,7 +46,7 @@ public static class DbSeeder
         var admin = new User
         {
             Username = "admin",
-            FullName = "Thủ thư",
+            FullName = "Nguyễn Mạnh Cường",
             Email = "admin@dainam.edu.vn",
             PhoneNumber = "0900000000",
             Role = 1,
@@ -57,6 +57,21 @@ public static class DbSeeder
         };
         admin.PasswordHash = Hash(admin, "admin123");
         users.Add(admin);
+
+        var admin2 = new User
+        {
+            Username = "admin2",
+            FullName = "Thủ thư 2",
+            Email = "admin2@dainam.edu.vn",
+            PhoneNumber = "0910000000",
+            Role = 1,
+            IsActive = true,
+            TotalFine = 0,
+            CreatedAt = DateTime.Now,
+            StudentCode = null
+        };
+        admin2.PasswordHash = Hash(admin, "admin123");
+        users.Add(admin2);
 
         for (int i = 1; i <= 30; i++)
         {

@@ -1,39 +1,81 @@
 @model QuanLyThuVienTruongHoc.Models.Library.Category
 
 @{
-    ViewData["Title"] = "Edit";
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Chỉnh sửa thể loại sách";
 }
 
-<h1>Edit</h1>
+<!-- Page Header -->
+<div class="page-header">
+    <h1><i class="fas fa-edit me-2"></i>Chỉnh sửa thể loại sách</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách
+    </a>
+</div>
 
-<h4>Category</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="CategoryId" class="control-label"></label>
-                <input asp-for="CategoryId" class="form-control" readonly />
-            </div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+<!-- Form Card -->
+<div class="form-card">
+    <div class="card-header">
+        <h4><i class="fas fa-edit me-2"></i>Thông tin thể loại</h4>
     </div>
+
+    <form asp-action="Edit" method="post">
+        <div asp-validation-summary="All" class="alert alert-danger" role="alert" style="display:none;"></div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label asp-for="CategoryId" class="form-label">
+                        <i class="fas fa-tag me-1"></i>Mã thể loại
+                    </label>
+                    <input asp-for="CategoryId" class="form-control" readonly />
+                    <small class="text-muted">Mã thể loại không thể thay đổi</small>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label">
+                        <i class="fas fa-heading me-1"></i>Tên thể loại <span class="text-danger">*</span>
+                    </label>
+                    <input asp-for="Name" class="form-control" maxlength="100" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label">
+                <i class="fas fa-align-left me-1"></i>Mô tả
+            </label>
+            <textarea asp-for="Description" class="form-control" rows="4" maxlength="500"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+            <small class="text-muted">Tối đa 500 ký tự</small>
+        </div>
+
+        <hr />
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-2"></i>Cập nhật
+            </button>
+            <a asp-action="Details" asp-route-id="@Model.CategoryId" class="btn btn-info text-white">
+                <i class="fas fa-eye me-2"></i>Xem chi tiết
+            </a>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-times me-2"></i>Hủy bỏ
+            </a>
+        </div>
+    </form>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function() {
+            if ($('.validation-summary-errors').length > 0) {
+                $('.alert-danger').show();
+            }
+        });
+    </script>
+}

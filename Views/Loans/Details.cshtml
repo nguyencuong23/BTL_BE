@@ -1,60 +1,107 @@
 @model QuanLyThuVienTruongHoc.Models.Library.Loan
 
 @{
-    ViewData["Title"] = "Details";
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Chi tiết phiếu mượn";
 }
 
-<h1>Details</h1>
-
-<div>
-    <h4>Loan</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.BorrowDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.BorrowDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DueDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DueDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ReturnDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ReturnDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Fine)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Fine)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.User)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.User.FullName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Book)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Book.BookId)
-        </dd>
-    </dl>
+<div class="page-header">
+    <h1><i class="fas fa-info-circle me-2"></i>Chi tiết phiếu mượn</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách
+    </a>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.LoanId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+<div class="details-card">
+    <div class="card-header">
+        <h4><i class="fas fa-exchange-alt me-2"></i>Thông tin phiếu mượn</h4>
+    </div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+            <strong><i class="fas fa-hashtag me-2 text-muted"></i>Mã phiếu:</strong>
+            <span class="badge bg-secondary fs-6">#@Model.LoanId</span>
+        </li>
+        <li class="list-group-item">
+            <strong><i class="fas fa-user me-2 text-muted"></i>Người mượn:</strong>
+            @if (Model.User != null)
+            {
+                <span>@Model.User.FullName (@Model.User.StudentCode)</span>
+            }
+        </li>
+        <li class="list-group-item">
+            <strong><i class="fas fa-book me-2 text-muted"></i>Sách:</strong>
+            @if (Model.Book != null)
+            {
+                <span>@Model.Book.Title (Mã: @Model.Book.BookId)</span>
+            }
+        </li>
+        <li class="list-group-item">
+            <strong><i class="fas fa-calendar me-2 text-muted"></i>Ngày mượn:</strong>
+            <span>@Model.BorrowDate.ToString("dd/MM/yyyy")</span>
+        </li>
+        <li class="list-group-item">
+            <strong><i class="fas fa-calendar-check me-2 text-muted"></i>Hạn trả:</strong>
+            <span>@Model.DueDate.ToString("dd/MM/yyyy")</span>
+        </li>
+        <li class="list-group-item">
+            <strong><i class="fas fa-calendar-times me-2 text-muted"></i>Ngày trả thực tế:</strong>
+            @if (Model.ReturnDate.HasValue)
+            {
+                <span>@Model.ReturnDate.Value.ToString("dd/MM/yyyy")</span>
+            }
+            else
+            {
+                <span class="text-muted">Chưa trả</span>
+            }
+        </li>
+        <li class="list-group-item">
+            <strong><i class="fas fa-info-circle me-2 text-muted"></i>Trạng thái:</strong>
+            @{
+                var status = "dangmuon";
+                if (Model.ReturnDate.HasValue)
+                {
+                    status = "datra";
+                }
+                else if (Model.DueDate < DateTime.Now)
+                {
+                    status = "quahan";
+                }
+            }
+            @if (status == "datra")
+            {
+                <span class="badge badge-returned">Đã trả</span>
+            }
+            else if (status == "quahan")
+            {
+                <span class="badge badge-overdue">Quá hạn</span>
+            }
+            else
+            {
+                <span class="badge badge-borrowing">Đang mượn</span>
+            }
+        </li>
+        <li class="list-group-item">
+            <strong><i class="fas fa-money-bill me-2 text-muted"></i>Tiền phạt:</strong>
+            @if (Model.Fine > 0)
+            {
+                <span class="text-danger fw-bold fs-5">@Model.Fine.ToString("N0") đ</span>
+            }
+            else
+            {
+                <span class="text-success">Không có phạt</span>
+            }
+        </li>
+    </ul>
+</div>
+
+<div class="mt-4">
+    <a asp-action="Edit" asp-route-id="@Model.LoanId" class="btn btn-primary">
+        <i class="fas fa-edit me-2"></i>Chỉnh sửa
+    </a>
+    <a asp-action="Delete" asp-route-id="@Model.LoanId" class="btn btn-danger">
+        <i class="fas fa-trash me-2"></i>Xóa
+    </a>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-list me-2"></i>Danh sách
+    </a>
 </div>

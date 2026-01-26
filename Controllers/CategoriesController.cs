@@ -59,11 +59,20 @@ namespace QuanLyThuVienTruongHoc.Controllers
                 {
                     _context.Add(category);
                     await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = $"Thêm thể loại '{category.Name}' (Mã: {category.CategoryId}) thành công!";
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateException ex)
                 {
-                    ModelState.AddModelError("", "Không thể lưu dữ liệu. Mã thể loại có thể đã tồn tại hoặc vi phạm ràng buộc dữ liệu. Chi tiết: " + ex.InnerException?.Message);
+                    var errorMsg = ex.InnerException?.Message ?? ex.Message;
+                    if (errorMsg.Contains("PRIMARY KEY") || errorMsg.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError("CategoryId", $"Mã thể loại '{category.CategoryId}' đã tồn tại. Vui lòng chọn mã khác.");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Không thể thêm thể loại. Lỗi cơ sở dữ liệu: " + errorMsg);
+                    }
                 }
             }
             return View(category);
@@ -103,13 +112,15 @@ namespace QuanLyThuVienTruongHoc.Controllers
                 {
                     _context.Update(category);
                     await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = $"Cập nhật thể loại '{category.Name}' thành công!";
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!CategoryExists(category.CategoryId))
                     {
-                        return NotFound();
+                        TempData["ErrorMessage"] = "Không tìm thấy thể loại cần cập nhật. Có thể đã bị xóa.";
+                        return RedirectToAction(nameof(Index));
                     }
                     else
                     {
@@ -118,7 +129,8 @@ namespace QuanLyThuVienTruongHoc.Controllers
                 }
                 catch (DbUpdateException ex)
                 {
-                    ModelState.AddModelError("", "Không thể cập nhật dữ liệu. Có thể vi phạm ràng buộc dữ liệu. Chi tiết: " + ex.InnerException?.Message);
+                    var errorMsg = ex.InnerException?.Message ?? ex.Message;
+                    ModelState.AddModelError("", "Không thể cập nhật thể loại. Lỗi: " + errorMsg);
                 }
             }
             return View(category);
@@ -147,13 +159,32 @@ namespace QuanLyThuVienTruongHoc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var category = await _context.Categories.FindAsync(id);
-            if (category != null)
+            try
             {
-                _context.Categories.Remove(category);
-            }
+                var category = await _context.Categories.FindAsync(id);
+                if (category == null)
+                {
+                    TempData["ErrorMessage"] = "Không tìm thấy thể loại cần xóa.";
+                    return RedirectToAction(nameof(Index));
+                }
 
-            await _context.SaveChangesAsync();
+                var categoryName = category.Name;
+                _context.Categories.Remove(category);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = $"Đã xóa thể loại '{categoryName}' thành công!";
+            }
+            catch (DbUpdateException ex)
+            {
+                var errorMsg = ex.InnerException?.Message ?? ex.Message;
+                if (errorMsg.Contains("REFERENCE") || errorMsg.Contains("FOREIGN KEY"))
+                {
+                    TempData["ErrorMessage"] = "Không thể xóa thể loại này vì đang được sử dụng bởi các sách khác.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Không thể xóa thể loại. Lỗi: " + errorMsg;
+                }
+            }
             return RedirectToAction(nameof(Index));
         }
 

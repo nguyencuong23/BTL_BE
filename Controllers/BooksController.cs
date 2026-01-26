@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using QuanLyThuVienTruongHoc.Models.Library;
 
 namespace QuanLyThuVienTruongHoc.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class BooksController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -77,10 +79,21 @@ namespace QuanLyThuVienTruongHoc.Controllers
             }
             catch (DbUpdateException ex)
             {
-                ModelState.AddModelError("", "Không thể lưu dữ liệu. Mã sách có thể đã tồn tại hoặc vi phạm ràng buộc dữ liệu. Chi tiết: " + ex.InnerException?.Message);
+                var errorMsg = ex.InnerException?.Message ?? ex.Message;
+                if (errorMsg.Contains("PRIMARY KEY") || errorMsg.Contains("duplicate"))
+                {
+                    ModelState.AddModelError("BookId", $"Mã sách '{book.BookId}' đã tồn tại. Vui lòng chọn mã khác.");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Không thể thêm sách. Lỗi cơ sở dữ liệu: " + errorMsg);
+                }
                 ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Name", book.CategoryId);
                 return View(book);
             }
+
+            TempData["SuccessMessage"] = $"Thêm sách '{book.Title}' thành công!";
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Books/Edit/5

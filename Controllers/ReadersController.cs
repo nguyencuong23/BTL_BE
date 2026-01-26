@@ -1,15 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QuanLyThuVienTruongHoc.Data;
+using QuanLyThuVienTruongHoc.Helpers;
 using QuanLyThuVienTruongHoc.Models.Users;
+using QuanLyThuVienTruongHoc.ViewModels;
 
 namespace QuanLyThuVienTruongHoc.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ReadersController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -63,19 +63,74 @@ namespace QuanLyThuVienTruongHoc.Controllers
 
             // Remove Role from ModelState vì chúng ta set manual
             ModelState.Remove("Role");
-            
+
+            // Server-side format validation
+            if (!string.IsNullOrEmpty(user.Email))
+            {
+                var emailRegex = new System.Text.RegularExpressions.Regex(@"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$");
+                if (!emailRegex.IsMatch(user.Email))
+                {
+                    ModelState.AddModelError("Email", "Email phải đúng định dạng (VD: example@domain.com)");
+                }
+            }
+
+            if (!string.IsNullOrEmpty(user.PhoneNumber))
+            {
+                var phoneRegex = new System.Text.RegularExpressions.Regex(@"^(0|\+84)\d{9,10}$");
+                if (!phoneRegex.IsMatch(user.PhoneNumber))
+                {
+                    ModelState.AddModelError("PhoneNumber", "Số điện thoại không hợp lệ (VD: 0912345678 hoặc +84912345678)");
+                }
+            }
+
+            if (!string.IsNullOrEmpty(user.PasswordHash))
+            {
+                var passwordRegex = new System.Text.RegularExpressions.Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$");
+                if (!passwordRegex.IsMatch(user.PasswordHash))
+                {
+                    ModelState.AddModelError("PasswordHash", "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt");
+                }
+            }
+
+            // Server-side uniqueness validation
+            if (await _context.Users.AnyAsync(u => u.Username == user.Username))
+            {
+                ModelState.AddModelError("Username", "Tên đăng nhập đã tồn tại");
+            }
+
+            if (!string.IsNullOrEmpty(user.Email) && await _context.Users.AnyAsync(u => u.Email == user.Email))
+            {
+                ModelState.AddModelError("Email", "Email đã được sử dụng");
+            }
+
+            if (!string.IsNullOrEmpty(user.PhoneNumber) && await _context.Users.AnyAsync(u => u.PhoneNumber == user.PhoneNumber))
+            {
+                ModelState.AddModelError("PhoneNumber", "Số điện thoại đã được sử dụng");
+            }
+
+            if (await _context.Users.AnyAsync(u => u.StudentCode == user.StudentCode))
+            {
+                ModelState.AddModelError("StudentCode", "Mã sinh viên đã tồn tại");
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
+                    // Hash password before saving
+                    if (!string.IsNullOrEmpty(user.PasswordHash))
+                    {
+                        var hasher = new PasswordHasher<User>();
+                        user.PasswordHash = hasher.HashPassword(user, user.PasswordHash);
+                    }
+
                     _context.Add(user);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateException ex)
                 {
-                    // Handle database errors (duplicate key, constraint violations, etc.)
-                    ModelState.AddModelError("", "Không thể lưu dữ liệu. Có thể bị trùng tên đăng nhập hoặc vi phạm ràng buộc dữ liệu. Chi tiết: " + ex.InnerException?.Message);
+                    ModelState.AddModelError("", DbErrorHelper.TranslateDbError(ex));
                 }
             }
             return View(user);
@@ -112,11 +167,39 @@ namespace QuanLyThuVienTruongHoc.Controllers
 
             // Remove Role from ModelState
             ModelState.Remove("Role");
+            // Remove PasswordHash from ModelState - we preserve it from existing user
+            ModelState.Remove("PasswordHash");
+
+            // Server-side format validation
+            if (!string.IsNullOrEmpty(user.Email))
+            {
+                var emailRegex = new System.Text.RegularExpressions.Regex(@"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$");
+                if (!emailRegex.IsMatch(user.Email))
+                {
+                    ModelState.AddModelError("Email", "Email phải đúng định dạng (VD: example@domain.com)");
+                }
+            }
+
+            if (!string.IsNullOrEmpty(user.PhoneNumber))
+            {
+                var phoneRegex = new System.Text.RegularExpressions.Regex(@"^(0|\+84)\d{9,10}$");
+                if (!phoneRegex.IsMatch(user.PhoneNumber))
+                {
+                    ModelState.AddModelError("PhoneNumber", "Số điện thoại không hợp lệ (VD: 0912345678 hoặc +84912345678)");
+                }
+            }
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    // Get existing user to preserve password
+                    var existingUser = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == user.Id);
+                    if (existingUser != null)
+                    {
+                        user.PasswordHash = existingUser.PasswordHash;
+                    }
+
                     _context.Update(user);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
@@ -134,8 +217,7 @@ namespace QuanLyThuVienTruongHoc.Controllers
                 }
                 catch (DbUpdateException ex)
                 {
-                    // Handle database errors
-                    ModelState.AddModelError("", "Không thể cập nhật dữ liệu. Có thể bị trùng tên đăng nhập hoặc vi phạm ràng buộc dữ liệu. Chi tiết: " + ex.InnerException?.Message);
+                    ModelState.AddModelError("", DbErrorHelper.TranslateDbError(ex));
                 }
             }
             return View(user);
@@ -172,6 +254,54 @@ namespace QuanLyThuVienTruongHoc.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        // GET: Readers/ChangePassword/5
+        public async Task<IActionResult> ChangePassword(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var user = await _context.Users.FindAsync(id);
+            if (user == null || user.Role != 2) return NotFound();
+
+            var viewModel = new ChangePasswordViewModel { UserId = user.Id };
+            return View(viewModel);
+        }
+
+        // POST: Readers/ChangePassword
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _context.Users.FindAsync(model.UserId);
+            if (user == null || user.Role != 2)
+            {
+                TempData["ErrorMessage"] = "Không tìm thấy sinh viên.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Update password (admin feature - no current password check)
+            var hasher = new PasswordHasher<User>();
+            user.PasswordHash = hasher.HashPassword(user, model.NewPassword);
+
+            try
+            {
+                // Explicitly mark PasswordHash as modified
+                _context.Entry(user).Property(u => u.PasswordHash).IsModified = true;
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Đổi mật khẩu thành công!";
+                return RedirectToAction(nameof(Details), new { id = user.Id });
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "Lỗi khi đổi mật khẩu: " + ex.Message);
+                return View(model);
+            }
         }
 
         private bool UserExists(int id)
