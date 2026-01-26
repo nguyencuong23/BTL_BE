@@ -9,13 +9,22 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-// 1. Đăng ký Controller cho API
 builder.Services.AddControllers();
 
-// 2. Đăng ký Swagger
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+builder.Services.AddHttpContextAccessor();
+
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -25,6 +34,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.AccessDeniedPath = "/Account/AccessDenied";
         options.ExpireTimeSpan = TimeSpan.FromHours(2);
         options.SlidingExpiration = true;
+        // Thêm dòng này để mỗi lần tắt server bật lại, tên Cookie sẽ thay đổi.
+        // Trình duyệt sẽ không tìm thấy Cookie cũ -> Tự động coi là chưa đăng nhập.
+        options.Cookie.Name = "DaiNamLib_" + Guid.NewGuid();
     });
 
 var app = builder.Build();
@@ -49,12 +61,13 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Recreate database and seed data
+app.UseSession();
+
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    //await db.Database.EnsureDeletedAsync();
-    //await db.Database.EnsureCreatedAsync();
+    await db.Database.EnsureDeletedAsync();
+    await db.Database.EnsureCreatedAsync();
 }
 
 await DbSeeder.SeedAsync(app.Services);

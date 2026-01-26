@@ -1,22 +1,149 @@
 @{
-    ViewData["Title"] = "Thông Báo";
-    Layout = "~/Views/Shared/_ClientLayout.cshtml";
+    ViewData["Title"] = "Tin tức & Sự kiện";
 }
 
-<div class="container">
-    <h1 class="mb-4"><i class="fas fa-bell"></i> Thông Báo</h1>
-    
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card shadow-sm">
-                <div class="card-header bg-warning text-white">
-                    <h5 class="mb-0"><i class="fas fa-info-circle"></i> Thông Báo Quan Trọng</h5>
-                </div>
-                <div class="card-body">
-                    <p class="card-text">Các thông báo quan trọng, học vụ và tin tức mới nhất từ thư viện nhà trường sẽ được cập nhật tại đây.</p>
-                </div>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Cinzel:wght@700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<link href="~/css/news.css" rel="stylesheet" />
+
+<div class="container py-4">
+
+    <div class="page-header">
+        <h2>Tin Tức & Sự Kiện</h2>
+        <div class="divider"></div>
+        <p class="text-muted mt-2">Cập nhật những thông tin mới nhất từ Thư viện Đại học Đại Nam</p>
+    </div>
+
+    <div class="alert-dainam">
+        <i class="fa-solid fa-bell"></i>
+        <div>
+            <strong>Thông báo quan trọng:</strong> Thư viện sẽ tạm ngừng phục vụ mượn sách giấy từ ngày 15/02 để bảo trì hệ thống kho. Dịch vụ số vẫn hoạt động bình thường.
+        </div>
+    </div>
+
+    <div class="featured-news">
+        <div class="news-card">
+            <div class="img-wrapper">
+                <span class="date-badge">26/01/2026</span>
+                <img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=1000&auto=format&fit=crop" alt="Featured News">
+            </div>
+            <div class="card-body justify-content-center p-4 p-md-5">
+                <div class="news-category">Sự kiện nổi bật</div>
+                <h3 class="news-title" style="font-size: 1.8rem;">Hội Sách Chào Tân Sinh Viên K18 - "Khơi Nguồn Tri Thức"</h3>
+                <p class="news-summary" style="-webkit-line-clamp: 4;">
+                    Chào đón các bạn tân sinh viên K18 gia nhập ngôi nhà chung Đại Nam. Thư viện tổ chức tuần lễ hội sách với hàng ngàn đầu sách mới, các buổi tọa đàm với diễn giả nổi tiếng và nhiều phần quà hấp dẫn đang chờ đón các bạn. Đừng bỏ lỡ cơ hội check-in nhận quà!
+                </p>
+                <a href="#" class="btn-read-more">
+                    Xem chi tiết <i class="fa-solid fa-arrow-right"></i>
+                </a>
             </div>
         </div>
     </div>
-</div>
 
+    <div class="row g-4">
+
+        <div class="col-md-4">
+            <div class="news-card">
+                <div class="img-wrapper">
+                    <span class="date-badge">25/01/2026</span>
+                    <img src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?q=80&w=600&auto=format&fit=crop" alt="News 1">
+                </div>
+                <div class="card-body">
+                    <div class="news-category">Thông báo</div>
+                    <h5 class="news-title">Cập nhật giáo trình điện tử Học kỳ II năm học 2025-2026</h5>
+                    <p class="news-summary">Thư viện đã cập nhật hơn 500 đầu giáo trình điện tử mới phục vụ cho các môn chuyên ngành Kinh tế, CNTT và Dược học.</p>
+                    <a href="#" class="btn-read-more">Xem chi tiết <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="news-card">
+                <div class="img-wrapper">
+                    <span class="date-badge">20/01/2026</span>
+                    <img src="https://images.unsplash.com/photo-1532012197267-da84d127e765?q=80&w=600&auto=format&fit=crop" alt="News 2">
+                </div>
+                <div class="card-body">
+                    <div class="news-category">Hướng dẫn</div>
+                    <h5 class="news-title">Hướng dẫn tra cứu tài liệu số trên hệ thống DSpace</h5>
+                    <p class="news-summary">Bài viết hướng dẫn chi tiết cách sinh viên đăng nhập, tìm kiếm và tải tài liệu số phục vụ nghiên cứu khoa học.</p>
+                    <a href="#" class="btn-read-more">Xem chi tiết <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="news-card">
+                <div class="img-wrapper">
+                    <span class="date-badge">18/01/2026</span>
+                    <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=600&auto=format&fit=crop" alt="News 3">
+                </div>
+                <div class="card-body">
+                    <div class="news-category">Hoạt động</div>
+                    <h5 class="news-title">Tổng kết cuộc thi "Đại sứ Văn hóa Đọc 2025"</h5>
+                    <p class="news-summary">Chúc mừng sinh viên Nguyễn Văn A - Khoa CNTT đã xuất sắc giành giải nhất cuộc thi với bài review sách đầy cảm xúc.</p>
+                    <a href="#" class="btn-read-more">Xem chi tiết <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="news-card">
+                <div class="img-wrapper">
+                    <span class="date-badge">15/01/2026</span>
+                    <img src="https://images.unsplash.com/photo-1568667256549-094345857637?q=80&w=600&auto=format&fit=crop" alt="News 4">
+                </div>
+                <div class="card-body">
+                    <div class="news-category">Thông báo</div>
+                    <h5 class="news-title">Thay đổi giờ mở cửa phòng đọc tự chọn cơ sở 2</h5>
+                    <p class="news-summary">Kể từ ngày 01/02, phòng đọc tự chọn sẽ mở cửa thông tầm trưa để phục vụ nhu cầu ôn thi của sinh viên.</p>
+                    <a href="#" class="btn-read-more">Xem chi tiết <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="news-card">
+                <div class="img-wrapper">
+                    <span class="date-badge">10/01/2026</span>
+                    <img src="https://images.unsplash.com/photo-1505664194779-8beaceb93744?q=80&w=600&auto=format&fit=crop" alt="News 5">
+                </div>
+                <div class="card-body">
+                    <div class="news-category">Tuyển dụng</div>
+                    <h5 class="news-title">Tuyển Cộng tác viên hỗ trợ thư viện kỳ Xuân 2026</h5>
+                    <p class="news-summary">Cơ hội làm việc bán thời gian tại thư viện dành cho sinh viên năm 1, năm 2 với mức hỗ trợ hấp dẫn và chứng nhận rèn luyện.</p>
+                    <a href="#" class="btn-read-more">Xem chi tiết <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="news-card">
+                <div class="img-wrapper">
+                    <span class="date-badge">05/01/2026</span>
+                    <img src="https://images.unsplash.com/photo-1529148482759-b35b25c5f634?q=80&w=600&auto=format&fit=crop" alt="News 6">
+                </div>
+                <div class="card-body">
+                    <div class="news-category">Đào tạo</div>
+                    <h5 class="news-title">Lớp tập huấn kỹ năng trích dẫn tài liệu tham khảo chuẩn APA 7</h5>
+                    <p class="news-summary">Kỹ năng quan trọng giúp sinh viên tránh lỗi đạo văn trong tiểu luận và khóa luận tốt nghiệp.</p>
+                    <a href="#" class="btn-read-more">Xem chi tiết <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="d-flex justify-content-center mt-5">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <li class="page-item disabled"><a class="page-link" href="#"><i class="fa-solid fa-chevron-left"></i></a></li>
+                <li class="page-item active" aria-current="page"><span class="page-link" style="background-color: var(--dn-blue); border-color: var(--dn-blue);">1</span></li>
+                <li class="page-item"><a class="page-link" href="#" style="color: var(--dn-blue);">2</a></li>
+                <li class="page-item"><a class="page-link" href="#" style="color: var(--dn-blue);">3</a></li>
+                <li class="page-item"><a class="page-link" href="#" style="color: var(--dn-blue);"><i class="fa-solid fa-chevron-right"></i></a></li>
+            </ul>
+        </nav>
+    </div>
+
+</div>

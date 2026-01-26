@@ -1,0 +1,103 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thư viện của tôi - Đại Nam Uni</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="~/css/payback.css" rel="stylesheet" />
+</head>
+<body>
+    <nav class="client-navbar">
+        <div class="container navbar-content">
+            <div class="brand">
+                <div class="brand-logo"><i class="fa-solid fa-book-open"></i></div>
+                <span>Thư viện Đại Nam</span>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="active">Lịch sử mượn trả</a>
+                <a href="#">Sách đang quan tâm</a>
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Nguyen+Van+A&background=0D8ABC&color=fff" alt="User">
+                    <span>Nguyễn Văn A</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container main-wrapper">
+        <section class="stats-overview">
+            <div class="stat-card">
+                <div class="stat-icon icon-blue"><i class="fa-solid fa-book"></i></div>
+                <div class="stat-info">
+                    <h3 id="statTotal">0</h3>
+                    <p>Tổng lượt mượn</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon icon-yellow"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                <div class="stat-info">
+                    <h3 id="statActive">0</h3>
+                    <p>Đang mượn</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon icon-red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div class="stat-info">
+                    <h3 id="statOverdue">0</h3>
+                    <p>Quá hạn</p>
+                </div>
+            </div>
+            <div class="stat-card icon-red-bg text-white">
+                <div class="stat-icon text-white"><i class="fa-solid fa-money-bill-wave"></i></div>
+                <div class="stat-info">
+                    <h3 id="statFine">0 đ</h3>
+                    <p>Tổng tiền phạt</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-box">
+            <div class="box-header">
+                <h2>Lịch sử giao dịch sách</h2>
+            </div>
+
+            <div class="toolbar">
+                <div class="search-wrapper">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="searchInput" placeholder="Tìm tên sách hoặc mã sách...">
+                </div>
+                <div class="filter-wrapper">
+                    <select id="statusFilter">
+                        <option value="all">Tất cả trạng thái</option>
+                        <option value="DangMuon">Đang mượn</option>
+                        <option value="DaTra">Đã trả</option>
+                        <option value="QuaHan">Quá hạn</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="modern-table-container">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>Thông tin Sách</th>
+                            <th>Ngày Mượn</th>
+                            <th>Hạn Trả</th>
+                            <th>Ngày Trả</th>
+                            <th class="text-center">Trạng Thái</th>
+                            <th class="text-right">Tiền Phạt</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="loanTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    <script src="~/js/paypack.js"></script>
+</body>
+</html>
