@@ -53,6 +53,11 @@ namespace QuanLyThuVienTruongHoc.Controllers
             [Bind("BookId,Title,Author,Publisher,CategoryId,PublishYear,Quantity,Location")] Book book,
             IFormFile? imageFile)
         {
+            if (book.PublishYear > DateTime.Now.Year)
+            {
+                ModelState.AddModelError("PublishYear", "Năm xuất bản không được lớn hơn năm hiện tại");
+            }
+
             if (!ModelState.IsValid)
             {
                 ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Name", book.CategoryId);
@@ -75,6 +80,7 @@ namespace QuanLyThuVienTruongHoc.Controllers
             {
                 _context.Add(book);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = $"Thêm sách '{book.Title}' thành công!";
                 return RedirectToAction(nameof(Index));
             }
             catch (DbUpdateException ex)
@@ -91,9 +97,6 @@ namespace QuanLyThuVienTruongHoc.Controllers
                 ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Name", book.CategoryId);
                 return View(book);
             }
-
-            TempData["SuccessMessage"] = $"Thêm sách '{book.Title}' thành công!";
-            return RedirectToAction(nameof(Index));
         }
 
         // GET: Books/Edit/5
@@ -120,6 +123,15 @@ namespace QuanLyThuVienTruongHoc.Controllers
 
             var dbBook = await _context.Books.AsNoTracking().FirstOrDefaultAsync(b => b.BookId == id);
             if (dbBook == null) return NotFound();
+
+            if (book.PublishYear > DateTime.Now.Year)
+            {
+                ModelState.AddModelError("PublishYear", "Năm xuất bản không được lớn hơn năm hiện tại");
+            }
+
+            // Fix: Giữ nguyên thể loại cũ vì form Edit không có field này
+            book.CategoryId = dbBook.CategoryId;
+            ModelState.Remove("CategoryId");
 
             if (!ModelState.IsValid)
             {
@@ -153,6 +165,7 @@ namespace QuanLyThuVienTruongHoc.Controllers
             {
                 _context.Update(book);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = $"Cập nhật sách '{book.Title}' thành công!";
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -189,6 +202,7 @@ namespace QuanLyThuVienTruongHoc.Controllers
 
                 _context.Books.Remove(book);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = $"Đã xóa sách '{book.Title}' thành công!";
             }
 
             return RedirectToAction(nameof(Index));

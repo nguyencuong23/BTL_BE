@@ -33,7 +33,7 @@ namespace QuanLyThuVienTruongHoc.Models.Library
 
         [Required(ErrorMessage = "Năm xuất bản không được để trống")]
         [Display(Name = "Năm xuất bản")]
-        [Range(1900, 2100, ErrorMessage = "Năm xuất bản phải từ 1900 đến 2100")]
+        [Range(1450, 9999, ErrorMessage = "Năm xuất bản không hợp lệ")]
         public int PublishYear { get; set; }
 
         [Required(ErrorMessage = "Số lượng không được để trống")]
@@ -45,7 +45,7 @@ namespace QuanLyThuVienTruongHoc.Models.Library
         [StringLength(50, ErrorMessage = "Vị trí kệ không được vượt quá 50 ký tự")]
         [Display(Name = "Vị trí kệ")]
         public string? Location { get; set; }
-        
+
         [StringLength(255)]
         [Display(Name = "Ảnh")]
         public string? ImagePath { get; set; } // lưu đường dẫn ảnh upload

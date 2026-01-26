@@ -63,6 +63,7 @@ namespace QuanLyThuVienTruongHoc.Controllers
             {
                 _context.Add(loan);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Tạo phiếu mượn thành công!";
                 return RedirectToAction(nameof(Index));
             }
             ViewData["BookId"] = new SelectList(_context.Books, "BookId", "BookId", loan.BookId);
@@ -118,6 +119,7 @@ namespace QuanLyThuVienTruongHoc.Controllers
                         throw;
                     }
                 }
+                TempData["SuccessMessage"] = "Cập nhật phiếu mượn thành công!";
                 return RedirectToAction(nameof(Index));
             }
             ViewData["BookId"] = new SelectList(_context.Books, "BookId", "BookId", loan.BookId);
@@ -157,6 +159,7 @@ namespace QuanLyThuVienTruongHoc.Controllers
             }
 
             await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Xóa phiếu mượn thành công!";
             return RedirectToAction(nameof(Index));
         }
 

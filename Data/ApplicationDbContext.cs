@@ -28,6 +28,10 @@ namespace QuanLyThuVienTruongHoc.Data
                 .Property(u => u.TotalFine)
                 .HasPrecision(18, 0);
 
+            modelBuilder.Entity<Loan>()
+                .Property(l => l.Fine)
+                .HasPrecision(18, 0);
+
             modelBuilder.Entity<User>()
                 .HasIndex(x => x.Email)
                 .IsUnique();
