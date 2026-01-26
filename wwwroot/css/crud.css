@@ -293,6 +293,17 @@
   color: var(--text-primary);
 }
 
+/* Delete Details Card - Special card for delete pages */
+.delete-details-card {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
 /* Delete Warning Card */
 .delete-warning-card {
   background: #fff;
@@ -301,6 +312,7 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border: 2px solid #ef4444;
   max-width: 600px;
+  margin: 0 auto;
 }
 
 .delete-warning-card .warning-icon {

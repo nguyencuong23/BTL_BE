@@ -26,7 +26,7 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label asp-for="CategoryId" class="form-label">
-                        <i class="fas fa-tag me-1"></i>Mã thể loại
+                        <i class="fas fa-tag me-1"></i>Mã thể loại <span class="text-danger">*</span>
                     </label>
                     <input asp-for="CategoryId" class="form-control" readonly />
                     <small class="text-muted">Mã thể loại không thể thay đổi</small>
@@ -71,11 +71,5 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script>
-        $(document).ready(function() {
-            if ($('.validation-summary-errors').length > 0) {
-                $('.alert-danger').show();
-            }
-        });
-    </script>
+    <script src="~/js/form-utils.js"></script>
 }

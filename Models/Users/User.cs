@@ -29,21 +29,25 @@ namespace QuanLyThuVienTruongHoc.Models.Users
         [Display(Name = "Họ và tên")]
         public string FullName { get; set; } = null!;
 
+        [Required(ErrorMessage = "Email không được để trống")]
         [Display(Name = "Email")]
         [EmailAddress(ErrorMessage = "Email không hợp lệ (VD: example@domain.com)")]
         [RegularExpression(@"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$", ErrorMessage = "Email phải đúng định dạng (VD: example@domain.com)")]
         [StringLength(100)]
         public string? Email { get; set; }
 
+        [Required(ErrorMessage = "Số điện thoại không được để trống")]
         [Display(Name = "Số điện thoại")]
         [RegularExpression(@"^(0|\+84)\d{9,10}$", ErrorMessage = "Số điện thoại không hợp lệ (VD: 0912345678 hoặc +84912345678)")]
         [StringLength(15)]
         public string? PhoneNumber { get; set; }
 
+        [Required(ErrorMessage = "Vai trò không được để trống")]
         [Display(Name = "Vai trò")]
         [Range(1, 2, ErrorMessage = "Vai trò không hợp lệ")]
         public int Role { get; set; } // 1-Admin, 2-User
 
+        [Required(ErrorMessage = "Trạng thái không được để trống")]
         [Display(Name = "Trạng thái")]
         public bool IsActive { get; set; } = true;
 

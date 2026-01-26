@@ -14,7 +14,7 @@ namespace QuanLyThuVienTruongHoc.Models.Library
         [Key]
         public int LoanId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Vui lòng chọn độc giả")]
         [Display(Name = "Độc giả")]
         public int UserId { get; set; }
 

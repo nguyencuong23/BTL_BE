@@ -24,7 +24,7 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label asp-for="UserId" class="form-label">
-                        <i class="fas fa-user me-1"></i>Người mượn <span class="text-danger">*</span>
+                        <i class="fas fa-user me-1"></i>Độc giả <span class="text-danger">*</span>ười mượn <span class="text-danger">*</span>
                     </label>
                     <select asp-for="UserId" class="form-select" asp-items="ViewBag.UserId">
                         <option value="">-- Chọn người mượn --</option>
@@ -35,7 +35,7 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label asp-for="BookId" class="form-label">
-                        <i class="fas fa-book me-1"></i>Sách <span class="text-danger">*</span>
+                        <i class="fas fa-book me-1"></i>Sách <span class="text-danger">*</span> <span class="text-danger">*</span>
                     </label>
                     <select asp-for="BookId" class="form-select" asp-items="ViewBag.BookId">
                         <option value="">-- Chọn sách --</option>
@@ -68,7 +68,7 @@
             <div class="col-md-4">
                 <div class="mb-3">
                     <label asp-for="ReturnDate" class="form-label">
-                        <i class="fas fa-calendar-times me-1"></i>Ngày trả thực tế
+                        <i class="fas fa-calendar-times me-1"></i>Ngày hẹn trả <span class="text-danger">*</span> thực tế
                     </label>
                     <input asp-for="ReturnDate" class="form-control" type="date" />
                     <span asp-validation-for="ReturnDate" class="text-danger"></span>
@@ -101,19 +101,6 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script>
-        $(document).ready(function() {
-            if ($('.validation-summary-errors').length > 0) {
-                $('.alert-danger').show();
-            }
-            
-            // Set default dates
-            var today = new Date().toISOString().split('T')[0];
-            if (!$('#BorrowDate').val()) {
-                $('#BorrowDate').val(today);
-            }
-            
-            // Auto calculate due date (14 days from borrow date)
             $('#BorrowDate').change(function() {
                 var borrowDate = new Date($(this).val());
                 borrowDate.setDate(borrowDate.getDate() + 14);

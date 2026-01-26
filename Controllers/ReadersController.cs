@@ -64,6 +64,12 @@ namespace QuanLyThuVienTruongHoc.Controllers
             // Remove Role from ModelState vì chúng ta set manual
             ModelState.Remove("Role");
 
+            // StudentCode is required for Readers
+            if (string.IsNullOrWhiteSpace(user.StudentCode))
+            {
+                ModelState.AddModelError("StudentCode", "Mã sinh viên không được để trống");
+            }
+
             // Server-side format validation
             if (!string.IsNullOrEmpty(user.Email))
             {
@@ -169,6 +175,12 @@ namespace QuanLyThuVienTruongHoc.Controllers
             ModelState.Remove("Role");
             // Remove PasswordHash from ModelState - we preserve it from existing user
             ModelState.Remove("PasswordHash");
+
+            // StudentCode is required for Readers
+            if (string.IsNullOrWhiteSpace(user.StudentCode))
+            {
+                ModelState.AddModelError("StudentCode", "Mã sinh viên không được để trống");
+            }
 
             // Server-side format validation
             if (!string.IsNullOrEmpty(user.Email))

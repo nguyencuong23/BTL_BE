@@ -26,7 +26,7 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label asp-for="BookId" class="form-label">
-                        <i class="fas fa-barcode me-1"></i>Mã sách
+                        <i class="fas fa-barcode me-1"></i>Mã sách <span class="text-danger">*</span>
                     </label>
                     <input asp-for="BookId" class="form-control" readonly />
                     <small class="text-muted">Mã sách không thể thay đổi</small>
@@ -58,7 +58,7 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label asp-for="Publisher" class="form-label">
-                        <i class="fas fa-building me-1"></i>Nhà xuất bản
+                        <i class="fas fa-building me-1"></i>Nhà xuất bản <span class="text-danger">*</span>
                     </label>
                     <input asp-for="Publisher" class="form-control" maxlength="150" />
                     <span asp-validation-for="Publisher" class="text-danger"></span>
@@ -67,27 +67,17 @@
         </div>
 
         <div class="row">
-            <div class="col-md-4">
-                <div class="mb-3">
-                    <label asp-for="CategoryId" class="form-label">
-                        <i class="fas fa-tag me-1"></i>Thể loại <span class="text-danger">*</span>
-                    </label>
-                    <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryId"></select>
-                    <span asp-validation-for="CategoryId" class="text-danger"></span>
-                </div>
-            </div>
-
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="mb-3">
                     <label asp-for="PublishYear" class="form-label">
-                        <i class="fas fa-calendar me-1"></i>Năm xuất bản
+                        <i class="fas fa-calendar me-1"></i>Năm xuất bản <span class="text-danger">*</span>
                     </label>
                     <input asp-for="PublishYear" class="form-control" type="number" />
                     <span asp-validation-for="PublishYear" class="text-danger"></span>
                 </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="mb-3">
                     <label asp-for="Quantity" class="form-label">
                         <i class="fas fa-sort-numeric-up me-1"></i>Số lượng <span class="text-danger">*</span>
@@ -100,7 +90,7 @@
 
         <div class="mb-3">
             <label asp-for="Location" class="form-label">
-                <i class="fas fa-map-marker-alt me-1"></i>Vị trí kệ
+                <i class="fas fa-map-marker-alt me-1"></i>Vị trí kệ <span class="text-danger">*</span>
             </label>
             <input asp-for="Location" class="form-control" maxlength="50" />
             <span asp-validation-for="Location" class="text-danger"></span>

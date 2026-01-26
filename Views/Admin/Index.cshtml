@@ -260,49 +260,14 @@
 @section Scripts {
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
-    // Loan Status Donut Chart
-    const loanCtx = document.getElementById('loanStatusChart');
-    new Chart(loanCtx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Đã trả', 'Đang mượn', 'Quá hạn'],
-            datasets: [{
-                data: [@ViewBag.TotalReturned, @ViewBag.TotalBorrowing, @ViewBag.TotalOverdue],
-                backgroundColor: ['#28a745', '#ffc107', '#dc3545'],
-                borderWidth: 0
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false }
-            }
-        }
-    });
-
-    // Categories Chart
-    const catCtx = document.getElementById('categoriesChart');
-    new Chart(catCtx, {
-        type: 'doughnut',
-        data: {
-            labels: @Html.Raw(ViewBag.CategoryLabels ?? "[]"),
-            datasets: [{
-                data: @Html.Raw(ViewBag.CategoryData ?? "[]"),
-                backgroundColor: ['#2563eb', '#16a34a', '#f59e0b', '#dc2626', '#8b5cf6', '#ec4899'],
-                borderWidth: 0
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { 
-                    display: true,
-                    position: 'bottom'
-                }
-            }
-        }
-    });
+    // Pass server data to JavaScript
+    window.adminData = {
+        totalReturned: @ViewBag.TotalReturned,
+        totalBorrowing: @ViewBag.TotalBorrowing,
+        totalOverdue: @ViewBag.TotalOverdue,
+        categoryLabels: @Html.Raw(ViewBag.CategoryLabels ?? "[]"),
+        categoryData: @Html.Raw(ViewBag.CategoryData ?? "[]")
+    };
 </script>
+<script src="~/js/admin-dashboard.js"></script>
 }
