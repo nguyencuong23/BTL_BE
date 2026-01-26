@@ -1,0 +1,76 @@
+@model QuanLyThuVienTruongHoc.Models.Library.Book
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Xóa sách";
+}
+
+<!-- Page Header -->
+<div class="page-header">
+    <h1><i class="fas fa-exclamation-triangle me-2 text-danger"></i>Xác nhận xóa</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách
+    </a>
+</div>
+
+<!-- Delete Warning Card -->
+<div class="delete-warning-card">
+    <div class="warning-icon">
+        <i class="fas fa-exclamation-triangle"></i>
+    </div>
+
+    <h3>Cảnh báo: Xóa sách</h3>
+    <p class="lead">Bạn có chắc chắn muốn xóa cuốn sách này không?<br />
+    <strong>Hành động này không thể hoàn tác!</strong></p>
+
+    <div class="row mt-4 justify-content-center">
+        <div class="col-md-8">
+            <div class="delete-details-card">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <strong>Mã sách:</strong>
+                        <span class="badge bg-danger ms-2">@Model.BookId</span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Tên sách:</strong>
+                        <span>@Model.Title</span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Tác giả:</strong>
+                        <span>@Model.Author</span>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Thể loại:</strong>
+                        @if (Model.Category != null)
+                        {
+                            <span>@Model.Category.Name</span>
+                        }
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Số lượng:</strong>
+                        <span class="badge bg-warning">@Model.Quantity cuốn</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            @if (!string.IsNullOrEmpty(Model.ImagePath))
+            {
+                <img src="@Model.ImagePath" alt="@Model.Title" class="img-fluid rounded shadow-sm" />
+            }
+        </div>
+    </div>
+
+    <form asp-action="Delete" method="post" class="mt-4">
+        <input type="hidden" asp-for="BookId" />
+        <div class="d-flex gap-2 justify-content-center">
+            <button type="submit" class="btn btn-danger btn-lg">
+                <i class="fas fa-trash me-2"></i>Xác nhận xóa
+            </button>
+            <a asp-action="Index" class="btn btn-secondary btn-lg">
+                <i class="fas fa-times me-2"></i>Hủy bỏ
+            </a>
+        </div>
+    </form>
+</div>

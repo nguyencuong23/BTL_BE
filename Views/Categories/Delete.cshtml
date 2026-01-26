@@ -1,0 +1,63 @@
+@model QuanLyThuVienTruongHoc.Models.Library.Category
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Xóa thể loại sách";
+}
+
+<!-- Page Header -->
+<div class="page-header">
+    <h1><i class="fas fa-exclamation-triangle me-2 text-danger"></i>Xác nhận xóa</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách
+    </a>
+</div>
+
+<!-- Delete Warning Card -->
+<div class="delete-warning-card">
+    <div class="warning-icon">
+        <i class="fas fa-exclamation-triangle"></i>
+    </div>
+
+    <h3>Cảnh báo: Xóa thể loại sách</h3>
+    <p class="lead">Bạn có chắc chắn muốn xóa thể loại sách này không?<br />
+    <strong>Hành động này không thể hoàn tác!</strong></p>
+
+    <div class="delete-details-card mt-4">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <strong>Mã thể loại:</strong>
+                <span class="badge bg-danger ms-2">@Model.CategoryId</span>
+            </li>
+            <li class="list-group-item">
+                <strong>Tên thể loại:</strong>
+                <span>@Model.Name</span>
+            </li>
+            <li class="list-group-item">
+                <strong>Mô tả:</strong>
+                <span>
+                    @if (string.IsNullOrEmpty(Model.Description))
+                    {
+                        <span class="text-muted fst-italic">Chưa có mô tả</span>
+                    }
+                    else
+                    {
+                        @Model.Description
+                    }
+                </span>
+            </li>
+        </ul>
+    </div>
+
+    <form asp-action="Delete" method="post" class="mt-4">
+        <input type="hidden" asp-for="CategoryId" />
+        <div class="d-flex gap-2 justify-content-center">
+            <button type="submit" class="btn btn-danger btn-lg">
+                <i class="fas fa-trash me-2"></i>Xác nhận xóa
+            </button>
+            <a asp-action="Index" class="btn btn-secondary btn-lg">
+                <i class="fas fa-times me-2"></i>Hủy bỏ
+            </a>
+        </div>
+    </form>
+</div>

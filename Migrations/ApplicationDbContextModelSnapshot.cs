@@ -22,54 +22,110 @@ namespace QuanLyThuVienTruongHoc.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("QuanLyThuVienTruongHoc.Models.Library.Loan", b =>
+            modelBuilder.Entity("QuanLyThuVienTruongHoc.Models.Library.Book", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<string>("BookId")
+                        .HasMaxLength(7)
+                        .HasColumnType("nvarchar(7)");
+
+                    b.Property<string>("Author")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("CategoryId")
+                        .IsRequired()
+                        .HasMaxLength(2)
+                        .HasColumnType("nvarchar(2)");
+
+                    b.Property<string>("ImagePath")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Location")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("PublishYear")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Publisher")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
-                    b.HasIndex("UserId");
+                    b.HasKey("BookId");
 
-                    b.ToTable("Loan");
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("Books");
                 });
 
-            modelBuilder.Entity("QuanLyThuVienTruongHoc.Models.Users.SinhVien", b =>
+            modelBuilder.Entity("QuanLyThuVienTruongHoc.Models.Library.Category", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.Property<string>("CategoryId")
+                        .HasMaxLength(2)
+                        .HasColumnType("nvarchar(2)");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("HoVaTen")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("MaSinhVien")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.HasKey("CategoryId");
 
-                    b.Property<DateTime>("NgaySinh")
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("QuanLyThuVienTruongHoc.Models.Library.Loan", b =>
+                {
+                    b.Property<int>("LoanId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LoanId"));
+
+                    b.Property<string>("BookId")
+                        .IsRequired()
+                        .HasMaxLength(7)
+                        .HasColumnType("nvarchar(7)");
+
+                    b.Property<DateTime>("BorrowDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("SoDienThoai")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("DueDate")
+                        .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.Property<decimal>("Fine")
+                        .HasColumnType("decimal(18,2)");
 
-                    b.ToTable("SinhViens");
+                    b.Property<DateTime?>("ReturnDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("LoanId");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Loans");
                 });
 
             modelBuilder.Entity("QuanLyThuVienTruongHoc.Models.Users.User", b =>
@@ -97,7 +153,8 @@ namespace QuanLyThuVienTruongHoc.Migrations
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("PhoneNumber")
                         .HasMaxLength(15)
@@ -106,9 +163,13 @@ namespace QuanLyThuVienTruongHoc.Migrations
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
+                    b.Property<string>("StudentCode")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
                     b.Property<decimal>("TotalFine")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(18)
+                        .HasColumnType("decimal(18,0)");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -117,14 +178,62 @@ namespace QuanLyThuVienTruongHoc.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasFilter("[Email] IS NOT NULL");
+
+                    b.HasIndex("PhoneNumber")
+                        .IsUnique()
+                        .HasFilter("[PhoneNumber] IS NOT NULL");
+
+                    b.HasIndex("StudentCode")
+                        .IsUnique()
+                        .HasFilter("[StudentCode] IS NOT NULL");
+
+                    b.HasIndex("Username")
+                        .IsUnique();
+
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("QuanLyThuVienTruongHoc.Models.Library.Book", b =>
+                {
+                    b.HasOne("QuanLyThuVienTruongHoc.Models.Library.Category", "Category")
+                        .WithMany("Books")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("QuanLyThuVienTruongHoc.Models.Library.Loan", b =>
                 {
-                    b.HasOne("QuanLyThuVienTruongHoc.Models.Users.User", null)
+                    b.HasOne("QuanLyThuVienTruongHoc.Models.Library.Book", "Book")
                         .WithMany("Loans")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("QuanLyThuVienTruongHoc.Models.Users.User", "User")
+                        .WithMany("Loans")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("QuanLyThuVienTruongHoc.Models.Library.Book", b =>
+                {
+                    b.Navigation("Loans");
+                });
+
+            modelBuilder.Entity("QuanLyThuVienTruongHoc.Models.Library.Category", b =>
+                {
+                    b.Navigation("Books");
                 });
 
             modelBuilder.Entity("QuanLyThuVienTruongHoc.Models.Users.User", b =>

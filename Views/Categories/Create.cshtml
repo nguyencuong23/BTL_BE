@@ -1,0 +1,76 @@
+@model QuanLyThuVienTruongHoc.Models.Library.Category
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Thêm thể loại sách mới";
+}
+
+<!-- Page Header -->
+<div class="page-header">
+    <h1><i class="fas fa-plus-circle me-2"></i>Thêm thể loại sách mới</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách
+    </a>
+</div>
+
+<!-- Form Card -->
+<div class="form-card">
+    <div class="card-header">
+        <h4><i class="fas fa-edit me-2"></i>Thông tin thể loại</h4>
+    </div>
+
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="All" class="alert alert-danger" role="alert" style="display:none;"></div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label asp-for="CategoryId" class="form-label">
+                        <i class="fas fa-tag me-1"></i>Mã thể loại <span class="text-danger">*</span>
+                    </label>
+                    <input asp-for="CategoryId" class="form-control" maxlength="2" 
+                           placeholder="VD: IT, VH, KT (2 ký tự)" />
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    <small class="text-muted">Nhập đúng 2 ký tự. VD: IT (Công nghệ thông tin)</small>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label">
+                        <i class="fas fa-heading me-1"></i>Tên thể loại <span class="text-danger">*</span>
+                    </label>
+                    <input asp-for="Name" class="form-control" maxlength="100" 
+                           placeholder="VD: Công nghệ thông tin" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label">
+                <i class="fas fa-align-left me-1"></i>Mô tả
+            </label>
+            <textarea asp-for="Description" class="form-control" rows="4" maxlength="500" 
+                      placeholder="Nhập mô tả chi tiết về thể loại sách này..."></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+            <small class="text-muted">Tối đa 500 ký tự</small>
+        </div>
+
+        <hr />
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-2"></i>Lưu thể loại
+            </button>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-times me-2"></i>Hủy bỏ
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/form-utils.js"></script>
+}

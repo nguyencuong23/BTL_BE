@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using QuanLyThuVienTruongHoc.Models.Library;
 using QuanLyThuVienTruongHoc.Models.Users;
 
 namespace QuanLyThuVienTruongHoc.Data
@@ -10,16 +11,34 @@ namespace QuanLyThuVienTruongHoc.Data
         {
         }
 
-        public DbSet<SinhVien> SinhViens { get; set; }
-        public DbSet<User> Users { get; set; }
+        public DbSet<User> Users { get; set; } = null!;
+        public DbSet<Category> Categories { get; set; } = null!;
+        public DbSet<Book> Books { get; set; } = null!;
+        public DbSet<Loan> Loans { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<User>()
+                .HasIndex(u => u.Username)
+                .IsUnique();
+
+            modelBuilder.Entity<User>()
                 .Property(u => u.TotalFine)
-                .HasPrecision(18, 2);
+                .HasPrecision(18, 0);
+
+            modelBuilder.Entity<User>()
+                .HasIndex(x => x.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<User>()
+                .HasIndex(x => x.PhoneNumber)
+                .IsUnique();
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.StudentCode)
+                .IsUnique()
+                .HasFilter("[StudentCode] IS NOT NULL");
         }
     }
 }

@@ -49,6 +49,16 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Recreate database and seed data
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    //await db.Database.EnsureDeletedAsync();
+    //await db.Database.EnsureCreatedAsync();
+}
+
+await DbSeeder.SeedAsync(app.Services);
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Client}/{action=Index}/{id?}");
