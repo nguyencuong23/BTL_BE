@@ -1,0 +1,160 @@
+@model IEnumerable<QuanLyThuVienTruongHoc.Models.Library.Loan>
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản lý mượn trả sách";
+}
+
+<!-- Page Header -->
+<div class="page-header">
+    <h1><i class="fas fa-exchange-alt me-2"></i>Quản lý mượn trả sách</h1>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="fas fa-plus me-2"></i>Tạo phiếu mượn mới
+    </a>
+</div>
+
+<!-- Search and Filter Bar -->
+<div class="search-bar">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <div class="search-input-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" class="form-control search-input" 
+                       placeholder="Tìm kiếm theo mã phiếu, tên người mượn, tên sách...">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <select id="statusFilter" class="form-select">
+                <option value="all">Tất cả trạng thái</option>
+                <option value="dangmuon">Đang mượn</option>
+                <option value="datra">Đã trả</option>
+                <option value="quahan">Quá hạn</option>
+            </select>
+        </div>
+        <div class="col-md-3 text-end">
+            <span class="text-muted">Tổng số: <strong>@Model.Count()</strong> phiếu</span>
+        </div>
+    </div>
+</div>
+
+<!-- Data Table -->
+<div class="table-card">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th style="width: 80px;">Mã phiếu</th>
+                    <th>Người mượn</th>
+                    <th>Sách</th>
+                    <th>Ngày mượn</th>
+                    <th>Hạn trả</th>
+                    <th>Ngày trả</th>
+                    <th class="text-center">Trạng thái</th>
+                    <th class="text-end">Tiền phạt</th>
+                    <th style="width: 180px;" class="text-center">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        var status = "dangmuon"; // default
+                        if (item.ReturnDate.HasValue)
+                        {
+                            status = "datra";
+                        }
+                        else if (item.DueDate < DateTime.Now)
+                        {
+                            status = "quahan";
+                        }
+                        
+                        <tr>
+                            <td><span class="badge bg-secondary">#@item.LoanId</span></td>
+                            <td>
+                                @if (item.User != null)
+                                {
+                                    <strong>@item.User.FullName</strong><br />
+                                    <small class="text-muted">@item.User.StudentCode</small>
+                                }
+                            </td>
+                            <td>
+                                @if (item.Book != null)
+                                {
+                                    <span>@item.Book.Title</span><br />
+                                    <small class="text-muted">@item.Book.BookId</small>
+                                }
+                            </td>
+                            <td><small>@item.BorrowDate.ToString("dd/MM/yyyy")</small></td>
+                            <td><small>@item.DueDate.ToString("dd/MM/yyyy")</small></td>
+                            <td>
+                                @if (item.ReturnDate.HasValue)
+                                {
+                                    <small>@item.ReturnDate.Value.ToString("dd/MM/yyyy")</small>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                @if (status == "datra")
+                                {
+                                    <span class="badge badge-returned">Đã trả</span>
+                                }
+                                else if (status == "quahan")
+                                {
+                                    <span class="badge badge-overdue">Quá hạn</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-borrowing">Đang mượn</span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                @if (item.Fine > 0)
+                                {
+                                    <span class="text-danger fw-bold">@item.Fine.ToString("N0") đ</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="btn-group-actions justify-content-center">
+                                    <a asp-action="Details" asp-route-id="@item.LoanId" 
+                                       class="btn btn-sm btn-action-details" title="Xem chi tiết">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@item.LoanId" 
+                                       class="btn btn-sm btn-action-edit" title="Chỉnh sửa">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.LoanId" 
+                                       class="btn btn-sm btn-action-delete" title="Xóa">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="9">
+                            <div class="empty-state">
+                                <i class="fas fa-book-reader"></i>
+                                <p>Chưa có phiếu mượn nào</p>
+                                <a asp-action="Create" class="btn btn-primary">
+                                    <i class="fas fa-plus me-2"></i>Tạo phiếu mượn đầu tiên
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

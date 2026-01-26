@@ -19,54 +19,7 @@ namespace QuanLyThuVienTruongHoc.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        public IActionResult Register()
-        {
-            if (User.Identity != null && User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("Index", "Client");
-            }
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Register(RegisterViewModel model)
-        {
-            if (!ModelState.IsValid)
-                return View(model);
-
-            if (await _context.Users.AnyAsync(u => u.Username == model.Username))
-            {
-                ModelState.AddModelError("", "Tên đăng nhập đã tồn tại");
-                return View(model);
-            }
-
-            if (await _context.Users.AnyAsync(u => u.Email == model.Email))
-                ModelState.AddModelError(nameof(model.Email), "Email đã tồn tại");
-
-            if (await _context.Users.AnyAsync(u => u.PhoneNumber == model.PhoneNumber))
-                ModelState.AddModelError(nameof(model.PhoneNumber), "Số điện thoại đã tồn tại");
-
-            var hasher = new PasswordHasher<User>();
-
-            var user = new User
-            {
-                Username = model.Username,
-                FullName = model.FullName,
-                Email = model.Email,
-                PhoneNumber = model.PhoneNumber,
-                Role = 2,
-                IsActive = true,
-                TotalFine = 0
-            };
-
-            user.PasswordHash = hasher.HashPassword(user, model.Password);
-
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction("Login");
-        }
+        // Register removed - users are now created via Admin panel only
 
         [HttpGet]
         public IActionResult Login()

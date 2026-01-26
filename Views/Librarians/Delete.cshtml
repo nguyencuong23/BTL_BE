@@ -1,0 +1,56 @@
+@model QuanLyThuVienTruongHoc.Models.Users.User
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Xóa thủ thư";
+}
+
+<div class="page-header">
+    <h1><i class="fas fa-exclamation-triangle me-2 text-danger"></i>Xác nhận xóa</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách
+    </a>
+</div>
+
+<div class="delete-warning-card">
+    <div class="warning-icon">
+        <i class="fas fa-exclamation-triangle"></i>
+    </div>
+
+    <h3>Cảnh báo: Xóa thủ thư</h3>
+    <p class="lead">Bạn có chắc chắn muốn xóa thủ thư này không?<br />
+    <strong>Hành động này không thể hoàn tác!</strong></p>
+
+    <div class="delete-details-card mt-4">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <strong>ID:</strong>
+                <span class="badge bg-danger ms-2">#@Model.Id</span>
+            </li>
+            <li class="list-group-item">
+                <strong>Tên đăng nhập:</strong>
+                <span>@Model.Username</span>
+            </li>
+            <li class="list-group-item">
+                <strong>Họ tên:</strong>
+                <span>@Model.FullName</span>
+            </li>
+            <li class="list-group-item">
+                <strong>Email:</strong>
+                <span>@Model.Email</span>
+            </li>
+        </ul>
+    </div>
+
+    <form asp-action="Delete" method="post" class="mt-4">
+        <input type="hidden" asp-for="Id" />
+        <div class="d-flex gap-2 justify-content-center">
+            <button type="submit" class="btn btn-danger btn-lg">
+                <i class="fas fa-trash me-2"></i>Xác nhận xóa
+            </button>
+            <a asp-action="Index" class="btn btn-secondary btn-lg">
+                <i class="fas fa-times me-2"></i>Hủy bỏ
+            </a>
+        </div>
+    </form>
+</div>

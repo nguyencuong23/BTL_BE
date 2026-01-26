@@ -1,16 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using QuanLyThuVienTruongHoc.Data;
 using QuanLyThuVienTruongHoc.Models.ViewModels;
 using System.Security.Claims;
 
 namespace QuanLyThuVienTruongHoc.Controllers
 {
-    /// <summary>
-    /// Controller quản lý trang Thông tin cá nhân
-    /// Yêu cầu đăng nhập mới được truy cập
-    /// </summary>
     [Authorize]
     public class ProfileController : Controller
     {
