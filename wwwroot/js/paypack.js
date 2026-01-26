@@ -1,166 +1,179 @@
-﻿document.addEventListener('DOMContentLoaded', () => {
-    const loanTableBody = document.getElementById('loanTableBody');
-    const searchInput = document.getElementById('searchInput');
-    const statusFilter = document.getElementById('statusFilter');
-    const statTotal = document.getElementById('statTotal');
-    const statActive = document.getElementById('statActive');
-    const statOverdue = document.getElementById('statOverdue');
-    const statFine = document.getElementById('statFine');
+﻿const API_URL = '/api/library';
+const grid = document.getElementById('book-grid');
+const modal = document.getElementById('modal-overlay');
+const closeBtn = document.querySelector('.close-btn');
+const form = document.getElementById('borrow-form');
+const groupSelect = document.getElementById('group-filter');
+let booksData = [];
 
-    let loansData = [];
-    const mockData = [
-        {
-            id: 1,
-            bookName: "Nhập môn ReactJS & Redux",
-            bookCode: "IT-0003",
-            borrowDate: "05/12/2025",
-            dueDate: "19/12/2025",
-            returnDate: "06/12/2025",
-            status: "DaTra",
-            fine: 0
-        },
-        {
-            id: 2,
-            bookName: "Tiếng Anh chuyên ngành CNTT",
-            bookCode: "NN-0007",
-            borrowDate: "24/09/2025",
-            dueDate: "08/10/2025",
-            returnDate: "02/10/2025",
-            status: "DaTra",
-            fine: 0
-        },
-        {
-            id: 4,
-            bookName: "Kinh tế vi mô căn bản",
-            bookCode: "KT-0001",
-            borrowDate: "10/11/2025",
-            dueDate: "24/11/2025",
-            returnDate: "03/12/2025",
-            status: "DaTra",
-            fine: 45000
-        },
-        {
-            id: 6,
-            bookName: "Clean Code - Mã sạch",
-            bookCode: "IT-0009",
-            borrowDate: "20/01/2026",
-            dueDate: "03/02/2026",
-            returnDate: null,
-            status: "DangMuon",
-            fine: 0
-        },
-        {
-            id: 7,
-            bookName: "Giải tích 1",
-            bookCode: "KH-0012",
-            borrowDate: "01/01/2026",
-            dueDate: "15/01/2026",
-            returnDate: null,
-            status: "QuaHan",
-            fine: 20000
+document.addEventListener("DOMContentLoaded", () => {
+    fetchBooks();
+    setupDate();
+});
+
+async function fetchBooks() {
+    try {
+        const res = await fetch(`${API_URL}/books`);
+        if (!res.ok) throw new Error();
+        booksData = await res.json();
+        if (groupSelect) {
+            populateGroupDropdown(booksData);
         }
-    ];
+        render(booksData);
+    } catch (e) {
+        grid.innerHTML = '<div style="text-align:center; padding:50px;">Không thể kết nối đến máy chủ.</div>';
+    }
+}
 
-    async function fetchLoans() {
-        try {
-            loanTableBody.innerHTML = `
-                <tr>
-                    <td colspan="7" class="text-center" style="padding: 40px;">
-                        <i class="fa-solid fa-spinner fa-spin" style="font-size: 24px; color: var(--primary-color);"></i>
-                    </td>
-                </tr>`;
+function detectGroup(bookId) {
+    if (!bookId || bookId.length < 2) return "Khác";
+    const prefix = bookId.substring(0, 2).toUpperCase();
+    switch (prefix) {
+        case 'IT': return "Công nghệ & Lập trình";
+        case 'KH': return "Khoa học Tự nhiên";
+        case 'KT': return "Kinh tế & Tài chính";
+        case 'NN': return "Ngôn ngữ & Văn hóa";
+        case 'VH': return "Văn học & Nghệ thuật";
+        default: return "Tài liệu Tổng hợp";
+    }
+}
 
-            await new Promise(resolve => setTimeout(resolve, 800));
-
-            loansData = mockData;
-            calculateStats(loansData);
-            renderTable(loansData);
-        } catch (error) {
-            console.error(error);
-            loanTableBody.innerHTML = '<tr><td colspan="7" class="text-center text-danger">Lỗi tải dữ liệu</td></tr>';
-        }
+function render(books) {
+    grid.innerHTML = '';
+    if (!books.length) {
+        grid.innerHTML = '<div style="text-align:center;">Không tìm thấy sách.</div>';
+        return;
     }
 
-    function calculateStats(data) {
-        const total = data.length;
-        const active = data.filter(item => item.status === 'DangMuon').length;
-        const overdue = data.filter(item => item.status === 'QuaHan').length;
-        const totalFine = data.reduce((sum, item) => sum + item.fine, 0);
+    const groups = books.reduce((acc, book) => {
+        const groupName = detectGroup(book.id);
+        if (!acc[groupName]) acc[groupName] = [];
+        acc[groupName].push(book);
+        return acc;
+    }, {});
 
-        statTotal.textContent = total;
-        statActive.textContent = active;
-        statOverdue.textContent = overdue;
-        statFine.textContent = formatCurrency(totalFine);
-    }
+    const sortedGroupNames = Object.keys(groups).sort();
 
-    function renderStatus(status) {
-        if (status === 'DaTra') return '<span class="status-badge status-success"><i class="fa-solid fa-check me-1"></i> Đã trả</span>';
-        if (status === 'DangMuon') return '<span class="status-badge status-warning"><i class="fa-regular fa-clock me-1"></i> Đang mượn</span>';
-        if (status === 'QuaHan') return '<span class="status-badge status-danger"><i class="fa-solid fa-circle-exclamation me-1"></i> Quá hạn</span>';
-        return '<span>-</span>';
-    }
+    sortedGroupNames.forEach((groupName, index) => {
+        const groupBooks = groups[groupName];
 
-    function formatCurrency(amount) {
-        if (!amount || amount === 0) return '0 đ';
-        return amount.toLocaleString('vi-VN') + ' đ';
-    }
+        const section = document.createElement('div');
+        section.className = 'category-block';
+        section.style.animationDelay = `${index * 0.1}s`;
 
-    function renderTable(data) {
-        loanTableBody.innerHTML = '';
+        let html = `
+            <div class="category-header">
+                <h2 class="category-title">${groupName}</h2>
+                <span class="book-count">${groupBooks.length} items</span>
+            </div>
+            <div class="book-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 30px;">
+        `;
 
-        if (data.length === 0) {
-            loanTableBody.innerHTML = `
-                <tr>
-                    <td colspan="7" class="text-center" style="padding: 40px; color: var(--text-light);">
-                        <i class="fa-solid fa-box-open" style="font-size: 32px; margin-bottom: 10px;"></i><br>
-                        Bạn chưa có lịch sử mượn sách nào.
-                    </td>
-                </tr>`;
-            return;
-        }
+        groupBooks.forEach(book => {
+            const isAvail = book.available > 0;
+            const img = book.image || "https://via.placeholder.com/300x450/302b63/ffffff?text=DNU";
 
-        data.forEach(item => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>
-                    <div class="book-info">
-                        <span class="book-name">${item.bookName}</span>
-                        <span class="book-code">${item.bookCode}</span>
+            html += `
+                <div class="book-card">
+                    <img src="${img}" class="book-img">
+                    <div class="book-meta">
+                        <div style="font-weight:bold;">${book.title}</div>
+                        <div style="font-size:0.8rem; opacity:0.8;">${book.author}</div>
                     </div>
-                </td>
-                <td><span class="date-info">${item.borrowDate}</span></td>
-                <td><span class="date-info" style="color: ${item.status === 'QuaHan' ? 'var(--danger)' : 'inherit'}">${item.dueDate}</span></td>
-                <td><span class="${item.returnDate ? 'date-info' : 'date-faded'}">${item.returnDate || 'Chưa trả'}</span></td>
-                <td class="text-center">${renderStatus(item.status)}</td>
-                <td class="text-right">
-                    <span class="${item.fine > 0 ? 'fine-amount' : ''}">${formatCurrency(item.fine)}</span>
-                </td>
-                <td class="text-center">
-                    <button class="btn-detail" title="Xem chi tiết">
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </button>
-                </td>
+                    <div class="book-overlay">
+                        <h3 style="font-family:'Playfair Display'; color:#ffeaa7;">${book.title}</h3>
+                        <p>ID: ${book.id}</p>
+                        <p>SL: ${isAvail ? book.available : 0}</p>
+                        <button class="btn-borrow" ${!isAvail ? 'disabled' : ''} onclick="openModal('${book.id}', '${book.title}')">
+                            ${isAvail ? 'Mượn Ngay' : 'Đã Hết'}
+                        </button>
+                    </div>
+                </div>
             `;
-            loanTableBody.appendChild(row);
-        });
-    }
-
-    function filterData() {
-        const searchTerm = searchInput.value.toLowerCase();
-        const statusValue = statusFilter.value;
-
-        let filteredData = loansData.filter(item => {
-            const matchesSearch = item.bookName.toLowerCase().includes(searchTerm) || item.bookCode.toLowerCase().includes(searchTerm);
-            const matchesStatus = statusValue === 'all' || item.status === statusValue;
-            return matchesSearch && matchesStatus;
         });
 
-        renderTable(filteredData);
+        html += `</div>`;
+        section.innerHTML = html;
+        grid.appendChild(section);
+    });
+}
+
+function populateGroupDropdown(books) {
+    const uniqueGroups = new Set();
+    books.forEach(book => uniqueGroups.add(detectGroup(book.id)));
+    groupSelect.innerHTML = '<option value="all">Tất cả Khoa</option>';
+    Array.from(uniqueGroups).sort().forEach(groupName => {
+        const option = document.createElement('option');
+        option.value = groupName;
+        option.innerText = groupName;
+        groupSelect.appendChild(option);
+    });
+}
+
+window.filterByGroup = () => {
+    const selectedGroup = groupSelect.value;
+    if (selectedGroup === 'all') {
+        render(booksData);
+    } else {
+        const filtered = booksData.filter(book => detectGroup(book.id) === selectedGroup);
+        render(filtered);
     }
+};
 
-    searchInput.addEventListener('input', filterData);
-    statusFilter.addEventListener('change', filterData);
+window.filterBooks = () => {
+    const term = document.getElementById('search-input').value.toLowerCase().trim();
+    const filtered = booksData.filter(b => b.title.toLowerCase().includes(term));
+    render(filtered);
+    if (groupSelect) groupSelect.value = 'all';
+};
 
+window.openModal = (id, title) => {
+    document.getElementById('book-id').value = id;
+    document.getElementById('book-highlight').innerHTML = `<p style="color:#00d2ff; text-align:center; margin-bottom:20px;">Sách chọn: <strong>${title}</strong></p>`;
+    modal.style.display = 'block';
+};
 
-    fetchLoans();
+closeBtn.onclick = () => modal.style.display = 'none';
+window.onclick = (e) => { if (e.target == modal) modal.style.display = 'none'; }
+
+function setupDate() {
+    const dt = new Date();
+    dt.setDate(dt.getDate() + 1);
+    document.getElementById('return-date').min = dt.toISOString().split('T')[0];
+}
+
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.querySelector('.btn-submit');
+    const oldText = btn.innerText;
+    btn.innerText = 'Đang gửi...';
+    btn.disabled = true;
+
+    const payload = {
+        BookId: document.getElementById('book-id').value,
+        StudentId: document.getElementById('student-id').value,
+        ReturnDate: document.getElementById('return-date').value
+    };
+
+    try {
+        const res = await fetch(`${API_URL}/borrow`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+            alert("Đăng ký thành công!");
+            modal.style.display = 'none';
+            form.reset();
+            fetchBooks();
+        } else {
+            alert("Lỗi: " + await res.text());
+        }
+    } catch (err) {
+        alert("Lỗi kết nối.");
+    } finally {
+        btn.innerText = oldText;
+        btn.disabled = false;
+    }
 });

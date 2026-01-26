@@ -30,6 +30,7 @@
                 }
                 <a asp-controller="Client" asp-action="News">Tin tức</a>
                 <a asp-controller="Client" asp-action="Payback" >Mượn trả sách</a>
+                <a asp-controller="Client" asp-action="Privacy">Chi tiết sách - tài liệu</a>
 
                 @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                 {
