@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using QuanLyThuVienTruongHoc.Data;
 using QuanLyThuVienTruongHoc.Helpers;
 using QuanLyThuVienTruongHoc.Models.Users;
-using QuanLyThuVienTruongHoc.ViewModels;
+using QuanLyThuVienTruongHoc.Models.ViewModels;
 
 namespace QuanLyThuVienTruongHoc.Controllers
 {
@@ -20,12 +20,24 @@ namespace QuanLyThuVienTruongHoc.Controllers
         }
 
         // GET: Librarians
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            var librarians = await _context.Users
-                .Where(u => u.Role == 1)
-                .ToListAsync();
-            return View(librarians);
+            var usersQuery = _context.Users.Where(u => u.Role == 1).AsQueryable();
+
+            // Sort
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewData["CurrentSort"] = sortOrder;
+
+            usersQuery = sortOrder switch
+            {
+                "name_desc" => usersQuery.OrderByDescending(u => u.FullName).ThenBy(u => u.Id),
+                "Date" => usersQuery.OrderBy(u => u.CreatedAt).ThenBy(u => u.Id),
+                "date_desc" => usersQuery.OrderByDescending(u => u.CreatedAt).ThenByDescending(u => u.Id),
+                _ => usersQuery.OrderBy(u => u.FullName).ThenBy(u => u.Id),
+            };
+
+            return View(await usersQuery.ToListAsync());
         }
 
         // GET: Librarians/Details/5
@@ -293,6 +305,14 @@ namespace QuanLyThuVienTruongHoc.Controllers
             }
 
             // Update password (admin feature - no current password check)
+            // Validate strict password
+            var passwordRegex = new System.Text.RegularExpressions.Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$");
+            if (!passwordRegex.IsMatch(model.NewPassword))
+            {
+                ModelState.AddModelError("NewPassword", "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt");
+                return View(model);
+            }
+
             var hasher = new PasswordHasher<User>();
             user.PasswordHash = hasher.HashPassword(user, model.NewPassword);
 

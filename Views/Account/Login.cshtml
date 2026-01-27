@@ -15,7 +15,15 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="~/css/login.css" rel="stylesheet" />
+    <style>
+        .validation-summary-errors ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+    </style>
 </head>
 <body>
 
@@ -76,6 +84,7 @@
 
                 <form asp-controller="Account" asp-action="Login" method="post" autocomplete="off">
                     @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3 text-center" style="font-size: 0.9rem;"></div>
 
                     <label class="form-label">Tài khoản</label>
                     <input name="Username" class="form-control" placeholder="Mã số sinh viên / GV" required>
@@ -117,6 +126,25 @@
     </div>
 
 <script src="~/js/login.js"></script>
+
+@if (ViewBag.Locked == true)
+{
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Tài khoản bị khóa!',
+            text: 'Tài khoản của bạn đã bị khóa do nợ tiền phạt quá hạn. Vui lòng liên hệ thủ thư để giải quyết.',
+            confirmButtonColor: '#d33',
+            confirmButtonText: 'Đã hiểu',
+            heightAuto: false,
+            scrollbarPadding: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '@Url.Action("Logout", "Account")';
+            }
+        });
+    </script>
+}
 
 </body>
 </html>

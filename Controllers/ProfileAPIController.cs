@@ -54,7 +54,7 @@ namespace QuanLyThuVienTruongHoc.Controllers
         /// PUT: api/profile
         /// </summary>
         [HttpPut]
-        public async Task<IActionResult> UpdateProfile(UpdateProfileVM model)
+        public async Task<IActionResult> UpdateProfile(UpdateProfileViewModel model)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null) return Unauthorized();

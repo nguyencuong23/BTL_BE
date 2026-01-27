@@ -24,7 +24,7 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label asp-for="UserId" class="form-label">
-                        <i class="fas fa-user me-1"></i>Độc giả <span class="text-danger">*</span>ười mượn <span class="text-danger">*</span>
+                        <i class="fas fa-user me-1"></i>Người mượn <span class="text-danger">*</span>
                     </label>
                     <select asp-for="UserId" class="form-select" asp-items="ViewBag.UserId">
                         <option value="">-- Chọn người mượn --</option>
@@ -35,7 +35,7 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label asp-for="BookId" class="form-label">
-                        <i class="fas fa-book me-1"></i>Sách <span class="text-danger">*</span> <span class="text-danger">*</span>
+                        <i class="fas fa-book me-1"></i>Sách <span class="text-danger">*</span>
                     </label>
                     <select asp-for="BookId" class="form-select" asp-items="ViewBag.BookId">
                         <option value="">-- Chọn sách --</option>
@@ -46,7 +46,7 @@
         </div>
 
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="mb-3">
                     <label asp-for="BorrowDate" class="form-label">
                         <i class="fas fa-calendar me-1"></i>Ngày mượn <span class="text-danger">*</span>
@@ -55,20 +55,10 @@
                     <span asp-validation-for="BorrowDate" class="text-danger"></span>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="mb-3">
-                    <label asp-for="DueDate" class="form-label">
-                        <i class="fas fa-calendar-check me-1"></i>Hạn trả <span class="text-danger">*</span>
-                    </label>
-                    <input asp-for="DueDate" class="form-control" type="date" />
-                    <span asp-validation-for="DueDate" class="text-danger"></span>
-                    <small class="text-muted">Thường là 14-30 ngày kể từ ngày mượn</small>
-                </div>
-            </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="mb-3">
                     <label asp-for="ReturnDate" class="form-label">
-                        <i class="fas fa-calendar-times me-1"></i>Ngày hẹn trả <span class="text-danger">*</span> thực tế
+                        <i class="fas fa-calendar-times me-1"></i>Ngày hẹn trả thực tế
                     </label>
                     <input asp-for="ReturnDate" class="form-control" type="date" />
                     <span asp-validation-for="ReturnDate" class="text-danger"></span>
@@ -77,14 +67,7 @@
             </div>
         </div>
 
-        <div class="mb-3">
-            <label asp-for="Fine" class="form-label">
-                <i class="fas fa-money-bill me-1"></i>Tiền phạt (VNĐ)
-            </label>
-            <input asp-for="Fine" class="form-control" type="number" min="0" value="0" />
-            <span asp-validation-for="Fine" class="text-danger"></span>
-            <small class="text-muted">Mặc định là 0. Hệ thống tự tính nếu trả muộn</small>
-        </div>
+
 
         <hr />
 
@@ -101,11 +84,5 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-            $('#BorrowDate').change(function() {
-                var borrowDate = new Date($(this).val());
-                borrowDate.setDate(borrowDate.getDate() + 14);
-                $('#DueDate').val(borrowDate.toISOString().split('T')[0]);
-            });
-        });
-    </script>
+
 }

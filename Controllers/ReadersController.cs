@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using QuanLyThuVienTruongHoc.Data;
 using QuanLyThuVienTruongHoc.Helpers;
 using QuanLyThuVienTruongHoc.Models.Users;
-using QuanLyThuVienTruongHoc.ViewModels;
+using QuanLyThuVienTruongHoc.Models.ViewModels;
 
 namespace QuanLyThuVienTruongHoc.Controllers
 {
@@ -20,12 +20,36 @@ namespace QuanLyThuVienTruongHoc.Controllers
         }
 
         // GET: Readers
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? status, string sortOrder)
         {
-            var readers = await _context.Users
-                .Where(u => u.Role == 2)
-                .ToListAsync();
-            return View(readers);
+            var usersQuery = _context.Users.Where(u => u.Role == 2).Include(u => u.Loans).AsQueryable();
+
+            // Filter by Status
+            if (status.HasValue)
+            {
+                // status: 1=Active, 0=Locked (mapping logic: IsActive=true -> 1, false -> 0)
+                // UI dropdown: 1=Hoạt động, 0=Khóa
+                bool isActive = status.Value == 1;
+                usersQuery = usersQuery.Where(u => u.IsActive == isActive);
+                ViewData["CurrentStatus"] = status.Value;
+            }
+
+            // Sort
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewData["CurrentSort"] = sortOrder;
+
+            usersQuery = sortOrder switch
+            {
+                "name_desc" => usersQuery.OrderByDescending(u => u.FullName).ThenBy(u => u.Id),
+                // Cũ nhất: Xếp theo Ngày tạo tăng dần. Nếu trùng ngày => ID nhỏ hơn đứng trước (nhập trước).
+                "Date" => usersQuery.OrderBy(u => u.CreatedAt).ThenBy(u => u.Id),
+                // Mới nhất: Xếp theo Ngày tạo giảm dần. Nếu trùng ngày => ID lớn hơn đứng trước (nhập sau).
+                "date_desc" => usersQuery.OrderByDescending(u => u.CreatedAt).ThenByDescending(u => u.Id),
+                _ => usersQuery.OrderBy(u => u.FullName).ThenBy(u => u.Id),
+            };
+
+            return View(await usersQuery.ToListAsync());
         }
 
         // GET: Readers/Details/5
@@ -37,6 +61,7 @@ namespace QuanLyThuVienTruongHoc.Controllers
             }
 
             var user = await _context.Users
+                .Include(u => u.Loans)
                 .FirstOrDefaultAsync(m => m.Id == id && m.Role == 2);
             if (user == null)
             {
@@ -301,6 +326,14 @@ namespace QuanLyThuVienTruongHoc.Controllers
             }
 
             // Update password (admin feature - no current password check)
+            // Validate strict password
+            var passwordRegex = new System.Text.RegularExpressions.Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$");
+            if (!passwordRegex.IsMatch(model.NewPassword))
+            {
+                ModelState.AddModelError("NewPassword", "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt");
+                return View(model);
+            }
+
             var hasher = new PasswordHasher<User>();
             user.PasswordHash = hasher.HashPassword(user, model.NewPassword);
 
@@ -317,6 +350,43 @@ namespace QuanLyThuVienTruongHoc.Controllers
                 ModelState.AddModelError("", "Lỗi khi đổi mật khẩu: " + ex.Message);
                 return View(model);
             }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PayFine(int userId, decimal amount)
+        {
+            var user = await _context.Users.Include(u => u.Loans).FirstOrDefaultAsync(u => u.Id == userId);
+            if (user == null || user.Role != 2)
+            {
+                return NotFound();
+            }
+
+            if (amount <= 0)
+            {
+                TempData["ErrorMessage"] = "Số tiền thanh toán không hợp lệ.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Cộng dồn vào PaidAmount
+            user.PaidAmount += amount;
+
+            // Tính lại TotalFine
+            var totalLoanFines = user.Loans.Sum(l => l.Fine);
+            user.TotalFine = totalLoanFines - user.PaidAmount;
+
+            // Mở khóa nếu nợ <= 50,000
+            if (user.TotalFine <= 50000 && !user.IsActive)
+            {
+                user.IsActive = true; 
+                // Note: user.IsActive could have been false manually, but here we assume it was due to fine
+            }
+
+            _context.Update(user);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = $"Đã thanh toán {amount:N0} đ. Số nợ còn lại: {user.TotalFine:N0} đ";
+            return RedirectToAction(nameof(Index));
         }
 
         private bool UserExists(int id)
