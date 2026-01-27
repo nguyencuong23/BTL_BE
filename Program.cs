@@ -69,7 +69,6 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// [QUAN TRỌNG] Kích hoạt CORS (Đặt giữa UseRouting và UseAuthentication)
 app.UseCors("AllowAll");
 
 app.UseAuthentication();
@@ -81,26 +80,13 @@ app.UseSession();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-<<<<<<< HEAD
     await db.Database.EnsureDeletedAsync();
-=======
-
-    // ⚠️ QUAN TRỌNG: Đã comment dòng xóa DB để tránh mất dữ liệu sách
-    // await db.Database.EnsureDeletedAsync(); 
-
-    // Tự động tạo DB nếu chưa có
->>>>>>> 25b3eca65f3b5c3111535b69461a10790e89d15b
     await db.Database.EnsureCreatedAsync();
 }
-
-// Seed dữ liệu mẫu (Admin, Sách...)
 await DbSeeder.SeedAsync(app.Services);
 
-// 7. Định tuyến (Routing)
-// [QUAN TRỌNG] MapControllers cho API hoạt động
 app.MapControllers();
 
-// Map Controller mặc định cho MVC
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Client}/{action=Index}/{id?}");
