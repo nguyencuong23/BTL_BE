@@ -1,10 +1,60 @@
-@{
-    ViewData["Title"] = "Privacy Policy";
-    Layout = "~/Views/Shared/_ClientLayout.cshtml";
-}
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thư Viện Số Đại Nam - Universe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="~/css/privacy.css">
+</head>
+<body>
 
-<div class="container">
-    <h1>@ViewData["Title"]</h1>
-    <p>Use this page to detail your site's privacy policy.</p>
-</div>
+    <div class="background-animate">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+        <div class="stars"></div>
+    </div>
 
+    <header class="glass-header">
+        <div class="container header-flex">
+            <div class="brand">
+                <div class="logo-glow"><i class="fas fa-book-open"></i></div>
+                <div class="brand-text">
+                    <h1>DNU LIBRARY</h1>
+                    <p>Khám phá tri thức vô tận</p>
+                </div>
+            </div>
+
+            <div class="tools-wrapper">
+                <div class="glass-input-group">
+                    <i class="fas fa-filter"></i>
+                    <select id="group-filter" onchange="filterByGroup()">
+                        <option value="all">Tất cả Khoa</option>
+                    </select>
+                </div>
+
+                <div class="glass-input-group">
+                    <input type="text" id="search-input" placeholder="Tìm kiếm sách...">
+                    <button onclick="searchBooks()"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div id="library-content">
+            <div class="loading-state">
+                <div class="spinner-planet"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="glass-footer">
+        <p>&copy; 2024 Đại học Đại Nam | Designed with Mạnh Cửng, Thế Việt, Hồng Chút <i class="fas fa-heart" style="color: #ff6b6b;"></i></p>
+    </footer>
+
+    <script src="~/js/privacy.js"></script>
+</body>
+</html>

@@ -1,0 +1,458 @@
+﻿:root {
+    --primary-color: #6c5ce7;
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --text-white: #ffffff;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(125deg, #0f0c29, #302b63, #24243e, #4b134f);
+    background-size: 400% 400%;
+    /* Tối ưu animation nền */
+    animation: gradientBG 20s ease infinite;
+    color: var(--text-white);
+    overflow-x: hidden;
+    /* Gợi ý trình duyệt tối ưu render */
+    will-change: background-position;
+}
+
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* --- TỐI ƯU BACKGROUND SHAPES --- */
+.background-animate .shape {
+    position: fixed;
+    border-radius: 50%;
+    /* Blur tĩnh thì ok, nhưng hạn chế animate blur */
+    filter: blur(80px);
+    z-index: -1;
+    animation: floatShape 10s infinite alternate cubic-bezier(0.45, 0.05, 0.55, 0.95);
+    opacity: 0.6;
+    /* Đẩy việc render sang GPU */
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+.shape-1 {
+    width: 400px;
+    height: 400px;
+    background: #00d2ff;
+    top: -10%;
+    left: -10%;
+}
+
+.shape-2 {
+    width: 300px;
+    height: 300px;
+    background: #ff0099;
+    bottom: 10%;
+    right: 5%;
+    animation-delay: 2s;
+}
+
+.shape-3 {
+    width: 250px;
+    height: 250px;
+    background: #ee0979;
+    top: 40%;
+    left: 40%;
+    animation-delay: 4s;
+}
+
+@keyframes floatShape {
+    from {
+        transform: translate3d(0, 0, 0);
+    }
+
+    to {
+        transform: translate3d(40px, 60px, 0);
+    }
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* --- HEADER --- */
+.glass-header {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px); /* Hỗ trợ Safari */
+    border-bottom: 1px solid var(--glass-border);
+    padding: 15px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo-glow {
+    font-size: 2.5rem;
+    color: #fff;
+    filter: drop-shadow(0 0 10px #00d2ff);
+    /* Chỉ animate filter khi cần thiết */
+    animation: glow 3s ease-in-out infinite alternate;
+    will-change: filter;
+}
+
+@keyframes glow {
+    from {
+        filter: drop-shadow(0 0 5px #fff);
+    }
+
+    to {
+        filter: drop-shadow(0 0 20px #00d2ff);
+    }
+}
+
+.brand-text h1 {
+    margin: 0;
+    font-family: 'Playfair Display', serif;
+    letter-spacing: 2px;
+    font-size: 1.8rem;
+}
+
+.brand-text p {
+    margin: 0;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    opacity: 0.8;
+}
+
+.tools-wrapper {
+    display: flex;
+    gap: 20px;
+}
+
+/* --- INPUTS --- */
+.glass-input-group {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--glass-border);
+    border-radius: 50px;
+    padding: 8px 25px;
+    display: flex;
+    align-items: center;
+    /* Chỉ transition những thuộc tính cụ thể */
+    transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+}
+
+    .glass-input-group:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255,255,255,0.5);
+        transform: scale(1.05);
+    }
+
+    .glass-input-group input, .glass-input-group select {
+        background: transparent;
+        border: none;
+        outline: none;
+        color: white;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.95rem;
+    }
+
+        .glass-input-group select option {
+            background: #2d3436;
+            color: white;
+        }
+
+    .glass-input-group button {
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        font-size: 1.1rem;
+    }
+
+    .glass-input-group i {
+        margin-right: 10px;
+        color: #a29bfe;
+    }
+
+/* --- CATEGORY BLOCK --- */
+.category-block {
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 50px;
+    margin-top: 40px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.8s ease-out backwards; /* Backwards để tránh giật lúc đầu */
+    position: relative;
+    overflow: hidden;
+    /* Giúp trình duyệt không vẽ lại layout bên ngoài khi animation bên trong chạy */
+    contain: content;
+}
+
+    .category-block::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
+        transform: skewX(-25deg);
+        animation: shine 6s infinite; /* Tăng thời gian để đỡ tốn GPU */
+        pointer-events: none; /* Không chặn chuột */
+    }
+
+@keyframes shine {
+    0% {
+        left: -100%;
+    }
+
+    20% {
+        left: 200%;
+    }
+
+    100% {
+        left: 200%;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 15px;
+}
+
+.category-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: #fff;
+    margin: 0;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.book-count {
+    background: rgba(255,255,255,0.1);
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    border: 1px solid var(--glass-border);
+}
+
+/* --- BOOK CARDS (Tối ưu nặng nhất ở đây) --- */
+.book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 30px;
+}
+
+.book-card {
+    position: relative;
+    height: 360px;
+    border-radius: 15px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    /* Chỉ transition transform và shadow, tránh transition all */
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+    /* Khử răng cưa khi transform */
+    -webkit-font-smoothing: antialiased;
+    transform: translateZ(0);
+}
+
+    .book-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        z-index: 10;
+    }
+
+.book-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease, filter 0.5s ease;
+    will-change: transform;
+}
+
+.book-card:hover .book-img {
+    transform: scale(1.1);
+    filter: brightness(0.6);
+}
+
+.book-basic-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(to top, #000 0%, transparent 100%);
+    padding: 20px;
+    box-sizing: border-box;
+    transition: opacity 0.3s ease;
+}
+
+.book-card:hover .book-basic-info {
+    opacity: 0;
+}
+
+.book-title-text {
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    margin-bottom: 5px;
+}
+
+.book-author-text {
+    font-size: 0.85rem;
+    color: #dfe6e9;
+}
+
+/* --- OVERLAY CHI TIẾT --- */
+.book-detail-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(108, 92, 231, 0.9); /* Dùng màu đặc hơn chút thay vì blur quá nhiều */
+    backdrop-filter: blur(4px); /* Giảm blur radius xuống để nhẹ hơn */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    pointer-events: none; /* Tránh click nhầm khi ẩn */
+}
+
+.book-card:hover .book-detail-overlay {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+}
+
+.overlay-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: #ffeaa7;
+    margin-bottom: 15px;
+    border-bottom: 2px solid rgba(255,255,255,0.2);
+    padding-bottom: 10px;
+}
+
+.overlay-meta {
+    font-size: 0.9rem;
+    margin: 5px 0;
+    color: #fff;
+}
+
+.overlay-desc {
+    font-size: 0.85rem;
+    margin-top: 15px;
+    line-height: 1.6;
+    color: #dfe6e9;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* --- TAGS & SPINNER --- */
+.status-tag {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    z-index: 5;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.available {
+    background: linear-gradient(45deg, #00b894, #00cec9);
+}
+
+.out-of-stock {
+    background: linear-gradient(45deg, #d63031, #ff7675);
+}
+
+.glass-footer {
+    text-align: center;
+    padding: 30px;
+    color: rgba(255,255,255,0.6);
+    font-size: 0.9rem;
+    border-top: 1px solid var(--glass-border);
+    margin-top: 50px;
+}
+
+.spinner-planet {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #a29bfe, #6c5ce7);
+    box-shadow: 0 0 20px #6c5ce7;
+    position: relative;
+    animation: planetSpin 1.5s linear infinite;
+    margin: 50px auto;
+}
+
+    .spinner-planet::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 80px;
+        height: 20px;
+        border: 2px solid rgba(255,255,255,0.3);
+        border-radius: 50%;
+        transform: translate(-50%, -50%) rotate(-20deg);
+    }
+
+@keyframes planetSpin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

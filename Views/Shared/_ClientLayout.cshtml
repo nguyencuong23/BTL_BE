@@ -23,8 +23,14 @@
 
             <nav class="d-flex align-items-center gap-3">
                 <a asp-controller="Client" asp-action="Index">Trang chủ</a>
-                <a asp-controller="Client" asp-action="TraCuu">Tra cứu</a>
+
+                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    <a asp-controller="Client" asp-action="TraCuu">Tra cứu</a>
+                }
                 <a asp-controller="Client" asp-action="News">Tin tức</a>
+                <a asp-controller="Client" asp-action="Payback" >Mượn trả sách</a>
+                <a asp-controller="Client" asp-action="Privacy">Chi tiết sách - tài liệu</a>
 
                 @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                 {
@@ -38,12 +44,11 @@
                 <div class="ms-auto d-flex align-items-center">
                     @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
-                        <!-- Dropdown menu cho người dùng đã đăng nhập -->
                         <div class="dropdown">
-                            <button class="btn btn-link text-white text-decoration-none dropdown-toggle d-flex align-items-center gap-2 dropdown-toggle-custom" 
-                                    type="button" 
-                                    id="userDropdown" 
-                                    data-bs-toggle="dropdown" 
+                            <button class="btn btn-link text-white text-decoration-none dropdown-toggle d-flex align-items-center gap-2 dropdown-toggle-custom"
+                                    type="button"
+                                    id="userDropdown"
+                                    data-bs-toggle="dropdown"
                                     aria-expanded="false">
                                 <i class="fa fa-user"></i>
                                 <span>@User.Identity.Name</span>

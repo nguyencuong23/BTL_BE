@@ -15,304 +15,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
-
-    <style>
-        :root {
-            --book-width: 900px; /* Tăng chiều rộng để khi mở ra sách to đẹp hơn */
-            --page-width: 450px; /* Một trang */
-            --book-height: 600px;
-            --book-depth: 40px;
-            --cover-color: #1a2d42;
-            --paper-color: #fdfbf7;
-            --orange: #f58220;
-            --blue: #003366;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Roboto', sans-serif;
-            background: #111;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            perspective: 2500px;
-        }
-
-        .bg-scene {
-            position: absolute;
-            inset: 0;
-            background: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=2000&auto=format&fit=crop') no-repeat center center;
-            background-size: cover;
-            filter: blur(5px) brightness(0.3);
-            z-index: -1;
-        }
-
-        /* --- CONTAINER CHÍNH --- */
-        .book-container {
-            position: relative;
-            width: var(--page-width);
-            height: var(--book-height);
-            transform-style: preserve-3d;
-            transform: rotateX(10deg);
-            transition: transform 1s;
-        }
-
-            /* Khi mở sách (Hiện Đăng ký), dịch chuyển container để sách nằm giữa màn hình */
-            .book-container.show-register {
-                transform: translateX(225px) rotateX(5deg); /* Dịch sang phải 1/2 trang */
-            }
-
-        /* --- CÁC TRANG --- */
-
-        /* 1. TRANG CỐ ĐỊNH (BÊN PHẢI - FORM ĐĂNG KÝ) */
-        .static-page {
-            position: absolute;
-            inset: 0;
-            background: var(--paper-color);
-            background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
-            border-radius: 4px 12px 12px 4px;
-            /* Luôn nằm ở vị trí gốc */
-            z-index: 1;
-            padding: 40px 30px;
-            display: flex;
-            flex-direction: column;
-            box-shadow: inset 10px 0 30px rgba(0,0,0,0.1);
-            visibility: hidden !important;
-        }
-
-        /* Hiển thị static-page khi chuyển sang đăng ký */
-        .book-container.show-register .static-page {
-            visibility: visible !important;
-        }
-
-        /* 2. TRANG LẬT (BÊN TRÁI/PHẢI - FORM ĐĂNG NHẬP) */
-        .flipping-page {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            transform-origin: left; /* Lật từ gáy trái */
-            transform-style: preserve-3d;
-            transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1);
-            z-index: 100;
-        }
-
-        /* TRẠNG THÁI LẬT: Xoay -180 độ sang trái */
-        .book-container.show-register .flipping-page {
-            transform: rotateY(-180deg);
-        }
-
-        /* MẶT TRƯỚC (LOGIN) */
-        .page-front {
-            position: absolute;
-            inset: 0;
-            background: var(--paper-color);
-            background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
-            backface-visibility: hidden; /* Ẩn khi lật ra sau */
-            padding: 40px 30px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            border-right: 1px solid #ddd;
-            border-radius: 4px 12px 12px 4px;
-            box-shadow: 5px 0 15px rgba(0,0,0,0.1);
-        }
-
-        /* MẶT SAU (TRANG TRÍ - Bên trái khi mở sách) */
-        .page-back {
-            position: absolute;
-            inset: 0;
-            background: #f4f1ea;
-            transform: rotateY(180deg); /* Quay ngược lại để khớp */
-            backface-visibility: hidden;
-            border-radius: 12px 4px 4px 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px;
-            text-align: center;
-            box-shadow: inset -10px 0 20px rgba(0,0,0,0.1);
-            pointer-events: none;
-        }
-
-        /* 3. BÌA SAU CÙNG (Tạo độ dày) */
-        .back-cover {
-            position: absolute;
-            inset: 0;
-            background: var(--cover-color);
-            transform: translateZ(-20px); /* Lùi lại */
-            border-radius: 6px 14px 14px 6px;
-            box-shadow: 20px 20px 50px rgba(0,0,0,0.6);
-            z-index: 0;
-        }
-
-        /* --- FORM STYLES --- */
-        form {
-            position: relative;
-            z-index: 150;
-        }
-
-        .header-text {
-            text-align: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #e5e5e5;
-            padding-bottom: 10px;
-        }
-
-            .header-text h2 {
-                font-family: 'Cinzel', serif;
-                color: var(--blue);
-                font-weight: 700;
-                font-size: 28px;
-                margin: 0;
-            }
-
-            .header-text span {
-                font-size: 13px;
-                color: #888;
-                text-transform: uppercase;
-                letter-spacing: 2px;
-            }
-
-        .form-label {
-            font-size: 12px;
-            font-weight: 700;
-            color: #555;
-            text-transform: uppercase;
-            margin-bottom: 2px;
-            display: block;
-        }
-
-        .form-control {
-            background: #fff;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            padding: 8px 10px;
-            font-size: 14px;
-            margin-bottom: 12px;
-            width: 100%;
-            position: relative;
-            z-index: 160;
-        }
-
-            .form-control:focus {
-                border-color: var(--orange);
-                box-shadow: 0 0 5px rgba(245, 130, 32, 0.3);
-                outline: none;
-            }
-
-        .btn-main {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: white;
-            margin-top: 10px;
-            cursor: pointer !important;
-            transition: .3s;
-            position: relative;
-            z-index: 200;
-            pointer-events: auto !important;
-        }
-
-        .btn-login {
-            background: var(--blue);
-        }
-
-            .btn-login:hover {
-                background: #002244;
-                transform: translateY(-2px);
-            }
-
-        .btn-register {
-            background: var(--orange);
-        }
-
-            .btn-register:hover {
-                background: #d96e10;
-                transform: translateY(-2px);
-            }
-
-        .switch-btn {
-            margin-top: auto;
-            text-align: center;
-            color: #666;
-            font-size: 14px;
-            cursor: pointer;
-            transition: .3s;
-            padding-top: 10px;
-        }
-
-            .switch-btn:hover {
-                color: var(--orange);
-                text-decoration: underline;
-            }
-
-        /* Icon trang trí */
-        .deco-icon {
-            font-size: 50px;
-            color: #ccc;
-            margin-bottom: 15px;
-        }
-
-        /* Nút Tab bên cạnh */
-        .page-tab {
-            position: absolute;
-            right: -35px;
-            top: 80px;
-            width: 35px;
-            height: 110px;
-            background: var(--blue);
-            color: white;
-            border-radius: 0 8px 8px 0;
-            writing-mode: vertical-rl;
-            text-orientation: mixed;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 13px;
-            letter-spacing: 2px;
-            cursor: pointer;
-            box-shadow: 3px 3px 10px rgba(0,0,0,0.3);
-            transition: .3s;
-            z-index: 50;
-        }
-
-            .page-tab:hover {
-                width: 45px;
-                background: var(--orange);
-            }
-
-        /* RESPONSIVE */
-        @@media (max-width: 768px) {
-            .book-container {
-                width: 90%;
-                height: auto;
-                min-height: 550px;
-            }
-
-                .book-container.show-register {
-                    transform: none;
-                }
-            /* Mobile không cần dịch chuyển */
-            .flipping-page {
-                position: relative;
-                height: auto;
-            }
-
-            .book-container {
-                transform: scale(0.7) rotateX(10deg);
-            }
-        }
-    </style>
+    <link href="~/css/login.css" rel="stylesheet" />
 </head>
 <body>
 
@@ -324,47 +27,34 @@
 
         <div class="static-page">
             <div class="header-text">
-                <h2>ĐĂNG KÝ</h2>
-                <span>Thành viên mới</span>
+                <h2>KHÔI PHỤC</h2>
+                <span>Cấp lại mật khẩu</span>
             </div>
 
-            <form asp-controller="Account" asp-action="Register" method="post" autocomplete="off">
+            <div style="text-align: center; margin-bottom: 20px; color: #666; font-size: 13px;">
+                <p>Vui lòng nhập Mã số (SV/GV) và Email nhà trường để hệ thống gửi liên kết đặt lại mật khẩu.</p>
+            </div>
+
+            <form asp-controller="Account" asp-action="ForgotPassword" method="post" autocomplete="off" onsubmit="return handleRecovery(event)">
                 @Html.AntiForgeryToken()
 
                 <div class="row">
-                    <div class="col-6" style="padding-right: 8px;">
-                        <label class="form-label">Tên đăng nhập</label>
-                        <input id="Reg_Username" name="Username" class="form-control" required>
-                    </div>
-                    <div class="col-6" style="padding-left: 8px;">
-                        <label class="form-label">Họ và tên</label>
-                        <input id="Reg_FullName" name="FullName" class="form-control" required>
+                    <div class="col-12">
+                        <label class="form-label">Mã sinh viên / Giảng viên</label>
+                        <input id="Rec_Username" name="Username" class="form-control" placeholder="Ví dụ: SV2024..." required>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-6" style="padding-right: 8px;">
-                        <label class="form-label">Mật khẩu</label>
-                        <input id="Reg_Password" name="Password" type="password" class="form-control" required>
-                    </div>
-                    <div class="col-6" style="padding-left: 8px;">
-                        <label class="form-label">Nhập lại</label>
-                        <input id="Reg_ConfirmPassword" name="ConfirmPassword" type="password" class="form-control" required>
+                    <div class="col-12">
+                        <label class="form-label">Email đăng ký</label>
+                        <input id="Rec_Email" name="Email" type="email" class="form-control" placeholder="email@truongdaihoc.edu.vn" required>
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-6" style="padding-right: 8px;">
-                        <label class="form-label">Email</label>
-                        <input id="Reg_Email" name="Email" type="email" class="form-control" required>
-                    </div>
-                    <div class="col-6" style="padding-left: 8px;">
-                        <label class="form-label">Số điện thoại</label>
-                        <input id="Reg_PhoneNumber" name="PhoneNumber" class="form-control" required>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-main btn-register">HOÀN TẤT ĐĂNG KÝ</button>
+                <button type="submit" class="btn btn-main btn-register">
+                    <i class="fa-regular fa-paper-plane me-2"></i> GỬI YÊU CẦU
+                </button>
             </form>
 
             <div class="switch-btn" onclick="togglePage()">
@@ -387,16 +77,20 @@
                 <form asp-controller="Account" asp-action="Login" method="post" autocomplete="off">
                     @Html.AntiForgeryToken()
 
-                    <input name="Username" class="form-control" placeholder="Mã sinh viên / GV" required>
+                    <label class="form-label">Tài khoản</label>
+                    <input name="Username" class="form-control" placeholder="Mã số sinh viên / GV" required>
+
+                    <label class="form-label">Mật khẩu</label>
                     <input name="Password" type="password" class="form-control" placeholder="Mật khẩu" required>
+
                     <button type="submit" class="btn btn-main btn-login">ĐĂNG NHẬP</button>
                 </form>
 
                 <div class="switch-btn" onclick="togglePage()">
-                    Chưa có tài khoản? <b>Đăng ký</b> <i class="fa-solid fa-arrow-right ms-1"></i>
+                    Quên mật khẩu? <b>Lấy lại ngay</b> <i class="fa-solid fa-arrow-right ms-1"></i>
                 </div>
 
-                <div class="page-tab" onclick="togglePage()">ĐĂNG KÝ</div>
+                <div class="page-tab" onclick="togglePage()">QUÊN MK</div>
             </div>
 
             <div class="page-back">
@@ -404,7 +98,14 @@
                     <img src="https://upload.wikimedia.org/wikipedia/commons/d/d3/Logo_DAI_NAM.png" style="width: 80px; opacity: 0.8;">
                 </div>
                 <h3 style="font-family: 'Cinzel'; color: var(--blue); margin-bottom: 10px;">DAI NAM LIBRARY</h3>
-                <p style="color: #888; font-style: italic; font-size: 14px; margin-bottom: 30px;">"Tri thức là sức mạnh"</p>
+
+                <div style="font-size: 40px; color: var(--orange); margin: 20px 0;">
+                    <i class="fa-solid fa-book-open-reader"></i>
+                </div>
+
+                <p style="color: #555; font-size: 14px; padding: 0 20px;">
+                    "Hệ thống quản lý thư viện số.<br>Hỗ trợ tra cứu và mượn sách trực tuyến."
+                </p>
 
                 <div class="switch-btn" onclick="togglePage()">
                     <i class="fa-solid fa-rotate-right me-2"></i> Quay về Đăng nhập
@@ -415,8 +116,7 @@
 
     </div>
 
-    <script src="~/js/login.js"></script>
-
+<script src="~/js/login.js"></script>
 
 </body>
 </html>
