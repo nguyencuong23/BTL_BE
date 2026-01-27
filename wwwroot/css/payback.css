@@ -441,3 +441,70 @@ body {
     border-radius: 20px;
     font-weight: 600;
 }
+/* Layout cho 3 cột ngày */
+.date-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr; /* Chia 3 cột đều nhau */
+    gap: 15px; /* Khoảng cách giữa các cột */
+    margin-bottom: 20px;
+}
+
+.date-item {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Style chung cho Label và Input */
+.input-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #2c3e50;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.required {
+    color: #e74c3c; /* Màu đỏ cho dấu * */
+    margin-left: 3px;
+}
+
+.custom-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #bdc3c7;
+    border-radius: 6px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
+    color: #34495e;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+    .custom-input:focus {
+        border-color: var(--dnu-blue, #0984e3);
+        background: #fff;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(9, 132, 227, 0.1);
+    }
+
+    /* Input readonly (chỉ xem) sẽ tối màu hơn chút */
+    .custom-input[readonly] {
+        background-color: #e9ecef;
+        cursor: not-allowed;
+        color: #7f8c8d;
+    }
+
+/* Helper text nhỏ bên dưới */
+.helper-text {
+    font-size: 0.75rem;
+    color: #7f8c8d;
+    margin-top: 4px;
+    line-height: 1.2;
+}
+
+/* Responsive: Trên điện thoại sẽ dồn thành 1 cột */
+@media (max-width: 600px) {
+    .date-grid {
+        grid-template-columns: 1fr;
+    }
+}
