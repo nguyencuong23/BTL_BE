@@ -81,11 +81,15 @@ app.UseSession();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+<<<<<<< HEAD
+    await db.Database.EnsureDeletedAsync();
+=======
 
     // ⚠️ QUAN TRỌNG: Đã comment dòng xóa DB để tránh mất dữ liệu sách
     // await db.Database.EnsureDeletedAsync(); 
 
     // Tự động tạo DB nếu chưa có
+>>>>>>> 25b3eca65f3b5c3111535b69461a10790e89d15b
     await db.Database.EnsureCreatedAsync();
 }
 
