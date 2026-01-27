@@ -25,8 +25,11 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="wwwroot\css\NewFolder\" />
-    <Folder Include="wwwroot\uploads\books\" />
+    <Folder Include="wwwroot\images\books\IT\" />
+    <Folder Include="wwwroot\images\books\VH\" />
+    <Folder Include="wwwroot\images\books\KH\" />
+    <Folder Include="wwwroot\images\books\KT\" />
+    <Folder Include="wwwroot\images\books\NN\" />
   </ItemGroup>
 
 </Project>
