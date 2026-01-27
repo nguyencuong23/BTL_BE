@@ -25,7 +25,7 @@
 <section class="book-section">
     <div class="container">
         <h3 class="fw-bold text-center mb-4">
-            Kho tài liệu <br />và sách bán chạy nhất
+            Kho tài liệu <br />
         </h3>
 
         <div id="bookCarousel" class="carousel slide" data-bs-ride="carousel">
@@ -52,30 +52,36 @@
     <div class="container">
         <div class="row g-4">
             <div class="col-md-4">
-                <div class="feature-img feature-img-bg-1">
-                    <div class="feature-overlay">
-                        <h5>Hướng dẫn mượn sách</h5>
-                        <p>Quy trình mượn – trả hiện đại</p>
+                <a asp-controller="Client" asp-action="Payback" class="d-block text-decoration-none">
+                    <div class="feature-img feature-img-bg-1">
+                        <div class="feature-overlay">
+                            <h5>Hướng dẫn mượn sách</h5>
+                            <p>Quy trình mượn – trả hiện đại</p>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
 
             <div class="col-md-4">
-                <div class="feature-img feature-img-bg-2">
-                    <div class="feature-overlay">
-                        <h5>Tra cứu tài liệu</h5>
-                        <p>Tìm kiếm học liệu nhanh</p>
+                <a asp-controller="Client" asp-action="Tracuu" class="d-block text-decoration-none">
+                    <div class="feature-img feature-img-bg-2">
+                        <div class="feature-overlay">
+                            <h5>Tra cứu tài liệu</h5>
+                            <p>Tìm kiếm học liệu nhanh</p>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
 
             <div class="col-md-4">
-                <div class="feature-img feature-img-bg-3">
-                    <div class="feature-overlay">
-                        <h5>Danh mục chuyên ngành</h5>
-                        <p>Theo khoa & lĩnh vực</p>
+                <a asp-controller="Client" asp-action="Privacy" class="d-block text-decoration-none">
+                    <div class="feature-img feature-img-bg-3">
+                        <div class="feature-overlay">
+                            <h5>Danh mục chuyên ngành</h5>
+                            <p>Theo khoa & lĩnh vực</p>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
     </div>
@@ -177,8 +183,6 @@
                                    : "https://via.placeholder.com/300x450?text=No+Image";
 
 
-                    const badgeClass = book.available > 0 ? "badge-premium" : "badge-premium bg-secondary";
-                    const badgeText = book.available > 0 ? `Sẵn sàng: ${book.available}` : "Hết sách";
 
                     slideHtml += `
                         <div class="col-6 col-md-3">
@@ -186,9 +190,6 @@
                                 <img src="${imgUrl}" style="height: 300px; object-fit: cover; width: 100%; border-radius: 8px;">
                                 <h6 class="mt-2 fw-bold text-truncate" title="${book.title}">${book.title}</h6>
                                 <span class="d-block text-secondary small text-truncate">${book.author}</span>
-                                <div class="${badgeClass}" style="position:absolute; top:10px; right:10px; background:#f58220; color:white; padding:4px 8px; border-radius:4px; font-size:12px;">
-                                    ${badgeText}
-                                </div>
                             </a>
                         </div>
                     `;

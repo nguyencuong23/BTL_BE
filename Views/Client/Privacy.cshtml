@@ -3,50 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Viện Số Đại Nam - Universe</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+    <title>Thư Viện Số Đại Nam - DNU Library</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="~/css/privacy.css">
 </head>
 <body>
 
-    <div class="background-animate">
-        <div class="shape shape-1"></div>
-        <div class="shape shape-2"></div>
-        <div class="shape shape-3"></div>
-        <div class="stars"></div>
-    </div>
+    <div class="background-animate"></div>
 
-    <header class="glass-header">
-        <div class="container header-flex">
+    <header class="glass-nav">
+        <div class="container nav-flex">
             <div class="brand">
-                <div class="logo-glow"><i class="fas fa-book-open"></i></div>
-                <div class="brand-text">
-                    <h1>DNU LIBRARY</h1>
-                    <p>Khám phá tri thức vô tận</p>
-                </div>
+                <h1>DNU LIBRARY</h1>
             </div>
-
-            <div class="tools-wrapper">
-                <div class="glass-input-group">
-                    <i class="fas fa-filter"></i>
+            <div class="search-wrapper" style="display: flex; gap: 15px;">
+                <div class="search-glass" style="width: auto;">
+                    <i class="fas fa-filter" style="margin-right: 10px; color: var(--dnu-blue);"></i>
                     <select id="group-filter" onchange="filterByGroup()">
                         <option value="all">Tất cả Khoa</option>
                     </select>
                 </div>
 
-                <div class="glass-input-group">
-                    <input type="text" id="search-input" placeholder="Tìm kiếm sách...">
+                <div class="search-glass">
+                    <input type="text" id="search-input" placeholder="Tìm kiếm sách..." onkeyup="searchBooks()">
                     <button onclick="searchBooks()"><i class="fas fa-search"></i></button>
                 </div>
             </div>
         </div>
     </header>
 
+    <div class="container">
+        <div class="glass-hero">
+            <h2>THƯ VIỆN SỐ ĐẠI NAM</h2>
+            <p>Khám phá tri thức vô tận - Kiến tạo tương lai</p>
+        </div>
+    </div>
+
     <main class="container">
         <div id="library-content">
             <div class="loading-state">
-                <div class="spinner-planet"></div>
+                <i class="fas fa-spinner fa-spin" style="font-size: 3rem; color: var(--dnu-blue);"></i>
+                <p style="margin-top: 15px; color: var(--text-muted);">Đang tải dữ liệu thư viện...</p>
             </div>
         </div>
     </main>
@@ -54,6 +52,22 @@
     <footer class="glass-footer">
         <p>&copy; 2024 Đại học Đại Nam | Designed with Mạnh Cửng, Thế Việt, Hồng Chút <i class="fas fa-heart" style="color: #ff6b6b;"></i></p>
     </footer>
+
+    <div id="modal-overlay">
+        <div class="glass-modal modal-large">
+            <div class="modal-head">
+                <h3><i class="fas fa-info-circle" style="color: var(--dnu-orange);"></i> Thông Tin Chi Tiết</h3>
+                <span class="close-btn">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="detail-content" class="modal-detail-layout"></div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-close-modal" onclick="closeModalFunc()">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="~/js/privacy.js"></script>
 </body>
