@@ -17,9 +17,20 @@ namespace QuanLyThuVienTruongHoc.Controllers
         }
 
         // GET: Categories
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            return View(await _context.Categories.ToListAsync());
+            var categoriesQuery = _context.Categories.AsQueryable();
+
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["CurrentSort"] = sortOrder;
+
+            categoriesQuery = sortOrder switch
+            {
+                "name_desc" => categoriesQuery.OrderByDescending(c => c.Name).ThenBy(c => c.CategoryId),
+                _ => categoriesQuery.OrderBy(c => c.Name).ThenBy(c => c.CategoryId),
+            };
+
+            return View(await categoriesQuery.ToListAsync());
         }
 
         // GET: Categories/Details/5

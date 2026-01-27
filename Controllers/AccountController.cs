@@ -22,11 +22,15 @@ namespace QuanLyThuVienTruongHoc.Controllers
         // Register removed - users are now created via Admin panel only
 
         [HttpGet]
-        public IActionResult Login()
+        public IActionResult Login(bool locked = false)
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Index", "Home");
+            }
+            if (locked)
+            {
+                ViewBag.Locked = true;
             }
             return View();
         }
@@ -38,12 +42,21 @@ namespace QuanLyThuVienTruongHoc.Controllers
                 return View(model);
 
             var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Username == model.Username && u.IsActive);
+                .FirstOrDefaultAsync(u => u.Username == model.Username);
 
+            // Case 1: Tài khoản không tồn tại
             if (user == null)
             {
-                ModelState.AddModelError("", "Tài khoản không tồn tại hoặc đã bị khóa");
+                ModelState.AddModelError("", "Tài khoản hoặc mật khẩu không chính xác");
                 return View(model);
+            }
+
+            // Case 2: Tài khoản bị khóa
+            if (!user.IsActive)
+            {
+                 // return RedirectToAction("Locked"); // OLD
+                 ViewBag.Locked = true;
+                 return View(model);
             }
 
             var hasher = new PasswordHasher<User>();
@@ -53,9 +66,10 @@ namespace QuanLyThuVienTruongHoc.Controllers
                 model.Password
             );
 
+            // Case 3: Sai mật khẩu
             if (result == PasswordVerificationResult.Failed)
             {
-                ModelState.AddModelError("", "Sai mật khẩu");
+                ModelState.AddModelError("", "Tài khoản hoặc mật khẩu không chính xác");
                 return View(model);
             }
 
@@ -97,5 +111,6 @@ namespace QuanLyThuVienTruongHoc.Controllers
         {
             return View();
         }
+
     }
 }

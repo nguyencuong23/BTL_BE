@@ -86,7 +86,7 @@ public static class DbSeeder
                 Role = 2,
                 IsActive = true,
                 TotalFine = 0,
-                CreatedAt = DateTime.Now.AddDays(-rnd.Next(1, 120))
+                CreatedAt = DateTime.Now
             };
             student.PasswordHash = Hash(student, "123456Aa!");
             users.Add(student);
@@ -257,6 +257,10 @@ public static class DbSeeder
             var borrow = DateTime.Today.AddDays(-rnd.Next(20, 40));
             var due = borrow.AddDays(14); // chắc chắn < hôm nay
 
+            // Tính phạt nóng cho sách quá hạn
+            var overdueDays = (DateTime.Today - due).Days;
+            var fine = overdueDays > 0 ? overdueDays * 5000m : 0m;
+
             loans.Add(new Loan
             {
                 UserId = uid,
@@ -264,7 +268,7 @@ public static class DbSeeder
                 BorrowDate = borrow,
                 DueDate = due,
                 ReturnDate = null,
-                Fine = 0, // có thể tính động khi hiển thị
+                Fine = fine, 
                 Status = LoanStatus.QuaHan
             });
 
@@ -280,8 +284,17 @@ public static class DbSeeder
             .ToDictionary(g => g.Key, g => g.Sum(x => x.Fine));
 
         foreach (var u in users.Where(x => x.Role == 2))
+        {
             if (fineByUser.TryGetValue(u.Id, out var total))
+            {
                 u.TotalFine = total;
+            }
+            // Khóa tài khoản nếu nợ > 50,000
+            if (u.TotalFine > 50000)
+            {
+                u.IsActive = false;
+            }
+        }
 
         await db.SaveChangesAsync();
     }

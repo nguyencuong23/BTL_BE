@@ -15,31 +15,52 @@
 
 <!-- Search and Filter Bar -->
 <div class="search-bar">
-    <div class="row align-items-center">
-        <div class="col-md-6">
-            <div class="search-input-wrapper">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" class="form-control search-input" 
-                       placeholder="Tìm kiếm theo mã phiếu, tên người mượn, tên sách...">
-            </div>
+    <div class="d-flex flex-wrap align-items-center gap-3">
+        <!-- Search Input -->
+        <div class="search-input-wrapper flex-grow-1">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" class="form-control search-input" 
+                   placeholder="Tìm kiếm theo mã phiếu, tên người mượn, tên sách...">
         </div>
-        <div class="col-md-3">
-            <select id="statusFilter" class="form-select">
-                <option value="all">Tất cả trạng thái</option>
-                <option value="dangmuon">Đang mượn</option>
-                <option value="datra">Đã trả</option>
-                <option value="quahan">Quá hạn</option>
-            </select>
-        </div>
-        <div class="col-md-3 text-end">
-            <span class="text-muted">Tổng số: <strong>@Model.Count()</strong> phiếu</span>
+
+        <!-- Right Side: Filters & Total -->
+        <div class="d-flex align-items-center gap-3 ms-auto">
+            <form id="filterForm" method="get" class="d-flex align-items-center gap-2">
+                <select name="status" class="form-select filter-select" style="min-width: 250px;" 
+                        onchange="document.getElementById('filterForm').submit();">
+                    @{
+                        var currentStatus = ViewData["CurrentStatus"] as int?;
+                    }
+                    <option value="" selected="@(!currentStatus.HasValue)">-- Tất cả trạng thái --</option>
+                    <option value="1" selected="@(currentStatus == 1)">Đang mượn</option>
+                    <option value="2" selected="@(currentStatus == 2)">Đã trả</option>
+                    <option value="3" selected="@(currentStatus == 3)">Quá hạn</option>
+                </select>
+                
+                <select name="sortOrder" class="form-select filter-select" style="min-width: 180px;" 
+                        onchange="document.getElementById('filterForm').submit();">
+                    @{
+                        var sort = ViewData["CurrentSort"] as string;
+                    }
+                    <option value="" selected="@(string.IsNullOrEmpty(sort))">Tên sinh viên (A-Z)</option>
+                    <option value="name_desc" selected="@(sort == "name_desc")">Tên sinh viên (Z-A)</option>
+                    <option value="Book" selected="@(sort == "Book")">Tên sách (A-Z)</option>
+                    <option value="book_desc" selected="@(sort == "book_desc")">Tên sách (Z-A)</option>
+                    <option value="Date" selected="@(sort == "Date")">Ngày mượn (Cũ nhất)</option>
+                    <option value="date_desc" selected="@(sort == "date_desc")">Ngày mượn (Mới nhất)</option>
+                </select>
+            </form>
+
+             <div class="vr h-100 mx-1"></div>
+
+             <span class="text-nowrap text-muted">Tổng: <strong>@Model.Count()</strong> phiếu</span>
         </div>
     </div>
 </div>
 
 <!-- Data Table -->
-<div class="table-card">
-    <div class="table-responsive">
+<div class="table-card" style="overflow: visible;">
+    <div class="table-responsive" style="overflow: visible;">
         <table class="table table-hover align-middle mb-0">
             <thead>
                 <tr>
@@ -50,8 +71,8 @@
                     <th>Hạn trả</th>
                     <th>Ngày trả</th>
                     <th class="text-center">Trạng thái</th>
-                    <th class="text-end">Tiền phạt</th>
-                    <th style="width: 180px;" class="text-center">Thao tác</th>
+                    <th class="text-end" style="min-width: 120px;">Tiền phạt</th>
+                    <th style="width: 120px;" class="text-center">Thao tác</th>
                 </tr>
             </thead>
             <tbody>
@@ -59,7 +80,9 @@
                 {
                     foreach (var item in Model)
                     {
-                        var status = "dangmuon"; // default
+                        var status = "dangmuon"; // default logic for display
+                        int overdueDays = 0;
+
                         if (item.ReturnDate.HasValue)
                         {
                             status = "datra";
@@ -67,10 +90,11 @@
                         else if (item.DueDate < DateTime.Now)
                         {
                             status = "quahan";
+                            overdueDays = (DateTime.Now.Date - item.DueDate.Date).Days;
                         }
                         
                         <tr>
-                            <td><span class="badge bg-secondary">#@item.LoanId</span></td>
+                            <td><span class="badge bg-secondary">@item.LoanId</span></td>
                             <td>
                                 @if (item.User != null)
                                 {
@@ -101,10 +125,15 @@
                                 @if (status == "datra")
                                 {
                                     <span class="badge badge-returned">Đã trả</span>
+                                    @* Removed date here as requested to move column back *@
                                 }
                                 else if (status == "quahan")
                                 {
                                     <span class="badge badge-overdue">Quá hạn</span>
+                                    @if (overdueDays > 0)
+                                    {
+                                        <div class="text-danger fw-bold small mt-1">@overdueDays ngày</div>
+                                    }
                                 }
                                 else
                                 {
@@ -114,27 +143,39 @@
                             <td class="text-end">
                                 @if (item.Fine > 0)
                                 {
-                                    <span class="text-danger fw-bold">@item.Fine.ToString("N0") đ</span>
+                                    <span class="text-danger fw-bold text-nowrap">@item.Fine.ToString("N0") đ</span>
                                 }
                                 else
                                 {
                                     <span class="text-muted">-</span>
                                 }
                             </td>
-                            <td>
-                                <div class="btn-group-actions justify-content-center">
-                                    <a asp-action="Details" asp-route-id="@item.LoanId" 
-                                       class="btn btn-sm btn-action-details" title="Xem chi tiết">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a asp-action="Edit" asp-route-id="@item.LoanId" 
-                                       class="btn btn-sm btn-action-edit" title="Chỉnh sửa">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a asp-action="Delete" asp-route-id="@item.LoanId" 
-                                       class="btn btn-sm btn-action-delete" title="Xóa">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
+                            <td class="text-center">
+                                <div class="dropdown d-inline-block">
+                                    <button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-boundary="viewport">
+                                        <i class="fas fa-ellipsis-v text-muted"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                        <li>
+                                            <a asp-action="Details" asp-route-id="@item.LoanId" class="dropdown-item">
+                                                <i class="fas fa-eye me-2 text-info" style="width: 20px;"></i>Xem chi tiết
+                                            </a>
+                                        </li>
+                                        @if (item.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DangMuon || item.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.QuaHan)
+                                        {
+                                            <li>
+                                                <a asp-action="Edit" asp-route-id="@item.LoanId" class="dropdown-item">
+                                                    <i class="fas fa-edit me-2 text-primary" style="width: 20px;"></i>Cập nhật / Trả sách
+                                                </a>
+                                            </li>
+                                        }
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a asp-action="Delete" asp-route-id="@item.LoanId" class="dropdown-item text-danger">
+                                                <i class="fas fa-trash me-2" style="width: 20px;"></i>Xóa phiếu
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </div>
                             </td>
                         </tr>

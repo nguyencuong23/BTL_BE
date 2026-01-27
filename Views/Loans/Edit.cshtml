@@ -43,22 +43,14 @@
         </div>
 
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="mb-3">
-                    <label asp-for="BorrowDate" class="form-label"><i class="fas fa-calendar me-1"></i>Ngày mượn</label>
+                    <label asp-for="BorrowDate" class="form-label"><i class="fas fa-calendar me-1"></i>Ngày mượn <span class="text-danger">*</span></label></label>
                     <input asp-for="BorrowDate" class="form-control" type="date" />
                     <span asp-validation-for="BorrowDate" class="text-danger"></span>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="mb-3">
-                    <label asp-for="DueDate" class="form-label"><i class="fas fa-calendar-check me-1"></i>Hạn trả</label>
-                    <label asp-for="DueDate" class="form-label"><i class="fas fa-calendar-check me-1"></i>Hạn trả <span class="text-danger">*</span></label>
-                    <input asp-for="DueDate" class="form-control" type="date" />
-                    <span asp-validation-for="DueDate" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="mb-3">
                     <label asp-for="ReturnDate" class="form-label"><i class="fas fa-calendar-times me-1"></i>Ngày trả thực tế</label>
                     <input asp-for="ReturnDate" class="form-control" type="date" />
@@ -68,11 +60,7 @@
             </div>
         </div>
 
-        <div class="mb-3">
-            <label asp-for="Fine" class="form-label"><i class="fas fa-money-bill me-1"></i>Tiền phạt (VNĐ)</label>
-            <input asp-for="Fine" class="form-control" type="number" min="0" />
-            <span asp-validation-for="Fine" class="text-danger"></span>
-        </div>
+
 
         <hr />
 

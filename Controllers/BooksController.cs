@@ -20,10 +20,29 @@ namespace QuanLyThuVienTruongHoc.Controllers
         }
 
         // GET: Books
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            var applicationDbContext = _context.Books.Include(b => b.Category);
-            return View(await applicationDbContext.ToListAsync());
+            var booksQuery = _context.Books.Include(b => b.Category).AsQueryable();
+
+            // Calculate Totals
+            ViewData["TotalTitles"] = await booksQuery.CountAsync();
+            ViewData["TotalCopies"] = await booksQuery.SumAsync(b => b.Quantity);
+
+            ViewData["TitleSortParm"] = String.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
+            ViewData["AuthorSortParm"] = sortOrder == "Author" ? "author_desc" : "Author";
+            ViewData["CurrentSort"] = sortOrder;
+
+            booksQuery = sortOrder switch
+            {
+                "title_desc" => booksQuery.OrderByDescending(b => b.Title).ThenBy(b => b.BookId),
+                "Author" => booksQuery.OrderBy(b => b.Author).ThenBy(b => b.BookId),
+                "author_desc" => booksQuery.OrderByDescending(b => b.Author).ThenBy(b => b.BookId),
+                "Date" => booksQuery.OrderBy(b => b.BookId), // Oldest = Smallest ID
+                "date_desc" => booksQuery.OrderByDescending(b => b.BookId), // Newest = Largest ID
+                _ => booksQuery.OrderBy(b => b.Title).ThenBy(b => b.BookId),
+            };
+
+            return View(await booksQuery.ToListAsync());
         }
 
         // GET: Books/Details/5

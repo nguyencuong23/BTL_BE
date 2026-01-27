@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace QuanLyThuVienTruongHoc.ViewModels
+namespace QuanLyThuVienTruongHoc.Models.ViewModels
 {
     public class ChangePasswordViewModel
     {

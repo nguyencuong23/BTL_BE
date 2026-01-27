@@ -2,7 +2,7 @@
 
 namespace QuanLyThuVienTruongHoc.Models.ViewModels
 {
-    public class UpdateProfileVM
+    public class UpdateProfileViewModel
     {
         [Required]
         [MaxLength(100)]
