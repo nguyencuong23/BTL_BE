@@ -368,7 +368,7 @@ body {
 
 .modal-large {
     width: 95%;
-    max-width: 800px;
+    max-width: 900px;
 }
 
 #modal-overlay.active .glass-modal {

@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization; // 1. Bắt buộc phải có thư viện này
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuanLyThuVienTruongHoc.Models.Common;
 using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
+using QuanLyThuVienTruongHoc.Data;
 
 namespace QuanLyThuVienTruongHoc.Controllers
 {
@@ -14,40 +16,62 @@ namespace QuanLyThuVienTruongHoc.Controllers
             _logger = logger;
         }
 
-        // Ai cũng xem được trang chủ
         public IActionResult Index()
         {
             return View();
         }
 
+        [Authorize]
         public IActionResult Privacy()
         {
             return View();
         }
 
-        // 👇 QUAN TRỌNG: Dòng này chặn người chưa đăng nhập
         [Authorize]
         public IActionResult TraCuu()
         {
             return View();
         }
 
-        // Ai cũng xem được tin tức
         public IActionResult News()
         {
             return View();
         }
+
+        [Authorize]
         public IActionResult Payback()
         {
             return View();
         }
 
-        // Trang test chỉ dành cho user đã đăng nhập
+        [Authorize]
+        public async Task<IActionResult> Paypack([FromServices] ApplicationDbContext context, string? bookId)
+        {
+            if (string.IsNullOrEmpty(bookId))
+            {
+                return RedirectToAction("TraCuu");
+            }
+
+            var book = await context.Books
+                .AsNoTracking()
+                .Include(b => b.Category)
+                .Include(b => b.Shelf)
+                .FirstOrDefaultAsync(b => b.BookId == bookId);
+
+            if (book == null)
+            {
+                return NotFound();
+            }
+
+            return View("Payback", book);
+        }
+
         [Authorize]
         public IActionResult UserOnly()
         {
             return View();
         }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
