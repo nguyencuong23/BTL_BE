@@ -55,6 +55,9 @@ namespace QuanLyThuVienTruongHoc.Models.Users
         [Range(0, 999999999, ErrorMessage = "Tổng tiền phạt không hợp lệ")]
         public decimal TotalFine { get; set; } = 0;
 
+        [Display(Name = "Đã thanh toán")]
+        public decimal PaidAmount { get; set; } = 0;
+
         [Display(Name = "Ngày tạo")]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 

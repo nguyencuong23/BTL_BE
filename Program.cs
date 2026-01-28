@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using QuanLyThuVienTruongHoc.Data;
+using QuanLyThuVienTruongHoc.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,8 +21,13 @@ builder.Services.AddCors(options =>
 });
 
 // 3. Add Services
+
+
 builder.Services.AddControllers(); // Dành cho API
-builder.Services.AddControllersWithViews(); // Dành cho MVC
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add<CheckAccountStatusFilter>();
+}); // Dành cho MVC
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -32,6 +39,10 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 builder.Services.AddHttpContextAccessor();
+
+// Persist DataProtection keys to file system to keep cookies valid across restarts
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo("DataProtectionKeys"));
 
 // 4. Cấu hình Authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -45,7 +56,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
         // Lưu ý: Dòng này làm Logout mỗi khi Restart server. 
         // Nếu muốn giữ đăng nhập lâu dài thì nên bỏ "+ Guid.NewGuid()".
-        options.Cookie.Name = "DaiNamLib_" + Guid.NewGuid();
+        // Đặt tên tĩnh để không bị mất phiên đăng nhập khi restart server
+        options.Cookie.Name = "DaiNamLib_Auth";
     });
 
 var app = builder.Build();
@@ -80,8 +92,9 @@ app.UseSession();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    //await db.Database.EnsureDeletedAsync();
-    //await db.Database.EnsureCreatedAsync();
+
+    await db.Database.EnsureDeletedAsync();
+    await db.Database.EnsureCreatedAsync();
 }
 await DbSeeder.SeedAsync(app.Services);
 

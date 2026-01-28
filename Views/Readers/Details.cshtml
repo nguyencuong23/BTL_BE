@@ -19,7 +19,7 @@
     <ul class="list-group list-group-flush">
         <li class="list-group-item">
             <strong><i class="fas fa-hashtag me-2 text-muted"></i>ID:</strong>
-            <span class="badge bg-secondary fs-6">#@Model.Id</span>
+            <span class="badge bg-secondary fs-6">@Model.Id</span>
         </li>
         <li class="list-group-item">
             <strong><i class="fas fa-id-card me-2 text-muted"></i>Mã sinh viên:</strong>
@@ -40,6 +40,20 @@
         <li class="list-group-item">
             <strong><i class="fas fa-phone me-2 text-muted"></i>Số điện thoại:</strong>
             <span>@Model.PhoneNumber</span>
+        </li>
+        <li class="list-group-item">
+            <strong><i class="fas fa-book-reader me-2 text-muted"></i>Sách đang mượn:</strong>
+            @{
+                var borrowingCount = Model.Loans.Count(l => l.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DangMuon || l.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.QuaHan);
+                if (borrowingCount > 0)
+                {
+                     <span class="badge bg-primary fs-6">@borrowingCount cuốn</span>
+                }
+                else
+                {
+                     <span>0 cuốn</span>
+                }
+            }
         </li>
         <li class="list-group-item">
             <strong><i class="fas fa-toggle-on me-2 text-muted"></i>Trạng thái:</strong>
@@ -74,7 +88,7 @@
     <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
         <i class="fas fa-edit me-2"></i>Chỉnh sửa
     </a>
-    <a asp-action="ChangePassword" asp-route-id="@Model.Id" class="btn btn-warning">
+    <a asp-action="ChangePassword" asp-route-id="@Model.Id" class="btn btn-warning text-white">
         <i class="fas fa-key me-2"></i>Đổi mật khẩu
     </a>
     <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">

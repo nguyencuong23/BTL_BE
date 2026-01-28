@@ -15,16 +15,44 @@
 
 <!-- Search Bar -->
 <div class="search-bar">
-    <div class="row align-items-center">
-        <div class="col-md-6">
-            <div class="search-input-wrapper">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" class="form-control search-input" 
-                       placeholder="Tìm kiếm theo mã SV, tên đăng nhập, họ tên...">
-            </div>
+    <div class="d-flex flex-wrap align-items-center gap-3">
+        <!-- Search Input -->
+        <div class="search-input-wrapper flex-grow-1">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" class="form-control search-input" 
+                   placeholder="Tìm kiếm theo mã SV, tên đăng nhập, họ tên...">
         </div>
-        <div class="col-md-6 text-end">
-            <span class="text-muted">Tổng số: <strong>@Model.Count()</strong> sinh viên</span>
+
+        <!-- Right Side: Filters & Total -->
+        <div class="d-flex align-items-center gap-3 ms-auto">
+            <!-- Filters -->
+             <form id="filterForm" method="get" class="d-flex align-items-center gap-2">
+                <select name="status" class="form-select filter-select" style="min-width: 150px;" 
+                        onchange="document.getElementById('filterForm').submit();">
+                    @{
+                        var currentStatus = ViewData["CurrentStatus"] as int?;
+                    }
+                    <option value="" selected="@(currentStatus == null)">-- Trạng thái --</option>
+                    <option value="1" selected="@(currentStatus == 1)">Hoạt động</option>
+                    <option value="0" selected="@(currentStatus == 0)">Đã khóa</option>
+                </select>
+                
+                <select name="sortOrder" class="form-select filter-select" style="min-width: 160px;" 
+                        onchange="document.getElementById('filterForm').submit();">
+                    @{
+                        var sort = ViewData["CurrentSort"] as string;
+                    }
+                    <option value="" selected="@(string.IsNullOrEmpty(sort))">Tên (A-Z)</option>
+                    <option value="name_desc" selected="@(sort == "name_desc")">Tên (Z-A)</option>
+                    <option value="date_desc" selected="@(sort == "date_desc")">Mới nhất</option>
+                    <option value="Date" selected="@(sort == "Date")">Cũ nhất</option>
+                </select>
+            </form>
+
+            <div class="vr h-100 mx-1"></div>
+
+            <!-- Total Count -->
+            <span class="text-nowrap text-muted">Tổng: <strong>@Model.Count()</strong></span>
         </div>
     </div>
 </div>
@@ -35,15 +63,17 @@
         <table class="table table-hover align-middle mb-0">
             <thead>
                 <tr>
-                    <th style="width: 80px;">ID</th>
-                    <th>Mã SV</th>
-                    <th>Tên đăng nhập</th>
+                <tr>
+                    <th style="width: 60px;">ID</th>
+                    <th style="width: 100px;">Mã SV</th>
+                    <th style="width: 120px;">Username</th>
                     <th>Họ tên</th>
-                    <th>Email</th>
-                    <th>SĐT</th>
-                    <th class="text-center">Trạng thái</th>
-                    <th class="text-center">Phạt</th>
-                    <th style="width: 180px;" class="text-center">Thao tác</th>
+                    <th style="width: 200px;">Email</th>
+                    <th style="width: 120px;">SĐT</th>
+                    <th class="text-center" style="width: 100px;">Đang mượn</th>
+                    <th class="text-center" style="width: 120px;">Trạng thái</th>
+                    <th class="text-center" style="width: 120px;">Phạt</th>
+                    <th class="text-center" style="width: 160px;">Thao tác</th>
                 </tr>
             </thead>
             <tbody>
@@ -52,12 +82,25 @@
                     foreach (var item in Model)
                     {
                         <tr>
-                            <td><span class="text-muted">#@item.Id</span></td>
+                            <td><span class="badge bg-secondary">@item.Id</span></td>
                             <td><strong>@item.StudentCode</strong></td>
                             <td>@item.Username</td>
                             <td>@item.FullName</td>
-                            <td><small>@item.Email</small></td>
+                            <td><small class="text-truncate d-inline-block" style="max-width: 200px;">@item.Email</small></td>
                             <td><small>@item.PhoneNumber</small></td>
+                            <td class="text-center">
+                                @{
+                                    var borrowingCount = item.Loans.Count(l => l.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DangMuon || l.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.QuaHan);
+                                    if (borrowingCount > 0)
+                                    {
+                                         <span class="badge bg-primary">@borrowingCount</span>
+                                    }
+                                    else
+                                    {
+                                         <span class="badge bg-secondary">0</span>
+                                    }
+                                }
+                            </td>
                             <td class="text-center">
                                 @if (item.IsActive)
                                 {
@@ -79,26 +122,44 @@
                                 }
                             </td>
                             <td>
-                                <div class="btn-group-actions justify-content-center">
-                                    <a asp-action="Details" asp-route-id="@item.Id" 
-                                       class="btn btn-sm btn-action-details" title="Xem chi tiết">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a asp-action="Edit" asp-route-id="@item.Id" 
-                                       class="btn btn-sm btn-action-edit" title="Chỉnh sửa">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a asp-action="ChangePassword" asp-route-id="@item.Id" 
-                                       class="btn btn-sm btn-warning" title="Đổi mật khẩu">
-                                        <i class="fas fa-key"></i>
-                                    </a>
-                                    @if (item.Username != User.Identity.Name)
-                                    {
-                                        <a asp-action="Delete" asp-route-id="@item.Id" 
-                                           class="btn btn-sm btn-action-delete" title="Xóa">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                    }
+                                <div class="dropdown text-center">
+                                    <button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v text-muted"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                        <li>
+                                            <a asp-action="Details" asp-route-id="@item.Id" class="dropdown-item">
+                                                <i class="fas fa-eye me-2 text-info" style="width: 20px;"></i>Chi tiết
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a asp-action="Edit" asp-route-id="@item.Id" class="dropdown-item">
+                                                <i class="fas fa-edit me-2 text-primary" style="width: 20px;"></i>Chỉnh sửa
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a asp-action="ChangePassword" asp-route-id="@item.Id" class="dropdown-item">
+                                                <i class="fas fa-key me-2 text-warning" style="width: 20px;"></i>Đổi mật khẩu
+                                            </a>
+                                        </li>
+                                        @if (item.TotalFine > 0)
+                                        {
+                                            <li>
+                                                <button type="button" class="dropdown-item" onclick="openPayFineModal(@item.Id, @item.TotalFine)">
+                                                    <i class="fas fa-dollar-sign me-2 text-success" style="width: 20px;"></i>Thanh toán
+                                                </button>
+                                            </li>
+                                        }
+                                        @if (item.Username != User.Identity.Name)
+                                        {
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <a asp-action="Delete" asp-route-id="@item.Id" class="dropdown-item text-danger">
+                                                    <i class="fas fa-trash me-2" style="width: 20px;"></i>Xóa
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
                                 </div>
                             </td>
                         </tr>
@@ -122,3 +183,42 @@
         </table>
     </div>
 </div>
+
+<!-- Pay Fine Modal -->
+<div class="modal fade" id="payFineModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-file-invoice-dollar me-2"></i>Thanh toán tiền phạt</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="PayFine" method="post">
+                <div class="modal-body">
+                    <input type="hidden" name="userId" id="payFineUserId" />
+                    <div class="mb-3">
+                        <label class="form-label">Tổng nợ hiện tại:</label>
+                        <input type="text" class="form-control" id="payFineCurrentDebt" readonly />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Số tiền thanh toán (VNĐ):</label>
+                        <input type="number" name="amount" class="form-control" required min="1000" step="1000" />
+                        <small class="text-muted">Nhập số tiền sinh viên đóng.</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-success">Xác nhận thanh toán</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openPayFineModal(userId, currentDebt) {
+        document.getElementById('payFineUserId').value = userId;
+        document.getElementById('payFineCurrentDebt').value = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(currentDebt);
+        var myModal = new bootstrap.Modal(document.getElementById('payFineModal'));
+        myModal.show();
+    }
+</script>
