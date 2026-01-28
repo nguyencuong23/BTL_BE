@@ -72,6 +72,27 @@
                                     @Model.Status
                                 </span>
                             </div>
+
+                            <div class="mt-3 pt-3 border-top">
+                                <div class="mb-3">
+                                    <small class="text-muted d-block mb-1">
+                                        <i class="fa fa-book-reader me-1"></i>Sách đang mượn
+                                    </small>
+                                    <strong class="fs-5 text-primary">@Model.LoanCount</strong> <span class="text-muted">cuốn</span>
+                                </div>
+
+                                <div>
+                                    <small class="text-muted d-block mb-1">
+                                        <i class="fa fa-coins me-1"></i>Tổng nợ hiện tại
+                                    </small>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <strong class="fs-5 text-danger">@Model.Debt.ToString("N0") VNĐ</strong>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="openPaymentModal()">
+                                            <i class="fa fa-qrcode me-1"></i>Thanh toán
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -98,11 +119,22 @@
                             <small class="text-muted">Tên đăng nhập không thể thay đổi</small>
                         </div>
 
+                        <!-- Student Code (chỉ hiện với User/Student) -->
+                        @if (Model.Role != "Admin")
+                        {
+                            <div class="mb-4">
+                                <label asp-for="StudentCode" class="form-label fw-semibold">
+                                    <i class="fa fa-id-badge me-1"></i>@Html.DisplayNameFor(m => m.StudentCode)
+                                </label>
+                                <input asp-for="StudentCode" class="form-control" readonly />
+                                <small class="text-muted">Mã sinh viên không thể thay đổi</small>
+                            </div>
+                        }
+
                         <!-- FullName -->
                         <div class="mb-4">
                             <label asp-for="FullName" class="form-label fw-semibold">
                                 <i class="fa fa-id-card me-1"></i>@Html.DisplayNameFor(m => m.FullName)
-                                <span class="text-danger">*</span>
                             </label>
                             <input asp-for="FullName" class="form-control" placeholder="Nhập họ và tên" />
                             <span asp-validation-for="FullName" class="text-danger"></span>
@@ -151,9 +183,58 @@
     </form>
 </div>
 
+<!-- Payment Modal -->
+<div id="paymentModal" class="modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; align-items:center; justify-content:center;">
+    <div class="bg-white rounded-4 p-4 text-center shadow-lg position-relative" style="max-width:400px; width:90%; animation: zoomIn 0.3s ease;">
+        <button type="button" class="btn-close position-absolute top-0 end-0 m-3" onclick="closePaymentModal()"></button>
+        
+        <h4 class="fw-bold text-primary mb-3">Quét mã thanh toán</h4>
+        <div class="p-3 border rounded-3 bg-light mb-3">
+            <img src="~/images/qr-pay/qr-pay.jpg" alt="QR Payment" class="img-fluid rounded" style="max-height: 300px; object-fit: contain;">
+        </div>
+        
+        <p class="text-muted small mb-3">
+            Vui lòng quét mã QR trên ứng dụng ngân hàng để thanh toán dư nợ. Nội dung chuyển khoản: <br>
+            <strong>TV [Mã SV] [Họ Tên]</strong>
+        </p>
+        
+        <div class="alert alert-info py-2 small">
+            <i class="fa fa-info-circle me-1"></i>Hệ thống sẽ cập nhật trạng thái sau ít phút.
+        </div>
+    </div>
+</div>
+
+<style>
+    @@keyframes zoomIn {
+        from { transform: scale(0.8); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+</style>
+
 <!-- Script validation -->
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    
+    <script>
+        function openPaymentModal() {
+            const modal = document.getElementById('paymentModal');
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePaymentModal() {
+            const modal = document.getElementById('paymentModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close on click outside
+        document.getElementById('paymentModal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePaymentModal();
+            }
+        });
+    </script>
 }

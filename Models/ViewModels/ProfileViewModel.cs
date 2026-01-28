@@ -12,6 +12,9 @@ namespace QuanLyThuVienTruongHoc.Models.ViewModels
         [Display(Name = "Tên đăng nhập")]
         public string Username { get; set; } = null!;
 
+        [Display(Name = "Mã sinh viên")]
+        public string? StudentCode { get; set; }
+
         [Display(Name = "Vai trò")]
         public string Role { get; set; } = null!;
 
@@ -37,5 +40,12 @@ namespace QuanLyThuVienTruongHoc.Models.ViewModels
         [MaxLength(15, ErrorMessage = "Số điện thoại không được vượt quá 15 ký tự")]
         [Display(Name = "Số điện thoại")]
         public string? PhoneNumber { get; set; }
+
+        // Thông tin mượn trả
+        [Display(Name = "Sách đang mượn")]
+        public int LoanCount { get; set; }
+
+        [Display(Name = "Tổng nợ hiện tại")]
+        public decimal Debt { get; set; }
     }
 }

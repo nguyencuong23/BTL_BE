@@ -51,11 +51,7 @@ namespace QuanLyThuVienTruongHoc.Models.Library
         [Display(Name = "Ảnh")]
         public string? ImagePath { get; set; }
 
-        [Display(Name = "Kệ sách")]
-        public int? ShelfId { get; set; }
 
-        [ForeignKey("ShelfId")]
-        public virtual Shelf? Shelf { get; set; }
 
         public Category? Category { get; set; }
         public ICollection<Loan> Loans { get; set; } = new List<Loan>();

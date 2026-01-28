@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuanLyThuVienTruongHoc.Data;
 using QuanLyThuVienTruongHoc.Models.ViewModels;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace QuanLyThuVienTruongHoc.Controllers
@@ -29,23 +30,33 @@ namespace QuanLyThuVienTruongHoc.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-            // Lấy thông tin user từ database
-            var user = await _context.Users.FindAsync(userId);
+            // Lấy thông tin user từ database kèm theo Loans
+            var user = await _context.Users
+                .Include(u => u.Loans)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
             if (user == null)
             {
                 return RedirectToAction("Login", "Account");
             }
 
+            // Tính toán
+            var activeLoans = user.Loans.Count(l => l.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DangMuon);
+            var debt = user.TotalFine - user.PaidAmount;
+
             // Map sang ViewModel
             var viewModel = new ProfileViewModel
             {
                 Username = user.Username,
+                StudentCode = user.StudentCode,
                 FullName = user.FullName,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 Role = user.Role == 1 ? "Admin" : "User",
                 CreatedAt = user.CreatedAt,
-                Status = user.IsActive ? "Hoạt động" : "Đã khóa"
+                Status = user.IsActive ? "Hoạt động" : "Đã khóa",
+                LoanCount = activeLoans,
+                Debt = debt
             };
 
             return View(viewModel);

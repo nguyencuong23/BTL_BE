@@ -26,11 +26,10 @@
 
                 @if (User.Identity != null && User.Identity.IsAuthenticated)
                 {
-                    <a asp-controller="Client" asp-action="TraCuu">Tra cứu</a>
+                    <a asp-controller="Client" asp-action="Search">Tra cứu</a>
                 }
                 <a asp-controller="Client" asp-action="News">Tin tức</a>
-                <a asp-controller="Client" asp-action="Payback" >Mượn trả sách</a>
-                <a asp-controller="Client" asp-action="Privacy">Chi tiết sách - tài liệu</a>
+                <a asp-controller="Client" asp-action="Loans">Mượn trả sách</a>
 
                 @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                 {
