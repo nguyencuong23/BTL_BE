@@ -1,149 +1,634 @@
 @{
-    ViewData["Title"] = "Trang chủ";
+    ViewData["Title"] = "Trang chủ - Thư viện Đại Nam";
 }
 
-<link href="~/css/client-index.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
-<!-- HERO -->
-<section class="hero">
+<style>
+    :root {
+        --primary-color: #0d6efd;
+        --secondary-color: #6c757d;
+        --accent-color: #ffc107;
+        --bg-light: #f8f9fa;
+        --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    body {
+        background-color: #fcfcfc;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        overflow-x: hidden;
+    }
+
+    .hero-modern {
+        background: url('https://atm273446-s3user.vcos.cloudstorage.com.vn/dhdainam/asset/images/news/497529472_1116084437213279_3837768097926410454_n_1.jpg') center center/cover no-repeat;
+        padding: 140px 0 180px 0;
+        width: 100vw;
+        position: relative;
+        left: 50%;
+        right: 50%;
+        margin-top: -20px;
+        margin-left: -50vw;
+        margin-right: -50vw;
+        border-bottom-left-radius: 50px;
+        border-bottom-right-radius: 50px;
+        margin-bottom: 0;
+    }
+
+        .hero-modern::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 25, 63, 0.75);
+            border-bottom-left-radius: 50px;
+            border-bottom-right-radius: 50px;
+            z-index: 1;
+        }
+
+        .hero-modern .container {
+            position: relative;
+            z-index: 2;
+        }
+
+    .hero-title {
+        font-size: 3.8rem;
+        color: #fff;
+        line-height: 1.2;
+        margin-bottom: 25px;
+        font-weight: 800;
+        text-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+
+        .hero-title span {
+            color: var(--accent-color);
+        }
+
+    .hero-desc {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.3rem;
+        margin-bottom: 45px;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+        font-weight: 300;
+    }
+
+    .search-modern {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 10px;
+        border-radius: 60px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        display: flex;
+        max-width: 750px;
+        margin: 0 auto;
+        backdrop-filter: blur(10px);
+    }
+
+        .search-modern input {
+            border: none;
+            box-shadow: none;
+            padding-left: 30px;
+            font-size: 1.1rem;
+            height: 55px;
+            background: transparent;
+            width: 100%;
+        }
+
+            .search-modern input:focus {
+                outline: none;
+            }
+
+        .search-modern button {
+            border-radius: 50px;
+            padding: 0 45px;
+            height: 55px;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 20px rgba(255, 193, 7, 0.3);
+            transition: transform 0.3s;
+            white-space: nowrap;
+        }
+
+            .search-modern button:hover {
+                transform: translateY(-3px);
+            }
+
+    .info-cards-section {
+        margin-top: -100px;
+        position: relative;
+        z-index: 10;
+        padding-bottom: 50px;
+    }
+
+    .about-card {
+        background: white;
+        border-radius: 20px;
+        padding: 50px 25px;
+        text-align: center;
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0,0,0,0.03);
+        height: 100%;
+    }
+
+        .about-card:hover {
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+            border-color: var(--primary-color);
+        }
+
+    .about-icon {
+        font-size: 3.5rem;
+        color: white;
+        margin-bottom: 25px;
+        display: inline-block;
+        padding: 20px;
+        background: linear-gradient(135deg, var(--primary-color), #6610f2);
+        border-radius: 50%;
+        width: 100px;
+        height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 25px auto;
+        box-shadow: 0 10px 20px rgba(13, 110, 253, 0.3);
+    }
+
+    @@keyframes floating {
+        0% {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(-20px);
+        }
+
+        100% {
+            transform: translateY(0px);
+        }
+    }
+
+    .floating-card {
+        animation: floating 3.5s ease-in-out infinite;
+    }
+
+    .delay-1 {
+        animation-delay: 0s;
+    }
+
+    .delay-2 {
+        animation-delay: 0.5s;
+    }
+
+    .delay-3 {
+        animation-delay: 1s;
+    }
+
+    .floating-card:hover {
+        animation-play-state: paused;
+        transform: translateY(-20px);
+    }
+
+    .book-section {
+        padding: 80px 0 100px 0;
+        background: #fff;
+    }
+
+    .swiper {
+        width: 100%;
+        padding-top: 20px;
+        padding-bottom: 50px;
+    }
+
+    .swiper-slide {
+        background-position: center;
+        background-size: cover;
+        width: 280px;
+        height: auto;
+    }
+
+    .book-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        border: none;
+        display: block;
+        height: 100%;
+        text-decoration: none;
+        color: inherit;
+    }
+
+        .book-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+    .swiper-button-next, .swiper-button-prev {
+        color: var(--primary-color);
+        background: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        font-weight: bold;
+    }
+
+        .swiper-button-next:after, .swiper-button-prev:after {
+            font-size: 20px;
+        }
+
+        .swiper-button-next:hover, .swiper-button-prev:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+    .section-title {
+        font-weight: 900;
+        color: #2c3e50;
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        position: relative;
+        display: inline-block;
+    }
+
+    .section-subtitle {
+        color: var(--secondary-color);
+        font-size: 1.1rem;
+        margin-bottom: 60px;
+    }
+
+    .facilities-section {
+        padding: 100px 0;
+        background-color: var(--bg-light);
+    }
+
+    .facility-item {
+        position: relative;
+        border-radius: 20px;
+        overflow: hidden;
+        height: 280px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        cursor: pointer;
+    }
+
+    .facility-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s ease;
+        filter: brightness(0.9);
+    }
+
+    .facility-item:hover .facility-img {
+        transform: scale(1.15);
+        filter: brightness(1.1);
+    }
+
+    .facility-overlay {
+        position: absolute;
+        bottom: 25px;
+        left: 25px;
+        right: 25px;
+        pointer-events: none;
+    }
+
+    .facility-label {
+        background: rgba(255, 255, 255, 0.95);
+        color: #2c3e50;
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-weight: 800;
+        display: inline-block;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        transition: 0.3s;
+    }
+
+    .facility-item:hover .facility-label {
+        background: var(--primary-color);
+        color: white;
+        transform: translateY(-5px);
+    }
+
+    .partner-section {
+        padding: 80px 0;
+        background: #fff;
+    }
+
+    .partner-box {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        transition: 0.4s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 120px;
+        font-weight: 700;
+        color: #6c757d;
+        border: 2px solid #f0f2f5;
+    }
+
+        .partner-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+    .service-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: white;
+        z-index: 9999;
+        overflow-y: auto;
+        transform: translateY(100%);
+        transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+        opacity: 0;
+        visibility: hidden;
+    }
+
+        .service-overlay.active {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+    .close-btn {
+        position: fixed;
+        top: 30px;
+        right: 30px;
+        z-index: 10000;
+        background: white;
+        color: #333;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: 0.3s;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+        .close-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: rotate(90deg);
+        }
+
+    .service-header {
+        height: 50vh;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+
+        .service-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 150px;
+            background: linear-gradient(to top, #fff, transparent);
+        }
+
+    .svc-feature-box {
+        background: #f0f7ff;
+        padding: 25px;
+        border-radius: 15px;
+        margin-bottom: 25px;
+        border-left: 5px solid var(--primary-color);
+    }
+
+    .svc-list li {
+        margin-bottom: 12px;
+        color: #555;
+    }
+
+    .svc-list i {
+        color: #28a745;
+        margin-right: 12px;
+    }
+</style>
+
+<section class="hero-modern">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-7">
-                <h1 class="fw-bold mb-4">
-                    Kết nối <span>tri thức</span><br />
-                    tại Thư viện Đại học Đại Nam
+        <div class="row justify-content-center">
+            <div class="col-lg-10 text-center" data-aos="zoom-in" data-aos-duration="1000">
+                <h1 class="hero-title">
+                    Thư viện <span>Đại học Đại Nam</span><br>
+                    Kết nối tri thức - Kiến tạo tương lai
                 </h1>
+                <p class="hero-desc" data-aos="fade-up" data-aos-delay="200">
+                    Hệ thống thư viện hiện đại, nguồn tài liệu phong phú, không gian học tập đầy cảm hứng dành cho sinh viên DNU.
+                </p>
 
-                <div class="search-box">
-                    <input class="form-control" placeholder="Nhập tên sách, tác giả...">
-                    <button class="btn btn-warning px-4 fw-semibold">Tìm</button>
+                <div class="search-modern" data-aos="fade-up" data-aos-delay="400">
+                    <input type="text"
+                           id="homeSearchInput"
+                           class="form-control"
+                           placeholder="Tìm kiếm sách, giáo trình, tài liệu số..."
+                           onkeypress="handleEnter(event)">
+
+                    <button class="btn btn-warning fw-bold text-dark" onclick="performSearch()">
+                        <i class="fas fa-search me-2"></i> TÌM KIẾM
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+<section class="info-cards-section">
+    <div class="container">
+        <div class="row g-4 justify-content-center">
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="0">
+                <div class="about-card floating-card delay-1">
+                    <div class="about-icon"><i class="fas fa-university"></i></div>
+                    <h5 class="text-uppercase">Triết Lý Giáo Dục</h5>
+                    <p class="fw-bold fst-italic" style="color: var(--primary-color);">"Thực học - Thực hành<br>Thực danh - Thực nghiệp"</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="about-card floating-card delay-2">
+                    <div class="about-icon"><i class="fas fa-book-open"></i></div>
+                    <h5 class="text-uppercase">Slogan Hành Động</h5>
+                    <p class="fw-bold fst-italic" style="color: var(--primary-color);">"Học để thay đổi"<br>(Learning to Change)</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
+                <div class="about-card floating-card delay-3">
+                    <div class="about-icon"><i class="fas fa-user-graduate"></i></div>
+                    <h5 class="text-uppercase">Cam Kết Nhà Trường</h5>
+                    <p class="fw-bold fst-italic" style="color: var(--primary-color);">"Việc làm của sinh viên<br>là ưu tiên số 1"</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <section class="book-section">
     <div class="container">
-        <h3 class="fw-bold text-center mb-4">
-            Kho tài liệu <br />và sách bán chạy nhất
-        </h3>
+        <div class="text-center" data-aos="fade-down">
+            <h3 class="section-title">Sách & Giáo Trình Mới Nhất</h3>
+            <p class="section-subtitle">Cập nhật liên tục các đầu sách phục vụ đào tạo và nghiên cứu</p>
+        </div>
 
-        <div id="bookCarousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner" id="book-carousel-inner">
-                <div class="text-center py-5">
-                    <div class="spinner-border text-warning" role="status">
+        <div class="swiper myBookSwiper" data-aos="fade-up" data-aos-delay="300">
+            <div class="swiper-wrapper" id="book-carousel-inner">
+                <div class="text-center py-5 w-100">
+                    <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">Đang tải...</span>
                     </div>
                 </div>
             </div>
-
-            <button class="carousel-control-prev" type="button" data-bs-target="#bookCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon bg-dark rounded-circle p-3"></span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#bookCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon bg-dark rounded-circle p-3"></span>
-            </button>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-pagination"></div>
         </div>
     </div>
 </section>
 
-<!-- FEATURE -->
-<section class="py-5">
+<section class="facilities-section">
     <div class="container">
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="feature-img feature-img-bg-1">
-                    <div class="feature-overlay">
-                        <h5>Hướng dẫn mượn sách</h5>
-                        <p>Quy trình mượn – trả hiện đại</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="feature-img feature-img-bg-2">
-                    <div class="feature-overlay">
-                        <h5>Tra cứu tài liệu</h5>
-                        <p>Tìm kiếm học liệu nhanh</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="feature-img feature-img-bg-3">
-                    <div class="feature-overlay">
-                        <h5>Danh mục chuyên ngành</h5>
-                        <p>Theo khoa & lĩnh vực</p>
-                    </div>
-                </div>
-            </div>
+        <div class="section-header text-center" data-aos="fade-down">
+            <h3 class="section-title">Không Gian & Dịch Vụ</h3>
+            <p class="section-subtitle">Khám phá các tiện ích học tập đa dạng tại Thư viện Đại Nam</p>
         </div>
-    </div>
-</section>
 
-<!-- CATEGORY -->
-<section class="pb-5">
-    <div class="container">
-        <h4 class="fw-bold mb-4">Không gian học tập hiện đại</h4>
         <div class="row g-4">
-            <div class="col-md-4">
-                <div class="category category-bg-1">
-                    <span>Sứ mệnh & Vai trò</span>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="category category-bg-2">
-                    <span>Không gian chia sẻ</span>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="category category-bg-3">
-                    <span>Đào tạo & Nghiên cứu</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- PARTNER -->
-<section class="py-5 bg-white">
-    <div class="container">
-        <h4 class="fw-bold text-center mb-4">Đối tác liên kết</h4>
-        <div class="row g-4">
-
-            <div class="col-6 col-md-4">
-                <a href="https://fibocapital.vn" target="_blank">
-                    <div class="partner-box partner-box-bg-1">
-                        <span>Fibo Capital Việt Nam</span>
+            <div class="col-md-4 col-sm-6" data-aos="zoom-in" data-aos-delay="0">
+                <a href="javascript:void(0)" onclick="openService('reading')" class="text-decoration-none">
+                    <div class="facility-item">
+                        <img src="https://atm273446-s3user.vcos.cloudstorage.com.vn/dhdainam/asset/asset/fixed/mhynchtxrfnn6hmb1xwu20230731073240_thump.jpg" class="facility-img" alt="Reading Room">
+                        <div class="facility-overlay"><span class="facility-label">Không gian Đọc & Học tập</span></div>
                     </div>
                 </a>
             </div>
-
-            <div class="col-6 col-md-4">
-                <a href="https://www.manulife.com.vn" target="_blank">
-                    <div class="partner-box partner-box-bg-2">
-                        <span>Manulife Việt Nam</span>
+            <div class="col-md-4 col-sm-6" data-aos="zoom-in" data-aos-delay="150">
+                <a asp-controller="Client" asp-action="Tracuu" onclick="performSearch()" class="text-decoration-none">
+                    <div class="facility-item">
+                        <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=600&q=80" class="facility-img" alt="Search">
+                        <div class="facility-overlay"><span class="facility-label">Tra cứu Tài liệu</span></div>
                     </div>
                 </a>
             </div>
-
-            <div class="col-6 col-md-4">
-                <a href="https://xuanhoa.vn" target="_blank">
-                    <div class="partner-box partner-box-bg-3">
-                        <span>Xuân Hòa Việt Nam</span>
+            <div class="col-md-4 col-sm-6" data-aos="zoom-in" data-aos-delay="300">
+                <a asp-controller="Client" asp-action="Payback" class="text-decoration-none">
+                    <div class="facility-item">
+                        <img src="https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=600&q=80" class="facility-img" alt="Borrow">
+                        <div class="facility-overlay"><span class="facility-label">Hướng dẫn Mượn/Trả</span></div>
                     </div>
                 </a>
             </div>
-
+            <div class="col-md-4 col-sm-6" data-aos="zoom-in" data-aos-delay="0">
+                <a href="javascript:void(0)" onclick="openService('meeting')" class="text-decoration-none">
+                    <div class="facility-item">
+                        <img src="https://atm273446-s3user.vcos.cloudstorage.com.vn/dhdainam/asset/asset/fixed/1(1).jpg" class="facility-img" alt="Group Meeting">
+                        <div class="facility-overlay"><span class="facility-label">Phòng Họp Nhóm</span></div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-6" data-aos="zoom-in" data-aos-delay="150">
+                <a href="javascript:void(0)" onclick="openService('digital')" class="text-decoration-none">
+                    <div class="facility-item">
+                        <img src="https://atm273446-s3user.vcos.cloudstorage.com.vn/dhdainam/asset/upload/news/old_sys/pic-New-i_636380485774111312.jpg" class="facility-img" alt="Digital Lib">
+                        <div class="facility-overlay"><span class="facility-label">Thư viện Số DNU</span></div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-6" data-aos="zoom-in" data-aos-delay="300">
+                <a asp-controller="Client" asp-action="Privacy" class="text-decoration-none">
+                    <div class="facility-item">
+                        <img src="https://images.unsplash.com/photo-1550399105-c4db5fb85c18?auto=format&fit=crop&w=600&q=80" class="facility-img" alt="Categories">
+                        <div class="facility-overlay"><span class="facility-label">Danh mục Ngành</span></div>
+                    </div>
+                </a>
+            </div>
         </div>
     </div>
 </section>
+
+<section class="partner-section">
+    <div class="container">
+        <div class="text-center" data-aos="fade-down">
+            <h4 class="section-title" style="font-size: 2rem;">Đối Tác Liên Kết</h4>
+        </div>
+        <div class="row g-4 justify-content-center mt-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="col-md-4 col-6">
+                <a href="https://fibocapital.vn" target="_blank" class="text-decoration-none">
+                    <div class="partner-box"><span>Fibo Capital Việt Nam</span></div>
+                </a>
+            </div>
+            <div class="col-md-4 col-6">
+                <a href="https://www.manulife.com.vn" target="_blank" class="text-decoration-none">
+                    <div class="partner-box"><span>Manulife Việt Nam</span></div>
+                </a>
+            </div>
+            <div class="col-md-4 col-6">
+                <a href="https://xuanhoa.vn" target="_blank" class="text-decoration-none">
+                    <div class="partner-box"><span>Xuân Hòa Việt Nam</span></div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div id="service-overlay" class="service-overlay">
+    <button class="close-btn" onclick="closeService()">
+        <i class="fas fa-times"></i> Đóng
+    </button>
+    <div class="service-content-wrapper">
+        <div class="service-header" id="svc-header"></div>
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10" data-aos="fade-up">
+                    <h2 class="fw-bold mb-4 display-5" id="svc-title" style="color: #2c3e50;"></h2>
+                    <div id="svc-body"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        AOS.init({ offset: 100, duration: 800, easing: 'ease-in-out', once: true });
         loadCarouselBooks();
     });
+
+    function performSearch() {
+        const input = document.getElementById('homeSearchInput');
+        const keyword = input.value.trim();
+
+        if (keyword) {
+            window.location.href = `/Client/Tracuu?keyword=${encodeURIComponent(keyword)}`;
+        } else {
+            input.focus();
+            input.style.border = "2px solid #ffc107";
+            setTimeout(() => input.style.border = "none", 1000);
+        }
+    }
+
+    function handleEnter(event) {
+        if (event.key === 'Enter') {
+            performSearch();
+        }
+    }
 
     async function loadCarouselBooks() {
         const carouselContainer = document.getElementById('book-carousel-inner');
@@ -151,60 +636,167 @@
 
         try {
             const response = await fetch(API_URL);
-            if (!response.ok) throw new Error("Lỗi tải dữ liệu");
+            if (!response.ok) throw new Error("Err");
 
             const books = await response.json();
 
             if (books.length === 0) {
-                carouselContainer.innerHTML = '<div class="text-center">Chưa có sách nào.</div>';
+                carouselContainer.innerHTML = '<div class="text-center py-5 text-muted w-100">Chưa có sách nào được cập nhật.</div>';
                 return;
             }
 
             carouselContainer.innerHTML = '';
-            const itemsPerSlide = 4;
 
-            for (let i = 0; i < books.length; i += itemsPerSlide) {
-                const chunk = books.slice(i, i + itemsPerSlide);
-                const isActive = i === 0 ? 'active' : '';
-                let slideHtml = `
-                    <div class="carousel-item ${isActive}">
-                        <div class="row g-4 justify-content-center">
-                `;
+            books.forEach(book => {
+                const imgUrl = book.image && book.image !== ""
+                    ? book.image
+                    : "https://via.placeholder.com/300x450?text=No+Image";
 
-                chunk.forEach(book => {
-                    const imgUrl = book.image && book.image !== ""
-                                   ? book.image
-                                   : "https://via.placeholder.com/300x450?text=No+Image";
-
-
-                    const badgeClass = book.available > 0 ? "badge-premium" : "badge-premium bg-secondary";
-                    const badgeText = book.available > 0 ? `Sẵn sàng: ${book.available}` : "Hết sách";
-
-                    slideHtml += `
-                        <div class="col-6 col-md-3">
-                            <a href="#" onclick="openBorrowModal('${book.id}', '${book.title}')" class="book-card text-decoration-none text-dark d-block">
-                                <img src="${imgUrl}" style="height: 300px; object-fit: cover; width: 100%; border-radius: 8px;">
-                                <h6 class="mt-2 fw-bold text-truncate" title="${book.title}">${book.title}</h6>
-                                <span class="d-block text-secondary small text-truncate">${book.author}</span>
-                                <div class="${badgeClass}" style="position:absolute; top:10px; right:10px; background:#f58220; color:white; padding:4px 8px; border-radius:4px; font-size:12px;">
-                                    ${badgeText}
-                                </div>
-                            </a>
-                        </div>
-                    `;
-                });
-
-                slideHtml += `
-                        </div>
+                const slideHtml = `
+                    <div class="swiper-slide">
+                        <a href="#" onclick="openBorrowModal('${book.id}', '${book.title}')" class="book-card d-block h-100">
+                            <div style="height: 320px; overflow: hidden; position: relative;">
+                                <img src="${imgUrl}" style="height: 100%; width: 100%; object-fit: cover; transition: transform 0.5s;">
+                                <div style="position: absolute; top: 15px; right: 15px; background: var(--primary-color); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">Mới</div>
+                            </div>
+                            <div class="p-3">
+                                <h6 class="fw-bold text-truncate mb-1" style="font-size: 1.1rem;" title="${book.title}">${book.title}</h6>
+                                <span class="d-block text-secondary small text-truncate"><i class="fas fa-user-edit me-2 text-primary"></i>${book.author}</span>
+                            </div>
+                        </a>
                     </div>
                 `;
-
                 carouselContainer.innerHTML += slideHtml;
-            }
+            });
+
+            new Swiper(".myBookSwiper", {
+                slidesPerView: 1,
+                spaceBetween: 20,
+                loop: true,
+                grabCursor: true,
+                autoplay: {
+                    delay: 2500,
+                    disableOnInteraction: false,
+                },
+                pagination: {
+                    el: ".swiper-pagination",
+                    clickable: true,
+                    dynamicBullets: true,
+                },
+                navigation: {
+                    nextEl: ".swiper-button-next",
+                    prevEl: ".swiper-button-prev",
+                },
+                breakpoints: {
+                    640: { slidesPerView: 2, spaceBetween: 20 },
+                    768: { slidesPerView: 3, spaceBetween: 30 },
+                    1024: { slidesPerView: 4, spaceBetween: 30 },
+                },
+            });
 
         } catch (error) {
             console.error(error);
-            carouselContainer.innerHTML = '<div class="text-center text-danger">Không thể tải danh sách sách.</div>';
+            carouselContainer.innerHTML = '<div class="text-center py-5 text-danger">Không thể tải dữ liệu sách.</div>';
         }
+    }
+
+    function openBorrowModal(id, title) {
+        console.log("Mượn sách: " + title);
+    }
+
+    const serviceData = {
+        'reading': {
+            title: "Không gian Đọc & Tự học Hiện đại",
+            image: "https://images.unsplash.com/photo-1568667256549-094345857637?auto=format&fit=crop&w=1920&q=80",
+            content: `
+                <p class="lead text-secondary">Thư viện Đại Nam cung cấp không gian yên tĩnh với 500 chỗ ngồi.</p>
+                <hr class="my-5">
+                <div class="row mt-5">
+                    <div class="col-md-6">
+                        <h4 class="fw-bold mb-4" style="color: #2c3e50;"><i class="fas fa-star text-warning me-2"></i>Tiện ích nổi bật</h4>
+                        <ul class="list-unstyled svc-list fa-ul">
+                            <li><span class="fa-li"><i class="fas fa-wifi"></i></span>Wifi tốc độ cao</li>
+                            <li><span class="fa-li"><i class="fas fa-plug"></i></span>Ổ cắm điện tại bàn</li>
+                            <li><span class="fa-li"><i class="fas fa-chair"></i></span>Ghế Ergonomic</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="svc-feature-box shadow-sm">
+                            <h5 class="fw-bold"><i class="fas fa-info-circle me-2"></i>Quy định</h5>
+                            <p class="mb-0">Vui lòng giữ trật tự và vệ sinh chung.</p>
+                        </div>
+                    </div>
+                </div>
+            `
+        },
+        'meeting': {
+            title: "Dịch vụ Phòng Họp Nhóm",
+            image: "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=1920&q=80",
+            content: `
+                <p class="lead text-secondary">Không gian thảo luận nhóm cách âm tốt.</p>
+                <hr class="my-5">
+                <div class="row mt-5 align-items-center">
+                    <div class="col-md-6">
+                        <img src="https://images.unsplash.com/photo-1542744094-3a31f272c490?auto=format&fit=crop&w=800&q=80" class="img-fluid rounded-4 shadow-lg">
+                    </div>
+                    <div class="col-md-6 ps-md-5">
+                        <h4 class="fw-bold mb-4">Trang thiết bị</h4>
+                        <ul class="list-unstyled svc-list fa-ul">
+                            <li><span class="fa-li"><i class="fas fa-tv"></i></span>Smart TV 65 inch</li>
+                            <li><span class="fa-li"><i class="fas fa-chalkboard-teacher"></i></span>Bảng kính</li>
+                        </ul>
+                    </div>
+                </div>
+            `
+        },
+        'digital': {
+            title: "Thư viện Số DNU",
+            image: "https://atm273446-s3user.vcos.cloudstorage.com.vn/dhdainam/asset/upload/news/old_sys/pic-New-i_636380485774111312.jpg",
+            content: `
+                <p class="lead text-secondary text-center mb-5">Truy cập tài liệu số mọi lúc mọi nơi.</p>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="p-5 border-0 rounded-4 text-center h-100 shadow-sm bg-white">
+                            <i class="fas fa-book-reader fa-4x text-primary mb-4"></i>
+                            <h4 class="fw-bold">E-Books</h4>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-5 border-0 rounded-4 text-center h-100 shadow-sm bg-white">
+                            <i class="fas fa-graduation-cap fa-4x text-warning mb-4"></i>
+                            <h4 class="fw-bold">Luận văn</h4>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-5 border-0 rounded-4 text-center h-100 shadow-sm bg-white">
+                            <i class="fas fa-globe-americas fa-4x text-success mb-4"></i>
+                            <h4 class="fw-bold">CSDL Quốc tế</h4>
+                        </div>
+                    </div>
+                </div>
+            `
+        }
+    };
+
+    function openService(key) {
+        const data = serviceData[key];
+        const overlay = document.getElementById('service-overlay');
+        const header = document.getElementById('svc-header');
+        const title = document.getElementById('svc-title');
+        const body = document.getElementById('svc-body');
+
+        header.style.backgroundImage = `url('${data.image}')`;
+        title.innerText = data.title;
+        body.innerHTML = data.content;
+
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        overlay.scrollTop = 0;
+    }
+
+    function closeService() {
+        const overlay = document.getElementById('service-overlay');
+        overlay.classList.remove('active');
+        document.body.style.overflow = 'auto';
     }
 </script>
