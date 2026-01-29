@@ -110,6 +110,12 @@
 
     <!-- MAIN -->
     <main id="pageContent" class="container-fluid px-0">
+        @if (IsSectionDefined("Hero"))
+        {
+            <div class="global-hero-header" style="background: linear-gradient(120deg, #005aab 0%, #004e92 100%); background-color: #005aab; color: white;">
+                @RenderSection("Hero", required: false)
+            </div>
+        }
         @RenderBody()
     </main>
 
