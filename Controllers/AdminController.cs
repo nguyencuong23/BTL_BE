@@ -37,7 +37,6 @@ namespace QuanLyThuVienTruongHoc.Controllers
         }
 
         // 6. TRANG CÀI ĐẶT HỆ THỐNG
-        // 6. TRANG CÀI ĐẶT HỆ THỐNG
         // GET: /Admin/Settings
         [HttpGet]
         public async Task<IActionResult> Settings()
