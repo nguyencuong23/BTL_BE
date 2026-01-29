@@ -131,6 +131,24 @@ namespace QuanLyThuVienTruongHoc.Migrations
                     b.ToTable("Loans");
                 });
 
+            modelBuilder.Entity("QuanLyThuVienTruongHoc.Models.System.Setting", b =>
+                {
+                    b.Property<string>("Key")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Key");
+
+                    b.ToTable("Settings");
+                });
+
             modelBuilder.Entity("QuanLyThuVienTruongHoc.Models.Users.User", b =>
                 {
                     b.Property<int>("Id")
@@ -156,6 +174,7 @@ namespace QuanLyThuVienTruongHoc.Migrations
                         .HasColumnType("bit");
 
                     b.Property<decimal>("PaidAmount")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("PasswordHash")
@@ -209,6 +228,8 @@ namespace QuanLyThuVienTruongHoc.Migrations
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("QuanLyThuVienTruongHoc.Models.Library.Loan", b =>
