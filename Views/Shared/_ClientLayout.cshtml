@@ -1,9 +1,19 @@
-﻿
+﻿@using QuanLyThuVienTruongHoc.Helpers
+@inject QuanLyThuVienTruongHoc.Services.SystemSettingsService SettingsService
+@{
+    var systemName = await SettingsService.GetValueAsync(SettingsKeys.SystemName, "Thư viện Đại học Đại Nam");
+    var address = await SettingsService.GetValueAsync(SettingsKeys.Address, "Hà Đông, Hà Nội");
+    var email = await SettingsService.GetValueAsync(SettingsKeys.AdminEmail, "thuvien@dainam.edu.vn");
+    var phone = await SettingsService.GetValueAsync(SettingsKeys.ContactPhone, "0243.123.4567");
+    var fbUrl = await SettingsService.GetValueAsync(SettingsKeys.FacebookUrl, "#");
+    var ytUrl = await SettingsService.GetValueAsync(SettingsKeys.YoutubeUrl, "#");
+    var ttUrl = await SettingsService.GetValueAsync(SettingsKeys.TiktokUrl, "#");
+}
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
-    <title>@ViewData["Title"] - Thư viện Đại học Đại Nam</title>
+    <title>@ViewData["Title"] - @systemName</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- CSS -->
@@ -18,7 +28,7 @@
     <header>
         <div class="container-fluid px-5 py-3 d-flex justify-content-between align-items-center">
             <div class="fw-bold fs-5">
-                THƯ VIỆN ĐẠI HỌC ĐẠI NAM
+                @systemName.ToUpper()
             </div>
 
             <nav class="d-flex align-items-center gap-3">
@@ -114,15 +124,16 @@
 
                 <div class="col-md-4 mb-3">
                     <h6 class="text-white">Liên hệ</h6>
-                    <p>Hà Đông, Hà Nội</p>
-                    <p>thuvien@dainam.edu.vn</p>
+                    <p><i class="fas fa-map-marker-alt me-2"></i>@address</p>
+                    <p><i class="fas fa-envelope me-2"></i>@email</p>
+                    <p><i class="fas fa-phone me-2"></i>@phone</p>
                 </div>
 
                 <div class="col-md-4 mb-3">
                     <h6 class="text-white">Kết nối</h6>
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                    <a href="@fbUrl" target="_blank"><i class="fab fa-facebook"></i></a>
+                    <a href="@ytUrl" target="_blank"><i class="fab fa-youtube"></i></a>
+                    <a href="@ttUrl" target="_blank"><i class="fab fa-tiktok"></i></a>
                 </div>
             </div>
 

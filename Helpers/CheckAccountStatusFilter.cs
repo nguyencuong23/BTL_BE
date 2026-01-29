@@ -38,8 +38,8 @@ namespace QuanLyThuVienTruongHoc.Helpers
                             var controller = context.RouteData.Values["controller"]?.ToString();
                             var action = context.RouteData.Values["action"]?.ToString();
 
-                            // Cho phép truy cập trang Logout và trang Login để tránh vòng lặp
-                            bool isAllowed = (controller == "Account" && (action == "Logout" || action == "Login"));
+                            // Cho phép truy cập trang Logout, Login và Maintenance
+                            bool isAllowed = (controller == "Account" && (action == "Logout" || action == "Login" || action == "Maintenance"));
 
                             if (!isAllowed)
                             {

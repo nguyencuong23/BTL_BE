@@ -11,10 +11,12 @@ namespace QuanLyThuVienTruongHoc.Controllers
     public class LoansController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly Services.SystemSettingsService _settingsService;
 
-        public LoansController(ApplicationDbContext context)
+        public LoansController(ApplicationDbContext context, Services.SystemSettingsService settingsService)
         {
             _context = context;
+            _settingsService = settingsService;
         }
 
         // GET: Loans
@@ -117,13 +119,16 @@ namespace QuanLyThuVienTruongHoc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("LoanId,UserId,BookId,BorrowDate,ReturnDate,Status")] Loan loan)
         {
-            // Tự động tính hạn trả = ngày mượn + 14 ngày
-            loan.DueDate = loan.BorrowDate.AddDays(14);
+            var settings = await _settingsService.GetSettingsAsync();
+
+            // Tự động tính hạn trả = ngày mượn + số ngày mặc định (setting)
+            loan.DueDate = loan.BorrowDate.AddDays(settings.DefaultLoanDays);
+            
             // Tính tiền phạt ngay khi tạo nếu đã có ngày trả
             if (loan.ReturnDate.HasValue && loan.ReturnDate.Value > loan.DueDate)
             {
                 int overdueDays = (loan.ReturnDate.Value - loan.DueDate).Days;
-                loan.Fine = overdueDays * 5000;
+                loan.Fine = overdueDays * settings.DailyFineAmount;
             }
             else
             {
@@ -227,8 +232,10 @@ namespace QuanLyThuVienTruongHoc.Controllers
                 return NotFound();
             }
 
-            // Tự động tính hạn trả = ngày mượn + 14 ngày
-            loan.DueDate = loan.BorrowDate.AddDays(14);
+            var settings = await _settingsService.GetSettingsAsync();
+
+            // Tự động tính hạn trả = ngày mượn + số ngày mặc định (setting)
+            loan.DueDate = loan.BorrowDate.AddDays(settings.DefaultLoanDays);
             
             // Cập nhật trạng thái dựa trên ngày trả
             if (loan.ReturnDate.HasValue)
@@ -247,9 +254,9 @@ namespace QuanLyThuVienTruongHoc.Controllers
             // Tính tiền phạt
             if (loan.ReturnDate.HasValue && loan.ReturnDate.Value > loan.DueDate)
             {
-                // Muộn 1 ngày phạt 5000
+                // Muộn 1 ngày phạt theo setting
                 int overdueDays = (loan.ReturnDate.Value - loan.DueDate).Days;
-                loan.Fine = overdueDays * 5000;
+                loan.Fine = overdueDays * settings.DailyFineAmount;
             }
             else
             {

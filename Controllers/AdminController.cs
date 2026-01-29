@@ -8,10 +8,12 @@ namespace QuanLyThuVienTruongHoc.Controllers
     public class AdminController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly Services.SystemSettingsService _settingsService;
 
-        public AdminController(ApplicationDbContext context)
+        public AdminController(ApplicationDbContext context, Services.SystemSettingsService settingsService)
         {
             _context = context;
+            _settingsService = settingsService;
         }
 
         // Trang chính admin - Dashboard (Dữ liệu sẽ được load qua API)
@@ -35,10 +37,26 @@ namespace QuanLyThuVienTruongHoc.Controllers
         }
 
         // 6. TRANG CÀI ĐẶT HỆ THỐNG
+        // 6. TRANG CÀI ĐẶT HỆ THỐNG
         // GET: /Admin/Settings
-        public IActionResult Settings()
+        [HttpGet]
+        public async Task<IActionResult> Settings()
         {
-            return View();
+            var model = await _settingsService.GetSettingsAsync();
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Settings(Models.ViewModels.SystemSettingsViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                await _settingsService.UpdateSettingsAsync(model);
+                TempData["Success"] = "Đã lưu cài đặt hệ thống thành công!";
+                return RedirectToAction(nameof(Settings));
+            }
+            return View(model);
         }
     }
 }

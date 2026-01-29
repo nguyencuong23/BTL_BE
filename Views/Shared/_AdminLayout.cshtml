@@ -1,9 +1,14 @@
 ﻿@* Views/Shared/_AdminLayout.cshtml - Modern Admin Dashboard Layout *@
+@using QuanLyThuVienTruongHoc.Helpers
+@inject QuanLyThuVienTruongHoc.Services.SystemSettingsService SettingsService
+@{
+    var systemName = await SettingsService.GetValueAsync(SettingsKeys.SystemName, "Hệ thống Quản lý Thư viện");
+}
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
-    <title>@ViewData["Title"] - Admin Dashboard</title>
+    <title>@ViewData["Title"] - @systemName</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Bootstrap 5 CSS -->
