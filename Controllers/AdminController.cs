@@ -8,37 +8,54 @@ namespace QuanLyThuVienTruongHoc.Controllers
     public class AdminController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly Services.SystemSettingsService _settingsService;
 
-        public AdminController(ApplicationDbContext context)
+        public AdminController(ApplicationDbContext context, Services.SystemSettingsService settingsService)
         {
             _context = context;
+            _settingsService = settingsService;
         }
 
-        // Trang chính admin (bạn đã có)
+        // Trang chính admin - Dashboard (Dữ liệu sẽ được load qua API)
         public IActionResult Index()
         {
             return View();
         }
 
-        // 4. TRANG QUẢN LÝ NGƯỜI DÙNG (Tĩnh - mẫu)
+        // 4. TRANG QUẢN LÝ NGƯỜI DÙNG
         // GET: /Admin/UserManagement
         public IActionResult UserManagement()
         {
             return View();
         }
 
-        // 5. TRANG THỐNG KÊ (Tĩnh - mẫu)
+        // 5. TRANG THỐNG KÊ
         // GET: /Admin/Statistics
         public IActionResult Statistics()
         {
             return View();
         }
 
-        // 6. TRANG CÀI ĐẶT HỆ THỐNG (Tĩnh - mẫu)
+        // 6. TRANG CÀI ĐẶT HỆ THỐNG
         // GET: /Admin/Settings
-        public IActionResult Settings()
+        [HttpGet]
+        public async Task<IActionResult> Settings()
         {
-            return View();
+            var model = await _settingsService.GetSettingsAsync();
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Settings(Models.ViewModels.SystemSettingsViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                await _settingsService.UpdateSettingsAsync(model);
+                TempData["Success"] = "Đã lưu cài đặt hệ thống thành công!";
+                return RedirectToAction(nameof(Settings));
+            }
+            return View(model);
         }
     }
 }

@@ -1,9 +1,14 @@
 ﻿@* Views/Shared/_AdminLayout.cshtml - Modern Admin Dashboard Layout *@
+@using QuanLyThuVienTruongHoc.Helpers
+@inject QuanLyThuVienTruongHoc.Services.SystemSettingsService SettingsService
+@{
+    var systemName = await SettingsService.GetValueAsync(SettingsKeys.SystemName, "Hệ thống Quản lý Thư viện");
+}
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
-    <title>@ViewData["Title"] - Admin Dashboard</title>
+    <title>@ViewData["Title"] - @systemName</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Bootstrap 5 CSS -->
@@ -83,6 +88,14 @@
                 <!-- Existing Admin Links -->
                 <li class="nav-item mt-3">
                     <small class="text-muted px-3 text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.5px;">Khác</small>
+                </li>
+
+                <li class="nav-item">
+                    <a asp-controller="Admin" asp-action="Settings" 
+                       class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Admin" && ViewContext.RouteData.Values["action"]?.ToString() == "Settings" ? "active" : "")">
+                        <i class="fas fa-cog"></i>
+                        <span>Cài đặt hệ thống</span>
+                    </a>
                 </li>
 
                 <li class="nav-item">

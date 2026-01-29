@@ -207,6 +207,8 @@ body {
   align-items: center;
   gap: 0.75rem;
   transition: all 0.2s ease;
+  font-size: 0.95rem; /* Ensure specific font size */
+  line-height: 1.5;
 }
 
 .dropdown-item:hover {
@@ -330,7 +332,6 @@ body {
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   overflow: hidden;
-  
 }
 
 .dashboard-card .card-header {

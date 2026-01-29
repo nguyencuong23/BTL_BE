@@ -1,290 +1,298 @@
 :root {
-    --book-width: 900px;
-    --page-width: 450px;
-    --book-height: 600px;
-    --cover-color: #1a2d42;
-    --paper-color: #fdfbf7;
-    --orange: #f58220;
-    --blue: #003366;
+  --book-width: 900px;
+  --page-width: 450px;
+  --book-height: 600px;
+  --cover-color: #1a2d42;
+  --paper-color: #fdfbf7;
+  --orange: #f58220;
+  --blue: #003366;
 }
 
 body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Roboto', sans-serif;
-    background: #111;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    perspective: 2500px;
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto", sans-serif;
+  background: #111;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  perspective: 2500px;
 }
 
 .bg-scene {
-    position: absolute;
-    inset: 0;
-    background: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=2000&auto=format&fit=crop') no-repeat center center;
-    background-size: cover;
-    filter: blur(5px) brightness(0.3);
-    z-index: -1;
+  position: absolute;
+  inset: 0;
+  background: url("https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=2000&auto=format&fit=crop")
+    no-repeat center center;
+  background-size: cover;
+  filter: blur(5px) brightness(0.3);
+  z-index: -1;
 }
 
 /* --- CONTAINER CHÍNH --- */
 .book-container {
-    position: relative;
-    width: var(--page-width);
-    height: var(--book-height);
-    transform-style: preserve-3d;
-    transform: rotateX(10deg);
-    transition: transform 1s;
+  position: relative;
+  width: var(--page-width);
+  height: var(--book-height);
+  transform-style: preserve-3d;
+  transform: rotateX(10deg);
+  transition: transform 1s;
 }
 
-    .book-container.show-register {
-        transform: translateX(225px) rotateX(5deg);
-    }
+.book-container.show-register {
+  transform: translateX(225px) rotateX(5deg);
+}
 
 /* --- CÁC TRANG --- */
 
 /* 1. Trang Form Khôi Phục (Bên phải) */
 .static-page {
-    position: absolute;
-    inset: 0;
-    background: var(--paper-color);
-    background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
-    border-radius: 4px 12px 12px 4px;
-    z-index: 1; /* Thấp hơn trang lật */
-    padding: 40px 30px;
-    display: flex;
-    flex-direction: column;
-    box-shadow: inset 10px 0 30px rgba(0,0,0,0.1);
-    visibility: hidden;
-    transition: visibility 0.1s;
+  position: absolute;
+  inset: 0;
+  background: var(--paper-color);
+  background-image: url("https://www.transparenttextures.com/patterns/cream-paper.png");
+  border-radius: 4px 12px 12px 4px;
+  z-index: 1; /* Thấp hơn trang lật */
+  padding: 40px 30px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: inset 10px 0 30px rgba(0, 0, 0, 0.1);
+  visibility: hidden;
+  transition: visibility 0.1s;
 }
 
 .book-container.show-register .static-page {
-    visibility: visible;
-    transition-delay: 0.3s; /* Hiện ra sau khi sách bắt đầu lật */
+  visibility: visible;
+  transition-delay: 0.3s; /* Hiện ra sau khi sách bắt đầu lật */
 }
 
 /* 2. Trang Lật (Chứa Login và Mặt sau) */
 .flipping-page {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    transform-origin: left;
-    transform-style: preserve-3d;
-    transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1);
-    z-index: 100; /* Luôn nằm trên cùng */
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform-origin: left;
+  transform-style: preserve-3d;
+  transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+  z-index: 100; /* Luôn nằm trên cùng */
 }
 
 .book-container.show-register .flipping-page {
-    transform: rotateY(-180deg);
+  transform: rotateY(-180deg);
 }
 
 /* MẶT TRƯỚC (LOGIN) */
 .page-front {
-    position: absolute;
-    inset: 0;
-    background: var(--paper-color);
-    background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
-    backface-visibility: hidden;
-    padding: 40px 30px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    border-right: 1px solid #ddd;
-    border-radius: 4px 12px 12px 4px;
-    box-shadow: 5px 0 15px rgba(0,0,0,0.1);
-    z-index: 2;
+  position: absolute;
+  inset: 0;
+  background: var(--paper-color);
+  background-image: url("https://www.transparenttextures.com/patterns/cream-paper.png");
+  backface-visibility: hidden;
+  padding: 40px 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid #ddd;
+  border-radius: 4px 12px 12px 4px;
+  box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
+  z-index: 2;
 }
 
 /* MẶT SAU (TRANG TRÍ) */
 .page-back {
-    position: absolute;
-    inset: 0;
-    background: #f4f1ea;
-    transform: rotateY(180deg);
-    backface-visibility: hidden;
-    border-radius: 12px 4px 4px 12px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 40px;
-    text-align: center;
-    box-shadow: inset -10px 0 20px rgba(0,0,0,0.1);
-    pointer-events: none; /* Quan trọng: Không cho chặn click khi lật */
+  position: absolute;
+  inset: 0;
+  background: #f4f1ea;
+  transform: rotateY(180deg);
+  backface-visibility: hidden;
+  border-radius: 12px 4px 4px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  text-align: center;
+  box-shadow: inset -10px 0 20px rgba(0, 0, 0, 0.1);
+  pointer-events: none; /* Quan trọng: Không cho chặn click khi lật */
 }
 
 .back-cover {
-    position: absolute;
-    inset: 0;
-    background: var(--cover-color);
-    transform: translateZ(-20px);
-    border-radius: 6px 14px 14px 6px;
-    box-shadow: 20px 20px 50px rgba(0,0,0,0.6);
-    z-index: 0;
+  position: absolute;
+  inset: 0;
+  background: var(--cover-color);
+  transform: translateZ(-20px);
+  border-radius: 6px 14px 14px 6px;
+  box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.6);
+  z-index: 0;
 }
 
 /* --- FORM STYLES --- */
 form {
-    position: relative;
-    z-index: 10;
+  position: relative;
+  z-index: 10;
 }
 
 .header-text {
-    text-align: center;
-    margin-bottom: 20px;
-    border-bottom: 2px solid #e5e5e5;
-    padding-bottom: 10px;
+  text-align: center;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #e5e5e5;
+  padding-bottom: 10px;
 }
 
-    .header-text h2 {
-        font-family: 'Cinzel', serif;
-        color: var(--blue);
-        font-weight: 700;
-        font-size: 28px;
-        margin: 0;
-    }
+.header-text h2 {
+  font-family: "Roboto", sans-serif;
+  color: var(--blue);
+  font-weight: 700;
+  font-size: 28px;
+  margin: 0;
+}
 
-    .header-text span {
-        font-size: 13px;
-        color: #888;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-    }
+.header-text span {
+  font-size: 13px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
 
 .form-label {
-    font-size: 12px;
-    font-weight: 700;
-    color: #555;
-    text-transform: uppercase;
-    margin-bottom: 2px;
-    display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #555;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+  display: block;
 }
 
 .form-control {
-    background: #fff;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 8px 10px;
-    font-size: 14px;
-    margin-bottom: 12px;
-    width: 100%;
-    position: relative;
-    /* SỬA LỖI CLICK: Đưa input nổi lên trên bề mặt giấy */
-    z-index: 1000;
-    transform: translateZ(2px);
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-size: 14px;
+  margin-bottom: 12px;
+  width: 100%;
+  position: relative;
+  /* SỬA LỖI CLICK: Đưa input nổi lên trên bề mặt giấy */
+  z-index: 1000;
+  transform: translateZ(2px);
 }
 
-    .form-control:focus {
-        border-color: var(--orange);
-        box-shadow: 0 0 5px rgba(245, 130, 32, 0.3);
-        outline: none;
-    }
+.form-control:focus {
+  border-color: var(--orange);
+  box-shadow: 0 0 5px rgba(245, 130, 32, 0.3);
+  outline: none;
+}
 
 .btn-main {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 6px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: white;
-    margin-top: 10px;
-    cursor: pointer !important;
-    transition: .3s;
-    position: relative;
-    /* SỬA LỖI CLICK: Đưa nút bấm nổi hẳn lên cao nhất */
-    z-index: 2000;
-    transform: translateZ(5px);
-    pointer-events: auto !important;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: white;
+  margin-top: 10px;
+  cursor: pointer !important;
+  transition: 0.3s;
+  position: relative;
+  /* SỬA LỖI CLICK: Đưa nút bấm nổi hẳn lên cao nhất */
+  z-index: 2000;
+  transform: translateZ(5px);
+  pointer-events: auto !important;
 }
 
 .btn-login {
-    background: var(--blue);
+  background: var(--blue);
 }
 
-    .btn-login:hover {
-        background: #002244;
-        transform: translateY(-2px) translateZ(5px);
-    }
+.btn-login:hover {
+  background: #002244;
+  transform: translateY(-2px) translateZ(5px);
+}
 
 .btn-register {
-    background: var(--orange);
+  background: var(--orange);
 }
 
-    .btn-register:hover {
-        background: #d96e10;
-        transform: translateY(-2px) translateZ(5px);
-    }
+.btn-register:hover {
+  background: #d96e10;
+  transform: translateY(-2px) translateZ(5px);
+}
 
 .switch-btn {
-    margin-top: auto;
-    text-align: center;
-    color: #666;
-    font-size: 14px;
-    cursor: pointer;
-    transition: .3s;
-    padding-top: 10px;
-    position: relative;
-    z-index: 2000; /* Đảm bảo nút chuyển trang cũng ấn được */
-    transform: translateZ(5px);
+  margin-top: auto;
+  text-align: center;
+  color: #666;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s;
+  padding-top: 10px;
+  position: relative;
+  z-index: 2000; /* Đảm bảo nút chuyển trang cũng ấn được */
+  transform: translateZ(5px);
 }
 
-    .switch-btn:hover {
-        color: var(--orange);
-        text-decoration: underline;
-    }
+.switch-btn:hover {
+  color: var(--orange);
+  text-decoration: underline;
+}
 
 .page-tab {
-    position: absolute;
-    right: -35px;
-    top: 80px;
-    width: 35px;
-    height: 110px;
-    background: var(--blue);
-    color: white;
-    border-radius: 0 8px 8px 0;
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 13px;
-    letter-spacing: 2px;
-    cursor: pointer;
-    box-shadow: 3px 3px 10px rgba(0,0,0,0.3);
-    transition: .3s;
-    z-index: 9999; /* Tab luôn ấn được */
+  position: absolute;
+  right: -35px;
+  top: 80px;
+  width: 35px;
+  height: 110px;
+  background: var(--blue);
+  color: white;
+  border-radius: 0 8px 8px 0;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
+  transition: 0.3s;
+  z-index: 9999; /* Tab luôn ấn được */
 }
 
-    .page-tab:hover {
-        width: 45px;
-        background: var(--orange);
-    }
+.page-tab:hover {
+  width: 45px;
+  background: var(--orange);
+}
 
-@@media (max-width: 768px) {
-    .book-container {
-        width: 90%;
-        height: auto;
-        min-height: 550px;
-    }
+@media (max-width: 768px) {
+  .book-container {
+    width: 90%;
+    height: auto;
+    min-height: 550px;
+  }
 
-        .book-container.show-register {
-            transform: none;
-        }
+  .book-container.show-register {
+    transform: none;
+  }
 
-    .flipping-page {
-        position: relative;
-        height: auto;
-    }
+  .flipping-page {
+    position: relative;
+    height: auto;
+  }
 
-    .book-container {
-        transform: scale(0.7) rotateX(10deg);
-    }
+  .book-container {
+    transform: scale(0.7) rotateX(10deg);
+  }
+}
+
+/* Inline styles extracted from Login.cshtml */
+.validation-summary-errors ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
 }

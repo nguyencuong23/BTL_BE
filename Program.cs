@@ -21,6 +21,8 @@ builder.Services.AddCors(options =>
 });
 
 // 3. Add Services
+builder.Services.AddScoped<QuanLyThuVienTruongHoc.Services.SystemSettingsService>();
+
 
 
 builder.Services.AddControllers(); // Dành cho API
@@ -86,19 +88,28 @@ app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Middleware kiểm tra chế độ bảo trì
+// Đặt sau Auth để có thể check User role
+app.UseMiddleware<QuanLyThuVienTruongHoc.Middleware.MaintenanceCheckMiddleware>();
+
 app.UseSession();
 
-// 6. Khởi tạo Database (Đã sửa lỗi xóa dữ liệu)
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    // 6. Khởi tạo Database
+    // Note: Đã comment lại để tránh conflict giữa Migrations và EnsureCreated.
+    // DbSeeder.SeedAsync sẽ tự động gọi MigrateAsync().
+    /*
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-    await db.Database.EnsureDeletedAsync();
-    await db.Database.EnsureCreatedAsync();
-}
+        await db.Database.EnsureDeletedAsync();
+        await db.Database.EnsureCreatedAsync();
+    }
+    */
 await DbSeeder.SeedAsync(app.Services);
 
 app.MapControllers();
+
 
 app.MapControllerRoute(
     name: "default",

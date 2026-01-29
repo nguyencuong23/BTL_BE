@@ -1,6 +1,7 @@
 @{
     ViewData["Title"] = "Cài đặt hệ thống";
 }
+@model QuanLyThuVienTruongHoc.Models.ViewModels.SystemSettingsViewModel
 
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -9,6 +10,14 @@
         <p class="text-muted mb-0">Quản lý cấu hình và thông tin hệ thống</p>
     </div>
 </div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i> @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
 
 <div class="row g-4">
     <!-- General Settings -->
@@ -21,43 +30,43 @@
                 </h5>
             </div>
             <div class="card-body p-4">
-                <form>
+                <form method="post" asp-action="Settings">
                     <!-- Tên hệ thống -->
                     <div class="mb-4">
-                        <label class="form-label fw-semibold">
+                        <label class="form-label fw-semibold" asp-for="SystemName">
                             <i class="fas fa-building me-2 text-primary"></i>
                             Tên hệ thống
                         </label>
-                        <input type="text" class="form-control" value="Hệ thống Quản lý Thư viện Đại học Đại Nam" />
+                        <input type="text" class="form-control" asp-for="SystemName" />
                         <small class="text-muted">Tên hiển thị trên giao diện người dùng</small>
                     </div>
 
                     <!-- Email admin -->
                     <div class="mb-4">
-                        <label class="form-label fw-semibold">
+                        <label class="form-label fw-semibold" asp-for="AdminEmail">
                             <i class="fas fa-envelope me-2 text-info"></i>
                             Email quản trị viên
                         </label>
-                        <input type="email" class="form-control" value="admin@thuvien.dainam.edu.vn" />
+                        <input type="email" class="form-control" asp-for="AdminEmail" />
                         <small class="text-muted">Email nhận thông báo và báo cáo hệ thống</small>
                     </div>
 
                     <!-- Số điện thoại -->
                     <div class="mb-4">
-                        <label class="form-label fw-semibold">
+                        <label class="form-label fw-semibold" asp-for="ContactPhone">
                             <i class="fas fa-phone me-2 text-success"></i>
                             Số điện thoại liên hệ
                         </label>
-                        <input type="tel" class="form-control" value="0243.123.4567" />
+                        <input type="tel" class="form-control" asp-for="ContactPhone" />
                     </div>
 
                     <!-- Địa chỉ -->
                     <div class="mb-4">
-                        <label class="form-label fw-semibold">
+                        <label class="form-label fw-semibold" asp-for="Address">
                             <i class="fas fa-map-marker-alt me-2 text-danger"></i>
                             Địa chỉ
                         </label>
-                        <textarea class="form-control" rows="3">Hà Đông, Hà Nội</textarea>
+                        <textarea class="form-control" rows="3" asp-for="Address"></textarea>
                     </div>
 
                     <!-- Trạng thái bảo trì -->
@@ -67,7 +76,7 @@
                             Trạng thái bảo trì
                         </label>
                         <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="maintenanceMode" />
+                            <input class="form-check-input" type="checkbox" id="maintenanceMode" asp-for="MaintenanceMode" />
                             <label class="form-check-label" for="maintenanceMode">
                                 Bật chế độ bảo trì
                             </label>
@@ -77,21 +86,44 @@
 
                     <!-- Thời gian mượn sách mặc định -->
                     <div class="mb-4">
-                        <label class="form-label fw-semibold">
+                        <label class="form-label fw-semibold" asp-for="DefaultLoanDays">
                             <i class="fas fa-calendar-alt me-2 text-primary"></i>
                             Thời gian mượn sách mặc định (ngày)
                         </label>
-                        <input type="number" class="form-control" value="14" min="1" max="90" />
+                        <input type="number" class="form-control" asp-for="DefaultLoanDays" min="1" max="90" />
                         <small class="text-muted">Số ngày mượn sách mặc định cho người dùng</small>
                     </div>
 
                     <!-- Số tiền phạt mỗi ngày -->
                     <div class="mb-4">
-                        <label class="form-label fw-semibold">
+                        <label class="form-label fw-semibold" asp-for="DailyFineAmount">
                             <i class="fas fa-money-bill-wave me-2 text-success"></i>
                             Tiền phạt mỗi ngày quá hạn (VNĐ)
                         </label>
-                        <input type="number" class="form-control" value="5000" min="0" />
+                        <input type="number" class="form-control" asp-for="DailyFineAmount" min="0" />
+                    </div>
+
+                    <!-- Mạng xã hội -->
+                    <div class="mb-4">
+                        <div class="form-label fw-semibold mb-3">
+                            <i class="fas fa-share-alt me-2 text-primary"></i>
+                            Mạng xã hội
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold" asp-for="FacebookUrl">Facebook URL</label>
+                            <input type="url" class="form-control" asp-for="FacebookUrl" placeholder="https://facebook.com/..." />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold" asp-for="YoutubeUrl">Youtube URL</label>
+                            <input type="url" class="form-control" asp-for="YoutubeUrl" placeholder="https://youtube.com/..." />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold" asp-for="TiktokUrl">Tiktok URL</label>
+                            <input type="url" class="form-control" asp-for="TiktokUrl" placeholder="https://tiktok.com/@@..." />
+                        </div>
                     </div>
 
                     <!-- Buttons -->
@@ -99,9 +131,9 @@
                         <button type="submit" class="btn btn-primary px-4">
                             <i class="fas fa-save me-2"></i>Lưu cài đặt
                         </button>
-                        <button type="reset" class="btn btn-outline-secondary px-4">
+                        <!-- <button type="reset" class="btn btn-outline-secondary px-4">
                             <i class="fas fa-undo me-2"></i>Đặt lại
-                        </button>
+                        </button> -->
                     </div>
                 </form>
             </div>

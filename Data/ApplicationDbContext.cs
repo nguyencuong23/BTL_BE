@@ -15,6 +15,7 @@ namespace QuanLyThuVienTruongHoc.Data
         public DbSet<Category> Categories { get; set; } = null!;
         public DbSet<Book> Books { get; set; } = null!;
         public DbSet<Loan> Loans { get; set; } = null!;
+        public DbSet<QuanLyThuVienTruongHoc.Models.System.Setting> Settings { get; set; } = null!;
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -28,6 +29,10 @@ namespace QuanLyThuVienTruongHoc.Data
             modelBuilder.Entity<User>()
                 .Property(u => u.TotalFine)
                 .HasPrecision(18, 0);
+
+            modelBuilder.Entity<User>()
+                .Property(u => u.PaidAmount)
+                .HasPrecision(18, 2);
 
             modelBuilder.Entity<Loan>()
                 .Property(l => l.Fine)

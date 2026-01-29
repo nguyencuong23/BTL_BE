@@ -156,6 +156,67 @@ footer a:hover {
   }
 }
 
+/* --- GLOBAL HERO HEADER (Unified for Search, News, Loans) --- */
+.global-hero-header {
+  margin-top: -21px;
+  padding: 60px 20px 100px 20px;
+  text-align: center;
+  border-radius: 0 0 50px 50px;
+  background-color: #005aab; /* Fallback */
+  background: linear-gradient(120deg, #005aab 0%, #004e92 100%);
+  color: white;
+  box-shadow: 0 20px 40px -10px rgba(0, 90, 171, 0.4);
+  position: relative;
+  margin-bottom: 50px;
+  z-index: 10;
+}
+
+.global-hero-header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transform: skewX(-20deg);
+  animation: shine 6s infinite;
+}
+
+.hero-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.hero-subtitle {
+  font-weight: 500;
+  opacity: 0.9;
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+@keyframes shine {
+  0% {
+    left: -100%;
+  }
+  20% {
+    left: 200%;
+  }
+  100% {
+    left: 200%;
+  }
+}
+
 /* --- MODAL VIVID --- */
 .modal-vivid .modal-content {
   border: none;
