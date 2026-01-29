@@ -58,9 +58,6 @@ namespace QuanLyThuVienTruongHoc.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ShelfId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -69,8 +66,6 @@ namespace QuanLyThuVienTruongHoc.Migrations
                     b.HasKey("BookId");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("ShelfId");
 
                     b.ToTable("Books");
                 });
@@ -134,28 +129,6 @@ namespace QuanLyThuVienTruongHoc.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Loans");
-                });
-
-            modelBuilder.Entity("QuanLyThuVienTruongHoc.Models.Library.Shelf", b =>
-                {
-                    b.Property<int>("ShelfId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ShelfId"));
-
-                    b.Property<string>("Location")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("ShelfId");
-
-                    b.ToTable("Shelves");
                 });
 
             modelBuilder.Entity("QuanLyThuVienTruongHoc.Models.Users.User", b =>
@@ -236,14 +209,6 @@ namespace QuanLyThuVienTruongHoc.Migrations
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("QuanLyThuVienTruongHoc.Models.Library.Shelf", "Shelf")
-                        .WithMany("Books")
-                        .HasForeignKey("ShelfId");
-
-                    b.Navigation("Category");
-
-                    b.Navigation("Shelf");
                 });
 
             modelBuilder.Entity("QuanLyThuVienTruongHoc.Models.Library.Loan", b =>
@@ -271,11 +236,6 @@ namespace QuanLyThuVienTruongHoc.Migrations
                 });
 
             modelBuilder.Entity("QuanLyThuVienTruongHoc.Models.Library.Category", b =>
-                {
-                    b.Navigation("Books");
-                });
-
-            modelBuilder.Entity("QuanLyThuVienTruongHoc.Models.Library.Shelf", b =>
                 {
                     b.Navigation("Books");
                 });

@@ -84,13 +84,16 @@
                         <a asp-controller="Account" asp-action="Login">Đăng nhập</a>
                     }
                 </div>
-                <div class="notification-container me-3">
-                    <div id="bellBtn" class="position-relative" style="cursor: pointer;">
-                        <i class="fa fa-bell fs-4 text-white"></i> <span id="badgeCount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.7rem;">
-                            !
-                        </span>
+                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    <div class="notification-container me-3">
+                        <div id="bellBtn" class="position-relative" style="cursor: pointer;">
+                            <i class="fa fa-bell fs-4 text-white"></i> <span id="badgeCount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.7rem;">
+                                !
+                            </span>
+                        </div>
                     </div>
-                </div>
+                }
             </nav>
         </div>
     </header>
