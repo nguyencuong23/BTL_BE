@@ -211,7 +211,6 @@ const serviceData = {
     },
 };
 
-// --- CÁC HÀM ĐIỀU KHIỂN OVERLAY (POPUP) ---
 function openService(serviceKey) {
     const data = serviceData[serviceKey];
     if (!data) return;
@@ -222,14 +221,13 @@ function openService(serviceKey) {
     const body = document.getElementById("svc-body");
     const overlay = document.getElementById("service-overlay");
 
-    // Kiểm tra xem các phần tử có tồn tại trong HTML không
     if (header && title && body && overlay) {
         header.style.backgroundImage = `url('${data.image}')`;
         title.innerHTML = data.title;
         body.innerHTML = data.content;
 
-        document.body.style.overflow = "hidden"; // Khóa cuộn trang chính
-        overlay.classList.add("active"); // Hiện popup
+        document.body.style.overflow = "hidden";
+        overlay.classList.add("active");
     } else {
         console.error("Không tìm thấy các phần tử HTML cần thiết cho popup (service-overlay, svc-header, v.v...)");
     }
@@ -239,6 +237,6 @@ function closeService() {
     const overlay = document.getElementById("service-overlay");
     if (overlay) {
         overlay.classList.remove("active");
-        document.body.style.overflow = ""; // Mở khóa cuộn trang
+        document.body.style.overflow = "";
     }
 }
