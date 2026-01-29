@@ -26,9 +26,9 @@
         <!-- Right Side: Filters & Total -->
         <div class="d-flex align-items-center gap-3 ms-auto">
             <!-- Filters -->
-             <form id="filterForm" method="get" class="d-flex align-items-center gap-2">
+            <form id="filterForm" method="get" class="d-flex align-items-center gap-2">
                 <select name="status" class="form-select filter-select" style="min-width: 150px;" 
-                        onchange="document.getElementById('filterForm').submit();">
+                        onchange="handleFilterChange()">
                     @{
                         var currentStatus = ViewData["CurrentStatus"] as int?;
                     }
@@ -38,7 +38,7 @@
                 </select>
                 
                 <select name="sortOrder" class="form-select filter-select" style="min-width: 160px;" 
-                        onchange="document.getElementById('filterForm').submit();">
+                        onchange="handleFilterChange()">
                     @{
                         var sort = ViewData["CurrentSort"] as string;
                     }
@@ -214,11 +214,4 @@
     </div>
 </div>
 
-<script>
-    function openPayFineModal(userId, currentDebt) {
-        document.getElementById('payFineUserId').value = userId;
-        document.getElementById('payFineCurrentDebt').value = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(currentDebt);
-        var myModal = new bootstrap.Modal(document.getElementById('payFineModal'));
-        myModal.show();
-    }
-</script>
+<script src="~/js/readers-index.js" asp-append-version="true"></script>

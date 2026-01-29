@@ -3,6 +3,7 @@
 document.addEventListener("DOMContentLoaded", function () {
   loadDashboardData();
   loadTrendCharts();
+  loadStatisticsPage();
 });
 
 // ... (keep existing loadDashboardData) ...
