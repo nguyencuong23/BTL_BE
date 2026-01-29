@@ -15,7 +15,7 @@ namespace QuanLyThuVienTruongHoc.Data
         public DbSet<Category> Categories { get; set; } = null!;
         public DbSet<Book> Books { get; set; } = null!;
         public DbSet<Loan> Loans { get; set; } = null!;
-        public DbSet<Shelf> Shelves { get; set; } = null!;
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

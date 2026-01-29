@@ -1,3 +1,5 @@
+@model IEnumerable<QuanLyThuVienTruongHoc.Models.Library.Book>
+
 @{
     ViewData["Title"] = "Trang chủ - Thư viện Đại Nam";
 }
@@ -99,7 +101,8 @@
         }
 
             .search-modern input:focus {
-                outline: none;
+                outline: none !important;
+                box-shadow: none !important;
             }
 
         .search-modern button {
@@ -206,7 +209,8 @@
 
     .swiper-slide {
         background-position: center;
-        background-size: cover;
+        background-size: contain;
+        background-repeat: no-repeat;
         width: 280px;
         height: auto;
     }
@@ -481,17 +485,37 @@
 <section class="book-section">
     <div class="container">
         <div class="text-center" data-aos="fade-down">
-            <h3 class="section-title">Sách & Giáo Trình Mới Nhất</h3>
+            <h3 class="section-title">Sách & Giáo trình mới nhất</h3>
             <p class="section-subtitle">Cập nhật liên tục các đầu sách phục vụ đào tạo và nghiên cứu</p>
         </div>
 
         <div class="swiper myBookSwiper" data-aos="fade-up" data-aos-delay="300">
             <div class="swiper-wrapper" id="book-carousel-inner">
-                <div class="text-center py-5 w-100">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Đang tải...</span>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var book in Model)
+                    {
+                        var imgUrl = !string.IsNullOrEmpty(book.ImagePath) ? book.ImagePath : "https://via.placeholder.com/300x450?text=No+Image";
+                        <div class="swiper-slide">
+                            <a href="@Url.Action("Search", "Client", new { search = book.Title })" class="book-card d-block h-100">
+                                <div style="height: 320px; overflow: hidden; position: relative; background: #f8f9fa;">
+                                    <img src="@imgUrl" style="height: 100%; width: 100%; object-fit: contain; transition: transform 0.5s;">
+                                    <div style="position: absolute; top: 15px; right: 15px; background: var(--primary-color); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">Mới</div>
+                                </div>
+                                <div class="p-3">
+                                    <h6 class="fw-bold text-truncate mb-1" style="font-size: 1.1rem;" title="@book.Title">@book.Title</h6>
+                                    <span class="d-block text-secondary small text-truncate"><i class="fas fa-user-edit me-2 text-primary"></i>@book.Author</span>
+                                </div>
+                            </a>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="text-center py-5 w-100">
+                        <p class="text-muted">Đang cập nhật dữ liệu sách...</p>
                     </div>
-                </div>
+                }
             </div>
             <div class="swiper-button-next"></div>
             <div class="swiper-button-prev"></div>
@@ -503,7 +527,7 @@
 <section class="facilities-section">
     <div class="container">
         <div class="section-header text-center" data-aos="fade-down">
-            <h3 class="section-title">Không Gian & Dịch Vụ</h3>
+            <h3 class="section-title">Không gian & Dịch vụ</h3>
             <p class="section-subtitle">Khám phá các tiện ích học tập đa dạng tại Thư viện Đại Nam</p>
         </div>
 
@@ -512,7 +536,7 @@
                 <a href="javascript:void(0)" onclick="openService('reading')" class="text-decoration-none">
                     <div class="facility-item">
                         <img src="https://atm273446-s3user.vcos.cloudstorage.com.vn/dhdainam/asset/asset/fixed/mhynchtxrfnn6hmb1xwu20230731073240_thump.jpg" class="facility-img" alt="Reading Room">
-                        <div class="facility-overlay"><span class="facility-label">Không gian Đọc & Học tập</span></div>
+                        <div class="facility-overlay"><span class="facility-label">Không gian đọc & Học tập</span></div>
                     </div>
                 </a>
             </div>
@@ -520,7 +544,7 @@
                 <a asp-controller="Client" asp-action="Tracuu" onclick="performSearch()" class="text-decoration-none">
                     <div class="facility-item">
                         <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=600&q=80" class="facility-img" alt="Search">
-                        <div class="facility-overlay"><span class="facility-label">Tra cứu Tài liệu</span></div>
+                        <div class="facility-overlay"><span class="facility-label">Tra cứu tài liệu</span></div>
                     </div>
                 </a>
             </div>
@@ -528,7 +552,7 @@
                 <a asp-controller="Client" asp-action="Payback" class="text-decoration-none">
                     <div class="facility-item">
                         <img src="https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=600&q=80" class="facility-img" alt="Borrow">
-                        <div class="facility-overlay"><span class="facility-label">Hướng dẫn Mượn/Trả</span></div>
+                        <div class="facility-overlay"><span class="facility-label">Hướng dẫn mượn/trả</span></div>
                     </div>
                 </a>
             </div>
@@ -536,7 +560,7 @@
                 <a href="javascript:void(0)" onclick="openService('meeting')" class="text-decoration-none">
                     <div class="facility-item">
                         <img src="https://atm273446-s3user.vcos.cloudstorage.com.vn/dhdainam/asset/asset/fixed/1(1).jpg" class="facility-img" alt="Group Meeting">
-                        <div class="facility-overlay"><span class="facility-label">Phòng Họp Nhóm</span></div>
+                        <div class="facility-overlay"><span class="facility-label">Phòng họp nhóm</span></div>
                     </div>
                 </a>
             </div>
@@ -544,7 +568,7 @@
                 <a href="javascript:void(0)" onclick="openService('digital')" class="text-decoration-none">
                     <div class="facility-item">
                         <img src="https://atm273446-s3user.vcos.cloudstorage.com.vn/dhdainam/asset/upload/news/old_sys/pic-New-i_636380485774111312.jpg" class="facility-img" alt="Digital Lib">
-                        <div class="facility-overlay"><span class="facility-label">Thư viện Số DNU</span></div>
+                        <div class="facility-overlay"><span class="facility-label">Thư viện số DNU</span></div>
                     </div>
                 </a>
             </div>
@@ -552,7 +576,7 @@
                 <a asp-controller="Client" asp-action="Privacy" class="text-decoration-none">
                     <div class="facility-item">
                         <img src="https://images.unsplash.com/photo-1550399105-c4db5fb85c18?auto=format&fit=crop&w=600&q=80" class="facility-img" alt="Categories">
-                        <div class="facility-overlay"><span class="facility-label">Danh mục Ngành</span></div>
+                        <div class="facility-overlay"><span class="facility-label">Danh mục ngành</span></div>
                     </div>
                 </a>
             </div>
@@ -563,7 +587,7 @@
 <section class="partner-section">
     <div class="container">
         <div class="text-center" data-aos="fade-down">
-            <h4 class="section-title" style="font-size: 2rem;">Đối Tác Liên Kết</h4>
+            <h4 class="section-title" style="font-size: 2rem;">Đối tác liên kết</h4>
         </div>
         <div class="row g-4 justify-content-center mt-4" data-aos="fade-up" data-aos-delay="200">
             <div class="col-md-4 col-6">
@@ -608,7 +632,31 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         AOS.init({ offset: 100, duration: 800, easing: 'ease-in-out', once: true });
-        loadCarouselBooks();
+        
+         new Swiper(".myBookSwiper", {
+            slidesPerView: 1,
+            spaceBetween: 20,
+            loop: true,
+            grabCursor: true,
+            autoplay: {
+                delay: 2500,
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+                dynamicBullets: true,
+            },
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+            breakpoints: {
+                640: { slidesPerView: 2, spaceBetween: 20 },
+                768: { slidesPerView: 3, spaceBetween: 30 },
+                1024: { slidesPerView: 4, spaceBetween: 30 },
+            },
+        });
     });
 
     function performSearch() {
@@ -616,7 +664,7 @@
         const keyword = input.value.trim();
 
         if (keyword) {
-            window.location.href = `/Client/Tracuu?keyword=${encodeURIComponent(keyword)}`;
+            window.location.href = `/Client/Search?search=${encodeURIComponent(keyword)}`;
         } else {
             input.focus();
             input.style.border = "2px solid #ffc107";
@@ -629,80 +677,10 @@
             performSearch();
         }
     }
+    
+    // loadCarouselBooks removed as data is server-side rendered
 
-    async function loadCarouselBooks() {
-        const carouselContainer = document.getElementById('book-carousel-inner');
-        const API_URL = '/api/library/books';
 
-        try {
-            const response = await fetch(API_URL);
-            if (!response.ok) throw new Error("Err");
-
-            const books = await response.json();
-
-            if (books.length === 0) {
-                carouselContainer.innerHTML = '<div class="text-center py-5 text-muted w-100">Chưa có sách nào được cập nhật.</div>';
-                return;
-            }
-
-            carouselContainer.innerHTML = '';
-
-            books.forEach(book => {
-                const imgUrl = book.image && book.image !== ""
-                    ? book.image
-                    : "https://via.placeholder.com/300x450?text=No+Image";
-
-                const slideHtml = `
-                    <div class="swiper-slide">
-                        <a href="#" onclick="openBorrowModal('${book.id}', '${book.title}')" class="book-card d-block h-100">
-                            <div style="height: 320px; overflow: hidden; position: relative;">
-                                <img src="${imgUrl}" style="height: 100%; width: 100%; object-fit: cover; transition: transform 0.5s;">
-                                <div style="position: absolute; top: 15px; right: 15px; background: var(--primary-color); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">Mới</div>
-                            </div>
-                            <div class="p-3">
-                                <h6 class="fw-bold text-truncate mb-1" style="font-size: 1.1rem;" title="${book.title}">${book.title}</h6>
-                                <span class="d-block text-secondary small text-truncate"><i class="fas fa-user-edit me-2 text-primary"></i>${book.author}</span>
-                            </div>
-                        </a>
-                    </div>
-                `;
-                carouselContainer.innerHTML += slideHtml;
-            });
-
-            new Swiper(".myBookSwiper", {
-                slidesPerView: 1,
-                spaceBetween: 20,
-                loop: true,
-                grabCursor: true,
-                autoplay: {
-                    delay: 2500,
-                    disableOnInteraction: false,
-                },
-                pagination: {
-                    el: ".swiper-pagination",
-                    clickable: true,
-                    dynamicBullets: true,
-                },
-                navigation: {
-                    nextEl: ".swiper-button-next",
-                    prevEl: ".swiper-button-prev",
-                },
-                breakpoints: {
-                    640: { slidesPerView: 2, spaceBetween: 20 },
-                    768: { slidesPerView: 3, spaceBetween: 30 },
-                    1024: { slidesPerView: 4, spaceBetween: 30 },
-                },
-            });
-
-        } catch (error) {
-            console.error(error);
-            carouselContainer.innerHTML = '<div class="text-center py-5 text-danger">Không thể tải dữ liệu sách.</div>';
-        }
-    }
-
-    function openBorrowModal(id, title) {
-        console.log("Mượn sách: " + title);
-    }
 
     const serviceData = {
         'reading': {

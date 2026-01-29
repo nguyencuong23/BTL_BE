@@ -1,0 +1,79 @@
+﻿@model IEnumerable<QuanLyThuVienTruongHoc.Models.Library.Loan>
+
+@{
+    ViewData["Title"] = "Lịch sử Mượn Sách";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link rel="stylesheet" href="~/css/loans.css" asp-append-version="true" />
+
+<body>
+    <div class="background-animate"></div>
+    <div class="container">
+        <div class="glass-hero">
+            <h2>LỊCH SỬ MƯỢN TRẢ</h2>
+            <p>Theo dõi quá trình mượn sách và thời hạn trả</p>
+        </div>
+    </div>
+
+    <main class="container">
+        <div class="glass-panel" style="background: rgba(255, 255, 255, 0.9); padding: 30px; border-radius: 20px; box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);">
+            @if (!Model.Any())
+            {
+                <div class="text-center py-5">
+                    <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
+                    <h4>Bạn chưa có lịch sử mượn sách nào.</h4>
+                    <a asp-action="Search" class="btn btn-primary mt-3">Tìm sách ngay</a>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Sách</th>
+                                <th>Ngày mượn</th>
+                                <th>Hẹn trả</th>
+                                <th>Trạng thái</th>
+                                <th>Ghi chú</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var loan in Model)
+                            {
+                                var statusClass = loan.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DangMuon ? "text-primary fw-bold" :
+                                                  loan.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DaTra ? "text-success fw-bold" :
+                                                  "text-danger fw-bold";
+                                var statusText = loan.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DangMuon ? "Đang mượn" :
+                                                 loan.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DaTra ? "Đã trả" :
+                                                 "Quá hạn";
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="ms-2">
+                                                <p class="fw-bold mb-0">@loan.Book?.Title</p>
+                                                <small class="text-muted">@loan.Book?.Author</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>@loan.BorrowDate.ToString("dd/MM/yyyy")</td>
+                                    <td>@loan.DueDate.ToString("dd/MM/yyyy")</td>
+                                    <td class="@statusClass">@statusText</td>
+                                    <td>
+                                        @if(loan.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DangMuon && DateTime.Now > loan.DueDate)
+                                        {
+                                             <span class="badge bg-danger">Quá hạn</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </main>
+
+</body>
