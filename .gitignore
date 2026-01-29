@@ -151,6 +151,7 @@ package-lock.json
 # .NET Core local / user specifics
 appsettings.Development.json
 appsettings.Local.json
+appsettings.json
 
 # Data Protection Keys
 **/DataProtection-Keys/
