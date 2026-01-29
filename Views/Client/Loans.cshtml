@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Lịch sử Mượn Sách";
+    Layout = "~/Views/Shared/_ClientLayout.cshtml";
 
     // --- LOGIC THỐNG KÊ ---
     var totalLoans = Model.Count();
@@ -10,135 +11,136 @@
     var overdueLoans = Model.Count(x => x.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DangMuon && DateTime.Now > x.DueDate);
 }
 
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <link rel="stylesheet" href="~/css/loans.css" asp-append-version="true" />
 
-<div class="background-animate"></div>
-<div class="container py-4">
-    <div class="glass-hero mb-4">
-        <div class="d-flex flex-column align-items-center justify-content-center text-center">
-            <div class="mb-3">
-                <i class="fas fa-history fa-3x text-white-50"></i>
-            </div>
-            <h2 class="text-white">LỊCH SỬ MƯỢN TRẢ</h2>
-            <p class="text-white-50">Theo dõi quá trình mượn sách, thời hạn trả và trạng thái hồ sơ của bạn</p>
+@section Hero {
+    <div class="container text-center">
+        <div class="mb-3">
+            <i class="fas fa-history fa-3x text-white-50"></i>
         </div>
-    </div>
+        <h2 class="text-white fw-bold text-uppercase display-5">LỊCH SỬ MƯỢN TRẢ</h2>
+        <p class="text-white-50 fs-5">Theo dõi quá trình mượn sách, thời hạn trả và trạng thái hồ sơ của bạn</p>
 
-    <div class="search-wrapper mb-4">
-        <div class="search-glass-container">
-            <i class="fas fa-search search-icon"></i>
-            <input type="text" id="loanSearchInput" placeholder="Nhập tên sách hoặc tác giả để tìm nhanh..." onkeyup="filterLoans()">
-            <button type="button" class="clear-btn" onclick="clearSearch()">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-    </div>
-
-    <div class="row g-4 mb-5">
-        <div class="col-md-4">
-            <div class="glass-panel text-center p-4">
-                <i class="fas fa-book-reader fa-2x text-primary mb-2"></i>
-                <h5 class="text-muted">Đang mượn</h5>
-                <h2 class="fw-bold text-primary m-0">@activeLoans</h2>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="glass-panel text-center p-4">
-                <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
-                <h5 class="text-muted">Đã trả</h5>
-                <h2 class="fw-bold text-success m-0">@returnedLoans</h2>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="glass-panel text-center p-4">
-                <i class="fas fa-exclamation-triangle fa-2x text-danger mb-2"></i>
-                <h5 class="text-muted">Quá hạn</h5>
-                <h2 class="fw-bold text-danger m-0">@overdueLoans</h2>
+        <!-- Search Box (Moved Inside Hero) -->
+        <div class="search-wrapper position-relative z-3 mt-5 mb-0" style="top: 0;">
+            <div class="search-glass-container mx-auto">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="loanSearchInput" placeholder="Nhập tên sách hoặc tác giả để tìm nhanh..." onkeyup="filterLoans()">
+                <button type="button" class="clear-btn" onclick="clearSearch()">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
         </div>
     </div>
+}
 
-    <div class="glass-panel p-4">
-        <div class="category-header d-flex justify-content-between align-items-center mb-4">
-            <h3 class="category-title m-0"><i class="fas fa-list-alt me-2"></i>Danh sách chi tiết</h3>
-            <span class="badge bg-dark rounded-pill">Tổng: @totalLoans</span>
+<div class="loans-page-content">
+    <div class="container py-4">
+
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="glass-panel text-center p-4">
+                    <i class="fas fa-book-reader fa-2x text-primary mb-2"></i>
+                    <h5 class="text-muted">Đang mượn</h5>
+                    <h2 class="fw-bold text-primary m-0">@activeLoans</h2>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-panel text-center p-4">
+                    <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                    <h5 class="text-muted">Đã trả</h5>
+                    <h2 class="fw-bold text-success m-0">@returnedLoans</h2>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-panel text-center p-4">
+                    <i class="fas fa-exclamation-triangle fa-2x text-danger mb-2"></i>
+                    <h5 class="text-muted">Quá hạn</h5>
+                    <h2 class="fw-bold text-danger m-0">@overdueLoans</h2>
+                </div>
+            </div>
         </div>
 
-        <div class="table-responsive">
-            <table class="table table-hover align-middle custom-table">
-                <thead>
-                    <tr class="text-uppercase small">
-                        <th>Thông tin sách</th>
-                        <th>Ngày mượn</th>
-                        <th>Hạn trả</th>
-                        <th>Trạng thái</th>
-                        <th>Hạn mượn</th>
-                    </tr>
-                </thead>
-                <tbody id="loanTableBody">
-                    @foreach (var loan in Model)
-                    {
-                        var timeRemaining = loan.DueDate.Date - DateTime.Now.Date;
-                        var daysLeft = timeRemaining.Days;
-                        var isOverdue = loan.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DangMuon && daysLeft < 0;
+        <div class="glass-panel p-4">
+            <div class="category-header d-flex justify-content-between align-items-center mb-4">
+                <h3 class="category-title m-0"><i class="fas fa-list-alt me-2"></i>Danh sách chi tiết</h3>
+                <span class="badge bg-dark rounded-pill">Tổng: @totalLoans</span>
+            </div>
 
-                        <tr>
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    <div class="book-icon-box me-3">
-                                        <i class="fas fa-book text-muted"></i>
-                                    </div>
-                                    <div>
-                                        <p class="fw-bold mb-0 text-dark book-title">@loan.Book?.Title</p>
-                                        <small class="text-muted book-author">@loan.Book?.Author</small>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>@loan.BorrowDate.ToString("dd/MM/yyyy")</td>
-                            <td>
-                                <span class="@(isOverdue ? "text-danger fw-bold" : "")">
-                                    @loan.DueDate.ToString("dd/MM/yyyy")
-                                </span>
-                            </td>
-                            <td>
-                                @if (loan.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DaTra)
-                                {
-                                    <span class="text-success fw-bold"><i class="fas fa-check me-1"></i>Đã trả</span>
-                                }
-                                else
-                                {
-                                    <span class="@(isOverdue ? "text-danger" : "text-primary") fw-bold">
-                                        <i class="fas @(isOverdue ? "fa-times" : "fa-clock") me-1"></i>
-                                        @(isOverdue ? "Quá hạn" : "Đang mượn")
-                                    </span>
-                                }
-                            </td>
-                            <td>
-                                @if (loan.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DaTra)
-                                {
-                                    <span class="badge bg-success rounded-pill px-3">Hoàn thành</span>
-                                }
-                                else if (daysLeft < 0)
-                                {
-                                    <span class="badge bg-danger rounded-pill px-3">Quá hạn @Math.Abs(daysLeft) ngày</span>
-                                }
-                                else if (daysLeft == 0)
-                                {
-                                    <span class="badge bg-warning text-dark rounded-pill px-3">Hạn trả hôm nay</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-info text-white rounded-pill px-3">Còn @daysLeft ngày</span>
-                                }
-                            </td>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle custom-table">
+                    <thead>
+                        <tr class="text-uppercase small">
+                            <th>Thông tin sách</th>
+                            <th>Ngày mượn</th>
+                            <th>Hạn trả</th>
+                            <th>Trạng thái</th>
+                            <th>Hạn mượn</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
-            <div id="noResultsMsg" class="text-center py-4" style="display: none;">
-                <p class="text-muted">Không tìm thấy kết quả phù hợp.</p>
+                    </thead>
+                    <tbody id="loanTableBody">
+                        @foreach (var loan in Model)
+                        {
+                            var timeRemaining = loan.DueDate.Date - DateTime.Now.Date;
+                            var daysLeft = timeRemaining.Days;
+                            var isOverdue = loan.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DangMuon && daysLeft < 0;
+
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="book-icon-box me-3">
+                                            <i class="fas fa-book text-muted"></i>
+                                        </div>
+                                        <div>
+                                            <p class="fw-bold mb-0 text-dark book-title">@loan.Book?.Title</p>
+                                            <small class="text-muted book-author">@loan.Book?.Author</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>@loan.BorrowDate.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    <span class="@(isOverdue ? "text-danger fw-bold" : "")">
+                                        @loan.DueDate.ToString("dd/MM/yyyy")
+                                    </span>
+                                </td>
+                                <td>
+                                    @if (loan.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DaTra)
+                                    {
+                                        <span class="text-success fw-bold"><i class="fas fa-check me-1"></i>Đã trả</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="@(isOverdue ? "text-danger" : "text-primary") fw-bold">
+                                            <i class="fas @(isOverdue ? "fa-times" : "fa-clock") me-1"></i>
+                                            @(isOverdue ? "Quá hạn" : "Đang mượn")
+                                        </span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (loan.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DaTra)
+                                    {
+                                        <span class="badge bg-success rounded-pill px-3">Hoàn thành</span>
+                                    }
+                                    else if (daysLeft < 0)
+                                    {
+                                        <span class="badge bg-danger rounded-pill px-3">Quá hạn @Math.Abs(daysLeft) ngày</span>
+                                    }
+                                    else if (daysLeft == 0)
+                                    {
+                                        <span class="badge bg-warning text-dark rounded-pill px-3">Hạn trả hôm nay</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-info text-white rounded-pill px-3">Còn @daysLeft ngày</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div id="noResultsMsg" class="text-center py-4" style="display: none;">
+                    <p class="text-muted">Không tìm thấy kết quả phù hợp.</p>
+                </div>
             </div>
         </div>
     </div>

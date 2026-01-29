@@ -12,8 +12,8 @@ using QuanLyThuVienTruongHoc.Data;
 namespace QuanLyThuVienTruongHoc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260125073922_Init")]
-    partial class Init
+    [Migration("20260129092117_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -46,6 +46,7 @@ namespace QuanLyThuVienTruongHoc.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Location")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -53,6 +54,7 @@ namespace QuanLyThuVienTruongHoc.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Publisher")
+                        .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
@@ -111,7 +113,8 @@ namespace QuanLyThuVienTruongHoc.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Fine")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(18)
+                        .HasColumnType("decimal(18,0)");
 
                     b.Property<DateTime?>("ReturnDate")
                         .HasColumnType("datetime2");
@@ -131,6 +134,24 @@ namespace QuanLyThuVienTruongHoc.Migrations
                     b.ToTable("Loans");
                 });
 
+            modelBuilder.Entity("QuanLyThuVienTruongHoc.Models.System.Setting", b =>
+                {
+                    b.Property<string>("Key")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Key");
+
+                    b.ToTable("Settings");
+                });
+
             modelBuilder.Entity("QuanLyThuVienTruongHoc.Models.Users.User", b =>
                 {
                     b.Property<int>("Id")
@@ -143,6 +164,7 @@ namespace QuanLyThuVienTruongHoc.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -154,12 +176,17 @@ namespace QuanLyThuVienTruongHoc.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<decimal>("PaidAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("PhoneNumber")
+                        .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
@@ -182,12 +209,10 @@ namespace QuanLyThuVienTruongHoc.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
-                        .IsUnique()
-                        .HasFilter("[Email] IS NOT NULL");
+                        .IsUnique();
 
                     b.HasIndex("PhoneNumber")
-                        .IsUnique()
-                        .HasFilter("[PhoneNumber] IS NOT NULL");
+                        .IsUnique();
 
                     b.HasIndex("StudentCode")
                         .IsUnique()

@@ -112,5 +112,73 @@ namespace QuanLyThuVienTruongHoc.Controllers
             return View();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> MaintenanceLogin()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MaintenanceLogin(LoginViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == model.Username);
+
+            if (user == null)
+            {
+                ModelState.AddModelError("", "Tài khoản hoặc mật khẩu không chính xác");
+                return View(model);
+            }
+
+            if (!user.IsActive)
+            {
+                 ViewBag.Locked = true;
+                 return View(model);
+            }
+
+            var hasher = new PasswordHasher<User>();
+            var result = hasher.VerifyHashedPassword(user, user.PasswordHash, model.Password);
+
+            if (result == PasswordVerificationResult.Failed)
+            {
+                ModelState.AddModelError("", "Tài khoản hoặc mật khẩu không chính xác");
+                return View(model);
+            }
+
+            // Chỉ cho phép Admin đăng nhập ở đây
+            if (user.Role != 1) 
+            {
+                ModelState.AddModelError("", "Chỉ Quản trị viên mới được phép đăng nhập khi bảo trì.");
+                return View(model);
+            }
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Role, "Admin")
+            };
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var authProperties = new AuthenticationProperties { IsPersistent = model.RememberMe };
+
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(identity),
+                authProperties
+            );
+
+            return RedirectToAction("Index", "Admin"); 
+        }
+
+        [HttpGet]
+        [Route("/Maintenance")]
+        public IActionResult Maintenance()
+        {
+            return View();
+        }
     }
 }

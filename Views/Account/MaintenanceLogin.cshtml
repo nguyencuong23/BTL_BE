@@ -1,0 +1,295 @@
+@*
+@{
+    ViewData["Title"] = "Đăng nhập bảo trì (Cũ)";
+    Layout = null; 
+}
+@model QuanLyThuVienTruongHoc.Models.ViewModels.LoginViewModel
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .login-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .login-header h3 {
+            color: #333;
+            font-weight: 600;
+        }
+        .login-header p {
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="login-header">
+            <h3>Đăng nhập Quản trị</h3>
+            <p class="small">Hệ thống đang bảo trì. Vui lòng đăng nhập quyền Admin để truy cập.</p>
+        </div>
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <div>@error.ErrorMessage</div>
+                }
+            </div>
+        }
+
+        @if (ViewBag.Locked == true)
+        {
+            <div class="alert alert-danger">
+                Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.
+            </div>
+        }
+
+        <form asp-action="MaintenanceLogin" method="post">
+            <div class="mb-3">
+                <label class="form-label">Tên đăng nhập</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                    <input asp-for="Username" class="form-control" placeholder="Nhập tên đăng nhập" required autofocus />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Mật khẩu</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                    <input asp-for="Password" type="password" class="form-control" placeholder="Nhập mật khẩu" required />
+                </div>
+            </div>
+
+            <div class="mb-3 form-check">
+                <input asp-for="RememberMe" class="form-check-input" />
+                <label class="form-check-label">Ghi nhớ đăng nhập</label>
+            </div>
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập
+                </button>
+                <a href="/Maintenance" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Quay lại
+                </a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
+*@
+
+@{
+    ViewData["Title"] = "Đăng nhập bảo trì";
+    Layout = null;
+}
+@model QuanLyThuVienTruongHoc.Models.ViewModels.LoginViewModel
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            font-family: "Segoe UI", sans-serif;
+            overflow: hidden;
+        }
+
+        /* ===== PAGE LAYOUT ===== */
+        .page {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            height: 100vh;
+        }
+
+        .left {
+            flex: 1.2;
+        }
+
+        .right {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-right: 4vw;
+        }
+        /* ===== BACKGROUND ANIME ===== */
+        .bg {
+            position: fixed;
+            inset: 0;
+            background: url("/images/maintenance-login-bg/bg.jpg") no-repeat center center;
+            background-size: cover;
+            z-index: -2;
+        }
+
+        /* lớp làm tối nền — để dưới form */
+        .bg::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.35);
+            z-index: -1;
+        }
+
+        /* ===== LOGIN CARD ===== */
+        .login-card {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 420px;
+            padding: 2.4rem;
+            border-radius: 14px;
+
+            background:
+                linear-gradient(rgba(255,248,230,0.96), rgba(245,235,215,0.96)),
+                url("/images/maintenance-login-bg/paper-texture.png");
+            background-size: cover;
+
+            border: 6px solid #6b3e1f;
+            box-shadow:
+                inset 0 0 40px rgba(0,0,0,.15),
+                0 25px 60px rgba(0,0,0,.6);
+        }
+
+
+        /* ===== INPUT STYLE ===== */
+        .form-control {
+            background: #f8f1e2;
+            border: 1px solid #b59772;
+            color: #4b2f18;
+        }
+
+        .form-control:focus {
+            background: #fff4dc;
+            border-color: #8b5a2b;
+            box-shadow: 0 0 0 0.2rem rgba(139,90,43,.3);
+        }
+
+        .input-group-text {
+            background: #d6b38a;
+            border-color: #b59772;
+            color: #4b2f18;
+        }
+
+        .btn-primary {
+            background: linear-gradient(#8b5a2b, #5a3418);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(#a06a34, #6b3e1f);
+        }
+
+        .login-header h3 {
+            font-weight: 600;
+            color: #2b1b10;
+        }
+
+        .login-header p {
+            color: #6f5a44;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg"></div>
+
+    <div class="page">
+        <div class="left"></div>
+
+        <div class="right">
+            <div class="login-card">
+                <div class="login-header text-center mb-4">
+                    <h3>Đăng nhập Quản trị</h3>
+                    <p class="small">
+                        Hệ thống đang bảo trì. Vui lòng đăng nhập quyền Admin để truy cập.
+                    </p>
+                </div>
+
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger">
+                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <div>@error.ErrorMessage</div>
+                        }
+                    </div>
+                }
+
+                @if (ViewBag.Locked == true)
+                {
+                    <div class="alert alert-danger">
+                        Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.
+                    </div>
+                }
+
+                <form asp-action="MaintenanceLogin" method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Tên đăng nhập</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <input asp-for="Username" class="form-control" required autofocus />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Mật khẩu</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                            <input asp-for="Password" type="password" class="form-control" required />
+                        </div>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input asp-for="RememberMe" class="form-check-input" />
+                        <label class="form-check-label">Ghi nhớ đăng nhập</label>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập
+                        </button>
+                        <a href="/Maintenance" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Quay lại
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
