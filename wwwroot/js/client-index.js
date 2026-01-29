@@ -1,57 +1,60 @@
 document.addEventListener("DOMContentLoaded", function () {
-  AOS.init({ offset: 100, duration: 800, easing: "ease-in-out", once: true });
+    // 1. Khởi tạo hiệu ứng AOS (Animation)
+    AOS.init({ offset: 100, duration: 800, easing: "ease-in-out", once: true });
 
-  new Swiper(".myBookSwiper", {
-    slidesPerView: 1,
-    spaceBetween: 20,
-    loop: true,
-    grabCursor: true,
-    autoplay: {
-      delay: 2500,
-      disableOnInteraction: false,
-    },
-    pagination: {
-      el: ".swiper-pagination",
-      clickable: true,
-      dynamicBullets: true,
-    },
-    navigation: {
-      nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev",
-    },
-    breakpoints: {
-      640: { slidesPerView: 2, spaceBetween: 20 },
-      768: { slidesPerView: 3, spaceBetween: 30 },
-      1024: { slidesPerView: 4, spaceBetween: 30 },
-    },
-  });
+    // 2. Khởi tạo Swiper (Slide sách)
+    new Swiper(".myBookSwiper", {
+        slidesPerView: 1,
+        spaceBetween: 20,
+        loop: true,
+        grabCursor: true,
+        autoplay: {
+            delay: 2500,
+            disableOnInteraction: false,
+        },
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+            dynamicBullets: true,
+        },
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+        breakpoints: {
+            640: { slidesPerView: 2, spaceBetween: 20 },
+            768: { slidesPerView: 3, spaceBetween: 30 },
+            1024: { slidesPerView: 4, spaceBetween: 30 },
+        },
+    });
 });
 
+// --- CÁC HÀM TÌM KIẾM ---
 function performSearch() {
-  const input = document.getElementById("homeSearchInput");
-  const keyword = input.value.trim();
+    const input = document.getElementById("homeSearchInput");
+    const keyword = input.value.trim();
 
-  if (keyword) {
-    window.location.href = `/Client/Search?search=${encodeURIComponent(keyword)}`;
-  } else {
-    input.focus();
-    input.style.border = "2px solid #ffc107";
-    setTimeout(() => (input.style.border = "none"), 1000);
-  }
+    if (keyword) {
+        window.location.href = `/Client/Search?search=${encodeURIComponent(keyword)}`;
+    } else {
+        input.focus();
+        input.style.border = "2px solid #ffc107";
+        setTimeout(() => (input.style.border = "none"), 1000);
+    }
 }
 
 function handleEnter(event) {
-  if (event.key === "Enter") {
-    performSearch();
-  }
+    if (event.key === "Enter") {
+        performSearch();
+    }
 }
 
+// --- DỮ LIỆU NỘI DUNG POPUP (Đã cập nhật phần categories) ---
 const serviceData = {
-  reading: {
-    title: "Không gian Đọc & Tự học Hiện đại",
-    image:
-      "https://images.unsplash.com/photo-1568667256549-094345857637?auto=format&fit=crop&w=1920&q=80",
-    content: `
+    reading: {
+        title: "Không gian Đọc & Tự học Hiện đại",
+        image: "https://images.unsplash.com/photo-1568667256549-094345857637?auto=format&fit=crop&w=1920&q=80",
+        content: `
             <p class="lead text-secondary">Thư viện Đại Nam cung cấp không gian yên tĩnh với 500 chỗ ngồi.</p>
             <hr class="my-5">
             <div class="row mt-5">
@@ -71,12 +74,11 @@ const serviceData = {
                 </div>
             </div>
         `,
-  },
-  meeting: {
-    title: "Dịch vụ Phòng Họp Nhóm",
-    image:
-      "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=1920&q=80",
-    content: `
+    },
+    meeting: {
+        title: "Dịch vụ Phòng Họp Nhóm",
+        image: "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=1920&q=80",
+        content: `
             <p class="lead text-secondary">Không gian thảo luận nhóm cách âm tốt.</p>
             <hr class="my-5">
             <div class="row mt-5 align-items-center">
@@ -92,12 +94,11 @@ const serviceData = {
                 </div>
             </div>
         `,
-  },
-  digital: {
-    title: "Thư viện Số & Cơ sở Dữ liệu",
-    image:
-      "https://images.unsplash.com/photo-1507842217121-ca1904a5e1a1?auto=format&fit=crop&w=1920&q=80",
-    content: `
+    },
+    digital: {
+        title: "Thư viện Số & Cơ sở Dữ liệu",
+        image: "https://atm273446-s3user.vcos.cloudstorage.com.vn/dhdainam/asset/asset/fixed/w88shoi0w4fhr8hwawj620230413082650_thump.jpg",
+        content: `
             <p class="lead text-secondary">Truy cập hàng ngàn tài liệu điện tử mọi lúc, mọi nơi.</p>
             <hr class="my-5">
             <div class="row mt-5">
@@ -124,23 +125,120 @@ const serviceData = {
                 </div>
             </div>
         `,
-  },
+    },
+    // --- PHẦN BẠN YÊU CẦU THAY ĐỔI Ở ĐÂY ---
+    categories: {
+        title: "Tổng quan Tài liệu theo Chuyên ngành",
+        image: "https://images.unsplash.com/photo-1550399105-c4db5fb85c18?auto=format&fit=crop&w=1920&q=80",
+        content: `
+            <div class="px-2">
+                <p class="lead text-secondary text-justify">
+                    Thư viện Đại Nam sở hữu hệ thống tài liệu phong phú, được xây dựng và cập nhật liên tục bám sát khung chương trình đào tạo thực tế của nhà trường.
+                </p>
+                
+                <hr class="my-4">
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h5 class="fw-bold mb-3" style="color: #2c3e50;">
+                            <i class="fas fa-layer-group me-2 text-primary"></i>Phân loại tài liệu
+                        </h5>
+                        <p class="mb-4 text-secondary">
+                            Tài liệu được sắp xếp khoa học, giúp sinh viên dễ dàng tiếp cận tri thức theo từng khối ngành chuyên biệt:
+                        </p>
+
+                        <ul class="list-unstyled">
+                            <li class="mb-3">
+                                <div class="d-flex">
+                                    <div class="me-3 mt-1 text-primary"><i class="fas fa-chart-line fa-lg"></i></div>
+                                    <div>
+                                        <strong class="d-block text-dark">Khối Kinh tế & Quản trị kinh doanh</strong>
+                                        <span class="text-muted small">Bao gồm giáo trình Tài chính, Kế toán, Marketing, Quản trị nhân lực và các ấn phẩm kinh tế quốc tế.</span>
+                                    </div>
+                                </div>
+                            </li>
+                            
+                            <li class="mb-3">
+                                <div class="d-flex">
+                                    <div class="me-3 mt-1 text-success"><i class="fas fa-laptop-code fa-lg"></i></div>
+                                    <div>
+                                        <strong class="d-block text-dark">Khối Kỹ thuật & Công nghệ thông tin</strong>
+                                        <span class="text-muted small">Cập nhật xu hướng công nghệ mới: AI, Big Data, Lập trình ứng dụng, cùng tài liệu chuyên ngành Ô tô, Điện - Điện tử.</span>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li class="mb-3">
+                                <div class="d-flex">
+                                    <div class="me-3 mt-1 text-danger"><i class="fas fa-user-md fa-lg"></i></div>
+                                    <div>
+                                        <strong class="d-block text-dark">Khối Sức khỏe (Y - Dược)</strong>
+                                        <span class="text-muted small">Hệ thống Atlas giải phẫu, Dược điển Việt Nam, sách chuyên khảo Y khoa và tạp chí nghiên cứu uy tín.</span>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li class="mb-3">
+                                <div class="d-flex">
+                                    <div class="me-3 mt-1 text-warning"><i class="fas fa-language fa-lg"></i></div>
+                                    <div>
+                                        <strong class="d-block text-dark">Khối Ngôn ngữ & Khoa học Xã hội</strong>
+                                        <span class="text-muted small">Đa dạng đầu sách văn học, lịch sử, văn hóa và giáo trình ngoại ngữ (Anh, Trung, Nhật, Hàn).</span>
+                                    </div>
+                                </div>
+                            </li>
+                             <li class="mb-3">
+                                <div class="d-flex">
+                                    <div class="me-3 mt-1 text-secondary"><i class="fas fa-balance-scale fa-lg"></i></div>
+                                    <div>
+                                        <strong class="d-block text-dark">Khối Luật học</strong>
+                                        <span class="text-muted small">Tuyển tập văn bản quy phạm pháp luật, bình luận án, giáo trình Luật kinh tế, Luật dân sự...</span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <div class="alert alert-light border rounded-3 mt-4">
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle me-1 text-info"></i> 
+                                Ngoài ra, sinh viên có thể tra cứu <strong>Luận văn / Đồ án tốt nghiệp</strong> của các khóa trước tại quầy Thông tin.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `,
+    },
 };
 
+// --- CÁC HÀM ĐIỀU KHIỂN OVERLAY (POPUP) ---
 function openService(serviceKey) {
-  const data = serviceData[serviceKey];
-  if (!data) return;
+    const data = serviceData[serviceKey];
+    if (!data) return;
 
-  document.getElementById("svc-header").style.backgroundImage =
-    `url('${data.image}')`;
-  document.getElementById("svc-title").innerHTML = data.title;
-  document.getElementById("svc-body").innerHTML = data.content;
+    // Lấy các phần tử DOM
+    const header = document.getElementById("svc-header");
+    const title = document.getElementById("svc-title");
+    const body = document.getElementById("svc-body");
+    const overlay = document.getElementById("service-overlay");
 
-  document.body.style.overflow = "hidden";
-  document.getElementById("service-overlay").classList.add("active");
+    // Kiểm tra xem các phần tử có tồn tại trong HTML không
+    if (header && title && body && overlay) {
+        header.style.backgroundImage = `url('${data.image}')`;
+        title.innerHTML = data.title;
+        body.innerHTML = data.content;
+
+        document.body.style.overflow = "hidden"; // Khóa cuộn trang chính
+        overlay.classList.add("active"); // Hiện popup
+    } else {
+        console.error("Không tìm thấy các phần tử HTML cần thiết cho popup (service-overlay, svc-header, v.v...)");
+    }
 }
 
 function closeService() {
-  document.getElementById("service-overlay").classList.remove("active");
-  document.body.style.overflow = "";
+    const overlay = document.getElementById("service-overlay");
+    if (overlay) {
+        overlay.classList.remove("active");
+        document.body.style.overflow = ""; // Mở khóa cuộn trang
+    }
 }
