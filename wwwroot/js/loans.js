@@ -1,117 +1,77 @@
 ﻿document.addEventListener('DOMContentLoaded', function () {
-    // 1. TỰ ĐỘNG HIỆN MODAL KHI LOAD TRANG
-    var modal = document.getElementById('instruction-modal');
-    if (modal) {
-        // Thêm delay nhỏ để modal hiện ra mượt hơn sau khi trang load
+    // 1. XỬ LÝ CACHE 24H CHO MODAL
+    const modal = document.getElementById('instruction-modal');
+    const CACHE_KEY = 'hide_instruction_timestamp';
+    const DAY_IN_MS = 24 * 60 * 60 * 1000;
+
+    const savedTime = localStorage.getItem(CACHE_KEY);
+    const now = new Date().getTime();
+
+    if (modal && (!savedTime || (now - savedTime > DAY_IN_MS))) {
         setTimeout(() => {
             modal.classList.add('active');
         }, 500);
     }
 
-    // Xử lý đóng modal khi click ra ngoài
-    window.onclick = function (event) {
-        if (event.target == modal) {
-            closeInstructionModal();
-        }
-    }
-
-    // 2. CHẠY HIỆU ỨNG SỐ NHẢY (COUNTER)
+    // 2. CHẠY SỐ NHẢY
     animateCounters();
+
+    // Đóng modal khi click ra ngoài
+    window.onclick = function (event) {
+        if (event.target == modal) closeInstructionModal();
+    }
 });
 
-// Hàm đóng modal
 function closeInstructionModal() {
-    var modal = document.getElementById('instruction-modal');
+    const modal = document.getElementById('instruction-modal');
+    const checkbox = document.getElementById('dontShowAgain');
+
     if (modal) {
+        if (checkbox && checkbox.checked) {
+            localStorage.setItem('hide_instruction_timestamp', new Date().getTime());
+        }
         modal.classList.remove('active');
     }
 }
 
-// 3. Hàm hiệu ứng số nhảy (Counter Animation)
 function animateCounters() {
-    const counters = document.querySelectorAll('.glass-panel h2'); // Chọn các thẻ h2 chứa số
-    const speed = 200; // Tốc độ chạy (càng thấp càng nhanh)
-
+    const counters = document.querySelectorAll('.glass-panel h2');
     counters.forEach(counter => {
-        const updateCount = () => {
-            const target = +counter.innerText; // Lấy số đích (từ HTML server render)
-            const count = +counter.getAttribute('data-val') || 0; // Lấy số hiện tại
+        const target = +counter.innerText;
+        let count = 0;
+        const inc = target / 100;
 
-            // Tính bước nhảy
-            const inc = target / speed;
-
+        const update = () => {
             if (count < target) {
-                // Làm tròn lên và gán giá trị tạm
-                const newVal = Math.ceil(count + inc);
-                counter.setAttribute('data-val', newVal);
-                counter.innerText = newVal;
-
-                // Gọi lại hàm đệ quy để chạy tiếp
-                setTimeout(updateCount, 20);
+                count += inc;
+                counter.innerText = Math.ceil(count);
+                setTimeout(update, 20);
             } else {
-                counter.innerText = target; // Đảm bảo số cuối cùng chính xác
+                counter.innerText = target;
             }
         };
-
-        // Reset về 0 trước khi chạy
-        counter.setAttribute('data-val', 0);
-        const originalValue = counter.innerText;
-        counter.innerText = "0";
-
-        // Khôi phục giá trị đích để script chạy
-        setTimeout(() => {
-            counter.innerText = originalValue;
-            updateCount();
-        }, 800); // Đợi các animation CSS chạy xong mới bắt đầu đếm số
+        update();
     });
 }
 
-// 4. Xử lý Tìm kiếm Real-time (Filter)
 function filterLoans() {
-    var input = document.getElementById("loanSearchInput");
-    var filter = input.value.toUpperCase();
-    var tableBody = document.getElementById("loanTableBody");
-    var tr = tableBody.getElementsByTagName("tr");
-    var hasResult = false;
+    const input = document.getElementById("loanSearchInput").value.toUpperCase();
+    const rows = document.querySelectorAll("#loanTableBody tr");
+    let hasResult = false;
 
-    // Reset delay animation khi tìm kiếm để tránh bị lag
-    var delayCount = 0;
-
-    for (var i = 0; i < tr.length; i++) {
-        var titleEl = tr[i].querySelector(".book-title");
-        var authorEl = tr[i].querySelector(".book-author");
-
-        if (titleEl && authorEl) {
-            var txtValue = titleEl.textContent + " " + authorEl.textContent;
-
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                tr[i].style.display = "";
-
-                // Thêm lại animation fade-in nhẹ khi search
-                tr[i].style.animation = "none";
-                tr[i].offsetHeight; /* trigger reflow */
-                tr[i].style.animation = `fadeInUp 0.3s ease forwards ${delayCount * 0.05}s`;
-                delayCount++;
-
-                hasResult = true;
-            } else {
-                tr[i].style.display = "none";
-            }
+    rows.forEach(row => {
+        const text = row.querySelector(".book-title").innerText + row.querySelector(".book-author").innerText;
+        if (text.toUpperCase().includes(input)) {
+            row.style.display = "";
+            hasResult = true;
+        } else {
+            row.style.display = "none";
         }
-    }
-
-    var noResultMsg = document.getElementById("noResultsMsg");
-    if (noResultMsg) {
-        noResultMsg.style.display = hasResult ? "none" : "block";
-        if (!hasResult) {
-            noResultMsg.style.animation = "fadeInUp 0.5s ease";
-        }
-    }
+    });
+    document.getElementById("noResultsMsg").style.display = hasResult ? "none" : "block";
 }
 
 function clearSearch() {
-    var input = document.getElementById("loanSearchInput");
-    input.value = "";
+    document.getElementById("loanSearchInput").value = "";
     filterLoans();
-    input.focus();
 }
