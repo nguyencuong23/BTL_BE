@@ -86,6 +86,14 @@
                 </li>
 
                 <li class="nav-item">
+                    <a asp-controller="Admin" asp-action="Settings" 
+                       class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Admin" && ViewContext.RouteData.Values["action"]?.ToString() == "Settings" ? "active" : "")">
+                        <i class="fas fa-cog"></i>
+                        <span>Cài đặt hệ thống</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
                     <a asp-controller="Client" asp-action="Index" 
                        target="_blank"
                        class="nav-link">

@@ -22,11 +22,11 @@
                 <i class="fas fa-book"></i>
             </div>
             <div class="stats-content">
-                <div class="stats-number">@ViewBag.TotalBooks</div>
+                <div class="stats-number" id="stats-total-books"><i class="fas fa-spinner fa-spin"></i></div>
                 <div class="stats-label">Tổng số sách</div>
             </div>
-            <div class="stats-footer">
-                <i class="fas fa-arrow-up text-success"></i> +5% so với tháng trước
+            <div class="stats-footer" id="stats-footer-books">
+                <i class="fas fa-spinner fa-spin"></i> Đang tải...
             </div>
         </div>
     </div>
@@ -37,11 +37,11 @@
                 <i class="fas fa-user-graduate"></i>
             </div>
             <div class="stats-content">
-                <div class="stats-number">@ViewBag.TotalReaders</div>
+                <div class="stats-number" id="stats-total-readers"><i class="fas fa-spinner fa-spin"></i></div>
                 <div class="stats-label">Sinh viên</div>
             </div>
-            <div class="stats-footer">
-                <i class="fas fa-users"></i> Đang hoạt động
+            <div class="stats-footer" id="stats-footer-readers">
+                <i class="fas fa-spinner fa-spin"></i> Đang tải...
             </div>
         </div>
     </div>
@@ -52,11 +52,11 @@
                 <i class="fas fa-book-reader"></i>
             </div>
             <div class="stats-content">
-                <div class="stats-number">@ViewBag.TotalBorrowing</div>
+                <div class="stats-number" id="stats-total-borrowing"><i class="fas fa-spinner fa-spin"></i></div>
                 <div class="stats-label">Đang mượn</div>
             </div>
-            <div class="stats-footer">
-                <i class="fas fa-clock"></i> Cập nhật realtime
+            <div class="stats-footer" id="stats-footer-borrowing">
+                <i class="fas fa-spinner fa-spin"></i> Đang tải...
             </div>
         </div>
     </div>
@@ -67,11 +67,44 @@
                 <i class="fas fa-exclamation-triangle"></i>
             </div>
             <div class="stats-content">
-                <div class="stats-number">@ViewBag.TotalOverdue</div>
+                <div class="stats-number" id="stats-total-overdue"><i class="fas fa-spinner fa-spin"></i></div>
                 <div class="stats-label">Quá hạn</div>
             </div>
-            <div class="stats-footer">
-                <i class="fas fa-bell"></i> Cần xử lý
+            <div class="stats-footer" id="stats-footer-overdue">
+                <i class="fas fa-spinner fa-spin"></i> Đang tải...
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TRENDS CHARTS ROW -->
+<div class="row mb-4">
+    <!-- Borrow Volume Chart -->
+    <div class="col-xl-6 mb-3">
+        <div class="dashboard-card h-100 shadow-sm">
+            <div class="card-header bg-transparent border-bottom-0 pt-4 px-4">
+                <h5 class="mb-0 fw-bold text-gray-800"><i class="fas fa-chart-bar me-2 text-primary"></i>Xu hướng mượn sách</h5>
+                <small class="text-muted">Số lượng phiếu mượn trong 30 ngày qua</small>
+            </div>
+            <div class="card-body">
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="borrowVolumeChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Loans Chart -->
+    <div class="col-xl-6 mb-3">
+        <div class="dashboard-card h-100 shadow-sm">
+            <div class="card-header bg-transparent border-bottom-0 pt-4 px-4">
+                <h5 class="mb-0 fw-bold text-gray-800"><i class="fas fa-chart-line me-2 text-info"></i>Sách đang được mượn</h5>
+                <small class="text-muted">Biến động số lượng sách đang lưu thông</small>
+            </div>
+            <div class="card-body">
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="activeLoansChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
@@ -80,22 +113,20 @@
 <!-- Charts and Recent Activity Row -->
 <div class="row mb-4">
     <!-- Loan Status Chart -->
-    <div class="col-lg-4 mb-3">
-        <div class="dashboard-card">
-            <div class="card-header">
-                <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Tình trạng mượn sách</h5>
+    <div class="col-lg-6 mb-3">
+        <div class="dashboard-card h-100">
+            <div class="card-header border-bottom-0 pt-4 px-4 bg-transparent">
+                <h5 class="mb-0 fw-bold text-gray-800"><i class="fas fa-chart-pie me-2 text-primary"></i>Tình trạng mượn sách</h5>
             </div>
-            <div class="card-body text-center" style="height: 350px;">
-                <canvas id="loanStatusChart"></canvas>
-                <div class="chart-legend mt-3">
-                    <div class="legend-item">
-                        <span class="legend-dot bg-success"></span> Đã trả: <strong>@ViewBag.TotalReturned</strong>
+            <div class="card-body p-0">
+                <div class="d-flex align-items-center h-100 p-3">
+                    <!-- Chart Section -->
+                    <div class="chart-container position-relative" style="width: 55%; height: 260px;">
+                        <canvas id="loanStatusChart"></canvas>
                     </div>
-                    <div class="legend-item">
-                        <span class="legend-dot bg-warning"></span> Đang mượn: <strong>@ViewBag.TotalBorrowing</strong>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-dot bg-danger"></span> Quá hạn: <strong>@ViewBag.TotalOverdue</strong>
+                    <!-- Legend Section -->
+                    <div class="legend-container ps-3" style="width: 45%;">
+                        <div id="loanStatusLegend" class="custom-chart-legend"></div>
                     </div>
                 </div>
             </div>
@@ -103,41 +134,21 @@
     </div>
 
     <!-- Books Category Chart -->
-    <div class="col-lg-4 mb-3">
-        <div class="dashboard-card">
-            <div class="card-header">
-                <h5 class="mb-0"><i class="fas fa-tags me-2"></i>Sách theo thể loại</h5>
+    <div class="col-lg-6 mb-3">
+        <div class="dashboard-card h-100">
+            <div class="card-header border-bottom-0 pt-4 px-4 bg-transparent">
+                <h5 class="mb-0 fw-bold text-gray-800"><i class="fas fa-tags me-2 text-success"></i>Sách theo thể loại</h5>
             </div>
-            <div class="card-body text-center" style="height: 350px;">
-                <canvas id="categoriesChart"></canvas>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="col-lg-4 mb-3">
-        <div class="dashboard-card">
-            <div class="card-header">
-                <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Thao tác nhanh</h5>
-            </div>
-            <div class="card-body" style="height: 350px;">
-                <div class="quick-actions">
-                    <a asp-controller="Loans" asp-action="Create" class="quick-action-btn bg-primary">
-                        <i class="fas fa-plus-circle"></i>
-                        <span>Tạo phiếu mượn</span>
-                    </a>
-                    <a asp-controller="Books" asp-action="Create" class="quick-action-btn bg-success">
-                        <i class="fas fa-book"></i>
-                        <span>Thêm sách mới</span>
-                    </a>
-                    <a asp-controller="Readers" asp-action="Create" class="quick-action-btn bg-info">
-                        <i class="fas fa-user-plus"></i>
-                        <span>Thêm sinh viên</span>
-                    </a>
-                    <a asp-controller="Loans" asp-action="Index" class="quick-action-btn bg-warning">
-                        <i class="fas fa-list"></i>
-                        <span>Xem phiếu mượn</span>
-                    </a>
+            <div class="card-body p-0">
+                <div class="d-flex align-items-center h-100 p-3">
+                    <!-- Chart Section -->
+                    <div class="chart-container position-relative" style="width: 55%; height: 260px;">
+                        <canvas id="categoriesChart"></canvas>
+                    </div>
+                    <!-- Legend Section -->
+                    <div class="legend-container ps-3" style="width: 45%;">
+                        <div id="categoriesLegend" class="custom-chart-legend"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -156,64 +167,28 @@
                 </a>
             </div>
             <div class="card-body p-0">
-                @if (ViewBag.RecentLoans != null && ViewBag.RecentLoans.Count > 0)
-                {
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Mã phiếu</th>
-                                    <th>Sinh viên</th>
-                                    <th>Sách</th>
-                                    <th>Ngày mượn</th>
-                                    <th>Hạn trả</th>
-                                    <th>Trạng thái</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var loan in ViewBag.RecentLoans)
-                                {
-                                    var status = loan.ReturnDate != null ? "returned" : (loan.DueDate < DateTime.Now ? "overdue" : "borrowing");
-                                    <tr>
-                                        <td><span class="badge bg-secondary">#@loan.LoanId</span></td>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="user-avatar-small">
-                                                    @loan.User.FullName[0]
-                                                </div>
-                                                <span class="ms-2">@loan.User.FullName</span>
-                                            </div>
-                                        </td>
-                                        <td><small>@loan.Book.Title</small></td>
-                                        <td><small>@loan.BorrowDate.ToString("dd/MM/yyyy")</small></td>
-                                        <td><small>@loan.DueDate.ToString("dd/MM/yyyy")</small></td>
-                                        <td>
-                                            @if (status == "returned")
-                                            {
-                                                <span class="badge badge-returned">Đã trả</span>
-                                            }
-                                            else if (status == "overdue")
-                                            {
-                                                <span class="badge badge-overdue">Quá hạn</span>
-                                            }
-                                            else
-                                            {
-                                                <span class="badge badge-borrowing">Đang mượn</span>
-                                            }
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                }
-                else
-                {
-                    <div class="p-4 text-center text-muted">
-                        <i class="fas fa-inbox fa-3x mb-3"></i>
-                        <p>Chưa có phiếu mượn nào</p>
-                    </div>
-                }
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Mã phiếu</th>
+                                <th>Sinh viên</th>
+                                <th>Sách</th>
+                                <th>Ngày mượn</th>
+                                <th>Hạn trả</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-loans-table-body">
+                            <tr>
+                                <td colspan="6" class="text-center py-4">
+                                    <i class="fas fa-spinner fa-spin fa-2x text-muted"></i>
+                                    <p class="text-muted mt-2">Đang tải dữ liệu...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -225,49 +200,45 @@
                 <h5 class="mb-0"><i class="fas fa-fire me-2"></i>Sách được mượn nhiều</h5>
             </div>
             <div class="card-body">
-                @if (ViewBag.TopBooks != null && ViewBag.TopBooks.Count > 0)
-                {
-                    <div class="top-books-list">
-                        @for (int i = 0; i < ViewBag.TopBooks.Count; i++)
-                        {
-                            var book = ViewBag.TopBooks[i];
-                            var rankClass = i == 0 ? "gold" : (i == 1 ? "silver" : (i == 2 ? "bronze" : ""));
-                            <div class="top-book-item">
-                                <div class="rank-badge @rankClass">@(i + 1)</div>
-                                <div class="book-info">
-                                    <div class="book-title">@book.Title</div>
-                                    <small class="text-muted">@book.Author</small>
-                                </div>
-                                <div class="borrow-count">
-                                    <span class="badge bg-primary">@book.BorrowCount <i class="fas fa-book-reader ms-1"></i></span>
-                                </div>
-                            </div>
-                        }
+                <div class="top-books-list" id="top-books-list">
+                    <div class="text-center py-4">
+                        <i class="fas fa-spinner fa-spin fa-2x text-muted"></i>
                     </div>
-                }
-                else
-                {
-                    <div class="text-center text-muted py-4">
-                        <i class="fas fa-book-open fa-2x mb-2"></i>
-                        <p class="mb-0">Chưa có dữ liệu</p>
-                    </div>
-                }
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+<style>
+    .custom-chart-legend {
+        font-size: 0.9rem;
+    }
+    .legend-item {
+        transition: all 0.2s ease;
+        padding: 4px 8px;
+        border-radius: 6px;
+    }
+    .legend-item:hover {
+        background-color: #f8f9fa;
+        transform: translateX(5px);
+    }
+    .legend-value {
+        font-family: 'Consolas', monospace;
+        color: #2d3748;
+    }
+    .dashboard-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        transition: transform 0.3s ease;
+    }
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+    }
+</style>
+
 @section Scripts {
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script>
-    // Pass server data to JavaScript
-    window.adminData = {
-        totalReturned: @ViewBag.TotalReturned,
-        totalBorrowing: @ViewBag.TotalBorrowing,
-        totalOverdue: @ViewBag.TotalOverdue,
-        categoryLabels: @Html.Raw(ViewBag.CategoryLabels ?? "[]"),
-        categoryData: @Html.Raw(ViewBag.CategoryData ?? "[]")
-    };
-</script>
 <script src="~/js/admin-dashboard.js"></script>
 }

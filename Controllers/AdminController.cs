@@ -14,27 +14,27 @@ namespace QuanLyThuVienTruongHoc.Controllers
             _context = context;
         }
 
-        // Trang chính admin (bạn đã có)
+        // Trang chính admin - Dashboard (Dữ liệu sẽ được load qua API)
         public IActionResult Index()
         {
             return View();
         }
 
-        // 4. TRANG QUẢN LÝ NGƯỜI DÙNG (Tĩnh - mẫu)
+        // 4. TRANG QUẢN LÝ NGƯỜI DÙNG
         // GET: /Admin/UserManagement
         public IActionResult UserManagement()
         {
             return View();
         }
 
-        // 5. TRANG THỐNG KÊ (Tĩnh - mẫu)
+        // 5. TRANG THỐNG KÊ
         // GET: /Admin/Statistics
         public IActionResult Statistics()
         {
             return View();
         }
 
-        // 6. TRANG CÀI ĐẶT HỆ THỐNG (Tĩnh - mẫu)
+        // 6. TRANG CÀI ĐẶT HỆ THỐNG
         // GET: /Admin/Settings
         public IActionResult Settings()
         {
