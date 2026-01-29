@@ -81,7 +81,6 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// [QUAN TRỌNG] Kích hoạt CORS (Đặt giữa UseRouting và UseAuthentication)
 app.UseCors("AllowAll");
 
 app.UseAuthentication();
@@ -97,15 +96,10 @@ using (var scope = app.Services.CreateScope())
     await db.Database.EnsureDeletedAsync();
     await db.Database.EnsureCreatedAsync();
 }
-
-// Seed dữ liệu mẫu (Admin, Sách...)
 await DbSeeder.SeedAsync(app.Services);
 
-// 7. Định tuyến (Routing)
-// [QUAN TRỌNG] MapControllers cho API hoạt động
 app.MapControllers();
 
-// Map Controller mặc định cho MVC
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Client}/{action=Index}/{id?}");

@@ -1,27 +1,54 @@
 ﻿const API_URL = '/api/library';
-const grid = document.getElementById('book-grid');
-const modal = document.getElementById('modal-overlay');
-const closeBtn = document.querySelector('.close-btn');
-const form = document.getElementById('borrow-form');
-const groupSelect = document.getElementById('group-filter');
-let booksData = [];
 
-document.addEventListener("DOMContentLoaded", () => {
-    fetchBooks();
+let allBooksData = [];
+let grid, borrowModal, borrowCloseBtn, form, groupSelect;
+
+document.addEventListener("DOMContentLoaded", function () {
+    grid = document.getElementById('book-grid');
+    borrowModal = document.getElementById('modal-overlay');
+    borrowCloseBtn = document.querySelector('#modal-overlay .close-btn');
+    form = document.getElementById('borrow-form');
+    groupSelect = document.getElementById('group-filter');
+
+    handleInstructionModal();
     setupDate();
+
+    fetchBooks();
+
+    if (borrowCloseBtn) {
+        borrowCloseBtn.onclick = () => {
+            if (borrowModal) borrowModal.classList.remove('active');
+        };
+    }
+
+    if (form) {
+        form.addEventListener('submit', handleFormSubmit);
+    }
 });
 
 async function fetchBooks() {
+    if (grid) grid.innerHTML = '<div style="text-align:center; padding:50px; grid-column:1/-1; color:white;">Đang kết nối đến máy chủ...</div>';
+
     try {
         const res = await fetch(`${API_URL}/books`);
-        if (!res.ok) throw new Error();
-        booksData = await res.json();
-        if (groupSelect) {
-            populateGroupDropdown(booksData);
-        }
-        render(booksData);
+        if (!res.ok) throw new Error(`Lỗi HTTP: ${res.status}`);
+
+        const data = await res.json();
+        allBooksData = data;
+
+        if (groupSelect) populateGroupDropdown(allBooksData);
+        render(allBooksData);
+
     } catch (e) {
-        grid.innerHTML = '<div style="text-align:center; padding:50px;">Không thể kết nối đến máy chủ.</div>';
+        console.error(e);
+        if (grid) {
+            grid.innerHTML = `
+                <div style="text-align:center; padding:50px; color: #ef4444; grid-column: 1/-1;">
+                    <i class="fas fa-exclamation-triangle"></i><br>
+                    Không thể tải dữ liệu.<br>
+                    <small>${e.message}</small>
+                </div>`;
+        }
     }
 }
 
@@ -39,9 +66,11 @@ function detectGroup(bookId) {
 }
 
 function render(books) {
+    if (!grid) return;
     grid.innerHTML = '';
-    if (!books.length) {
-        grid.innerHTML = '<div style="text-align:center;">Không tìm thấy sách.</div>';
+
+    if (!books || books.length === 0) {
+        grid.innerHTML = '<div style="text-align:center; color: #64748b; padding:20px; grid-column: 1/-1;">Không tìm thấy sách nào phù hợp.</div>';
         return;
     }
 
@@ -52,53 +81,40 @@ function render(books) {
         return acc;
     }, {});
 
-    const sortedGroupNames = Object.keys(groups).sort();
-
-    sortedGroupNames.forEach((groupName, index) => {
+    Object.keys(groups).sort().forEach((groupName) => {
         const groupBooks = groups[groupName];
-
-        const section = document.createElement('div');
-        section.className = 'category-block';
-        section.style.animationDelay = `${index * 0.1}s`;
-
-        let html = `
-            <div class="category-header">
-                <h2 class="category-title">${groupName}</h2>
-                <span class="book-count">${groupBooks.length} items</span>
-            </div>
-            <div class="book-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 30px;">
-        `;
+        const headerDiv = document.createElement('div');
+        headerDiv.className = 'category-header';
+        headerDiv.innerHTML = `<h2 class="category-title">${groupName}</h2><span class="book-count">${groupBooks.length} Cuốn</span>`;
+        grid.appendChild(headerDiv);
 
         groupBooks.forEach(book => {
             const isAvail = book.available > 0;
             const img = book.image || "https://via.placeholder.com/300x450/302b63/ffffff?text=DNU";
-
-            html += `
-                <div class="book-card">
-                    <img src="${img}" class="book-img">
-                    <div class="book-meta">
-                        <div style="font-weight:bold;">${book.title}</div>
-                        <div style="font-size:0.8rem; opacity:0.8;">${book.author}</div>
-                    </div>
-                    <div class="book-overlay">
-                        <h3 style="font-family:'Playfair Display'; color:#ffeaa7;">${book.title}</h3>
-                        <p>ID: ${book.id}</p>
-                        <p>SL: ${isAvail ? book.available : 0}</p>
-                        <button class="btn-borrow" ${!isAvail ? 'disabled' : ''} onclick="openModal('${book.id}', '${book.title}')">
-                            ${isAvail ? 'Mượn Ngay' : 'Đã Hết'}
-                        </button>
-                    </div>
+            const card = document.createElement('div');
+            card.className = 'book-card';
+            card.innerHTML = `
+                <img src="${img}" class="book-img" onerror="this.src='https://via.placeholder.com/300x450?text=Error'">
+                <div class="book-meta">
+                    <div class="book-title">${book.title}</div>
+                    <div class="book-author">${book.author}</div>
                 </div>
-            `;
+                <div class="book-overlay">
+                    <h3 style="font-family:'Playfair Display'; color:#ffeaa7; margin-bottom: 5px;">${book.title}</h3>
+                    <p style="color: #e2e8f0; font-style: italic; margin-bottom: 15px; font-size: 0.9rem;">
+                        <i class="fas fa-pen-fancy"></i> ${book.author}
+                    </p>
+                    <button class="btn-borrow" ${!isAvail ? 'disabled' : ''} onclick="openModal('${book.id}', '${book.title}')">
+                        ${isAvail ? 'Mượn Ngay' : 'Đã Hết'}
+                    </button>
+                </div>`;
+            grid.appendChild(card);
         });
-
-        html += `</div>`;
-        section.innerHTML = html;
-        grid.appendChild(section);
     });
 }
 
 function populateGroupDropdown(books) {
+    if (!groupSelect) return;
     const uniqueGroups = new Set();
     books.forEach(book => uniqueGroups.add(detectGroup(book.id)));
     groupSelect.innerHTML = '<option value="all">Tất cả Khoa</option>';
@@ -111,48 +127,56 @@ function populateGroupDropdown(books) {
 }
 
 window.filterByGroup = () => {
+    if (!groupSelect) return;
     const selectedGroup = groupSelect.value;
-    if (selectedGroup === 'all') {
-        render(booksData);
-    } else {
-        const filtered = booksData.filter(book => detectGroup(book.id) === selectedGroup);
-        render(filtered);
-    }
+    if (selectedGroup === 'all') render(allBooksData);
+    else render(allBooksData.filter(book => detectGroup(book.id) === selectedGroup));
 };
 
 window.filterBooks = () => {
-    const term = document.getElementById('search-input').value.toLowerCase().trim();
-    const filtered = booksData.filter(b => b.title.toLowerCase().includes(term));
-    render(filtered);
+    const searchInput = document.getElementById('search-input');
+    if (!searchInput) return;
+    const term = searchInput.value.toLowerCase().trim();
+    render(allBooksData.filter(b => b.title.toLowerCase().includes(term)));
     if (groupSelect) groupSelect.value = 'all';
 };
 
 window.openModal = (id, title) => {
-    document.getElementById('book-id').value = id;
-    document.getElementById('book-highlight').innerHTML = `<p style="color:#00d2ff; text-align:center; margin-bottom:20px;">Sách chọn: <strong>${title}</strong></p>`;
-    modal.style.display = 'block';
+    if (!borrowModal) borrowModal = document.getElementById('modal-overlay');
+    if (borrowModal) {
+        document.getElementById('book-id').value = id;
+        const highlight = document.getElementById('book-highlight');
+        if (highlight) {
+            highlight.innerHTML = `<p style="color:var(--dnu-blue); text-align:center; margin-bottom:20px;">Sách chọn: <strong>${title}</strong></p>`;
+        }
+        setupDate();
+        borrowModal.classList.add('active');
+    }
 };
 
-closeBtn.onclick = () => modal.style.display = 'none';
-window.onclick = (e) => { if (e.target == modal) modal.style.display = 'none'; }
-
-function setupDate() {
-    const dt = new Date();
-    dt.setDate(dt.getDate() + 1);
-    document.getElementById('return-date').min = dt.toISOString().split('T')[0];
+window.onclick = (e) => {
+    if (borrowModal && e.target == borrowModal) borrowModal.classList.remove('active');
+    const instructionModal = document.getElementById('instruction-modal');
+    if (instructionModal && e.target == instructionModal) {
+        instructionModal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
 }
 
-form.addEventListener('submit', async (e) => {
+async function handleFormSubmit(e) {
     e.preventDefault();
     const btn = document.querySelector('.btn-submit');
     const oldText = btn.innerText;
-    btn.innerText = 'Đang gửi...';
+    btn.innerText = 'Đang xử lý...';
     btn.disabled = true;
 
+    const getVal = (id) => document.getElementById(id) ? document.getElementById(id).value : "";
+
     const payload = {
-        BookId: document.getElementById('book-id').value,
-        StudentId: document.getElementById('student-id').value,
-        ReturnDate: document.getElementById('return-date').value
+        BookId: getVal('book-id'),
+        StudentId: getVal('student-id'),
+        FullName: getVal('full-name'),
+        ReturnDate: getVal('return-date')
     };
 
     try {
@@ -163,17 +187,80 @@ form.addEventListener('submit', async (e) => {
         });
 
         if (res.ok) {
-            alert("Đăng ký thành công!");
-            modal.style.display = 'none';
+            alert("Đăng ký thành công! Vui lòng đến thư viện nhận sách.");
+            if (borrowModal) borrowModal.classList.remove('active');
             form.reset();
             fetchBooks();
         } else {
-            alert("Lỗi: " + await res.text());
+            const txt = await res.text();
+            try {
+                const errObj = JSON.parse(txt);
+                alert("Thông báo: " + (errObj.message || txt));
+            } catch {
+                console.error("Server Error:", txt);
+                if (txt.includes("duplicate key")) {
+                    alert("Lỗi: Mã sinh viên này đã tồn tại nhưng thông tin bị trùng lặp. Vui lòng liên hệ thủ thư.");
+                } else {
+                    alert("Có lỗi xảy ra: " + txt);
+                }
+            }
         }
     } catch (err) {
-        alert("Lỗi kết nối.");
+        alert("Không thể kết nối đến máy chủ.");
     } finally {
         btn.innerText = oldText;
         btn.disabled = false;
     }
-});
+}
+
+function setupDate() {
+    const borrowDateInput = document.getElementById('borrow-date');
+    const dueLimitInput = document.getElementById('due-limit-date');
+    const returnDateInput = document.getElementById('return-date');
+
+    if (borrowDateInput && dueLimitInput && returnDateInput) {
+        const formatDate = (date) => {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        };
+
+        const today = new Date();
+        const todayStr = formatDate(today);
+
+        borrowDateInput.value = todayStr;
+
+        const limitDate = new Date(today);
+        limitDate.setDate(limitDate.getDate() + 14);
+        const limitStr = formatDate(limitDate);
+        dueLimitInput.value = limitStr;
+
+        returnDateInput.min = todayStr;
+        returnDateInput.max = limitStr;
+
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
+        if (tomorrow > limitDate) {
+            returnDateInput.value = limitStr;
+        } else {
+            returnDateInput.value = formatDate(tomorrow);
+        }
+    }
+}
+
+function handleInstructionModal() {
+    const instructionModal = document.getElementById('instruction-modal');
+    const instructionBtn = document.getElementById('btn-close-instruction');
+    if (instructionModal) {
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => instructionModal.classList.add('active'), 300);
+        if (instructionBtn) {
+            instructionBtn.onclick = () => {
+                instructionModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            };
+        }
+    }
+}

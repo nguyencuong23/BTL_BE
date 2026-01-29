@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QuanLyThuVienTruongHoc.Models.Library
 {
@@ -9,7 +10,7 @@ namespace QuanLyThuVienTruongHoc.Models.Library
         [StringLength(7, ErrorMessage = "Mã sách phải có dạng TL-NNNN (7 ký tự)")]
         [RegularExpression(@"^[A-Za-z]{2}-\d{4}$", ErrorMessage = "Mã sách phải đúng định dạng TL-NNNN (VD: IT-0001)")]
         [Display(Name = "Mã sách")]
-        public string BookId { get; set; } = null!; // TL-NNNN
+        public string BookId { get; set; } = null!;
 
         [Required(ErrorMessage = "Tên sách không được để trống")]
         [StringLength(200, ErrorMessage = "Tên sách không được vượt quá 200 ký tự")]
@@ -48,9 +49,14 @@ namespace QuanLyThuVienTruongHoc.Models.Library
 
         [StringLength(255)]
         [Display(Name = "Ảnh")]
-        public string? ImagePath { get; set; } // lưu đường dẫn ảnh upload
+        public string? ImagePath { get; set; }
 
-        // Navigation
+        [Display(Name = "Kệ sách")]
+        public int? ShelfId { get; set; }
+
+        [ForeignKey("ShelfId")]
+        public virtual Shelf? Shelf { get; set; }
+
         public Category? Category { get; set; }
         public ICollection<Loan> Loans { get; set; } = new List<Loan>();
     }
