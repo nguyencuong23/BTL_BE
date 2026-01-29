@@ -2,78 +2,185 @@
 
 @{
     ViewData["Title"] = "Lịch sử Mượn Sách";
+
+    // --- LOGIC THỐNG KÊ ---
+    var totalLoans = Model.Count();
+    var activeLoans = Model.Count(x => x.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DangMuon);
+    var returnedLoans = Model.Count(x => x.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DaTra);
+    var overdueLoans = Model.Count(x => x.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DangMuon && DateTime.Now > x.DueDate);
 }
 
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 <link rel="stylesheet" href="~/css/loans.css" asp-append-version="true" />
 
 <body>
     <div class="background-animate"></div>
     <div class="container">
         <div class="glass-hero">
-            <h2>LỊCH SỬ MƯỢN TRẢ</h2>
-            <p>Theo dõi quá trình mượn sách và thời hạn trả</p>
+            <div class="d-flex flex-column align-items-center justify-content-center">
+                <div class="mb-3">
+                    <i class="fas fa-history fa-3x text-white-50"></i>
+                </div>
+                <h2>LỊCH SỬ MƯỢN TRẢ</h2>
+                <p>Theo dõi quá trình mượn sách, thời hạn trả và trạng thái hồ sơ của bạn</p>
+            </div>
         </div>
-    </div>
 
-    <main class="container">
-        <div class="glass-panel" style="background: rgba(255, 255, 255, 0.9); padding: 30px; border-radius: 20px; box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);">
+        <div class="search-wrapper">
+            <div class="search-glass-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="loanSearchInput" placeholder="Nhập tên sách hoặc tác giả để tìm nhanh..." onkeyup="filterLoans()">
+                <button type="button" class="clear-btn" onclick="clearSearch()" title="Xóa tìm kiếm">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="glass-panel text-center p-4 h-100 d-flex flex-column justify-content-center align-items-center" style="background: rgba(255,255,255,0.7);">
+                    <i class="fas fa-book-reader fa-2x text-primary mb-2"></i>
+                    <h5 class="text-muted">Đang mượn</h5>
+                    <h2 class="fw-bold text-primary m-0">@activeLoans</h2>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-panel text-center p-4 h-100 d-flex flex-column justify-content-center align-items-center" style="background: rgba(255,255,255,0.7);">
+                    <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                    <h5 class="text-muted">Đã trả</h5>
+                    <h2 class="fw-bold text-success m-0">@returnedLoans</h2>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-panel text-center p-4 h-100 d-flex flex-column justify-content-center align-items-center" style="background: rgba(255,255,255,0.7);">
+                    <i class="fas fa-exclamation-triangle fa-2x text-danger mb-2"></i>
+                    <h5 class="text-muted">Quá hạn</h5>
+                    <h2 class="fw-bold text-danger m-0">@overdueLoans</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-panel mb-5" style="background: rgba(255, 255, 255, 0.9); padding: 30px; border-radius: 20px; box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);">
+
+            <div class="category-header mb-4">
+                <h3 class="category-title"><i class="fas fa-list-alt me-2"></i>Danh sách chi tiết</h3>
+                <span class="book-count">Tổng: @totalLoans</span>
+            </div>
+
             @if (!Model.Any())
             {
                 <div class="text-center py-5">
-                    <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
-                    <h4>Bạn chưa có lịch sử mượn sách nào.</h4>
-                    <a asp-action="Search" class="btn btn-primary mt-3">Tìm sách ngay</a>
+                    <div class="mb-4">
+                        <i class="fas fa-folder-open fa-4x text-muted opacity-50"></i>
+                    </div>
+                    <h4 class="text-muted">Bạn chưa có lịch sử mượn sách nào.</h4>
+                    <p class="text-muted mb-4">Hãy ghé thăm thư viện để tìm cuốn sách yêu thích nhé!</p>
+                    <a asp-action="Search" class="btn btn-primary rounded-pill px-4 py-2 fw-bold" style="background: var(--dnu-blue, #005aab); border: none;">
+                        <i class="fas fa-search me-2"></i>Tìm sách ngay
+                    </a>
                 </div>
             }
             else
             {
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Sách</th>
-                                <th>Ngày mượn</th>
-                                <th>Hẹn trả</th>
-                                <th>Trạng thái</th>
-                                <th>Ghi chú</th>
+                    <table class="table table-hover align-middle custom-table">
+                        <thead class="table-light" style="border-bottom: 2px solid var(--dnu-blue, #005aab);">
+                            <tr class="text-uppercase text-muted small">
+                                <th class="py-3">Thông tin sách</th>
+                                <th class="py-3">Ngày mượn</th>
+                                <th class="py-3">Hẹn trả</th>
+                                <th class="py-3">Trạng thái</th>
+                                <th class="py-3">Ghi chú</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="loanTableBody">
                             @foreach (var loan in Model)
                             {
-                                var statusClass = loan.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DangMuon ? "text-primary fw-bold" :
-                                                  loan.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DaTra ? "text-success fw-bold" :
-                                                  "text-danger fw-bold";
+                                var isOverdue = loan.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DangMuon && DateTime.Now > loan.DueDate;
+
+                                var statusClass = loan.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DangMuon ? "text-primary" :
+                                loan.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DaTra ? "text-success" :
+                                "text-danger";
+
+                                var statusIcon = loan.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DangMuon ? "fa-book-reader" :
+                                loan.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DaTra ? "fa-check" :
+                                "fa-times";
+
                                 var statusText = loan.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DangMuon ? "Đang mượn" :
-                                                 loan.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DaTra ? "Đã trả" :
-                                                 "Quá hạn";
-                                <tr>
-                                    <td>
+                                loan.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DaTra ? "Đã trả" :
+                                "Quá hạn";
+
+                                <tr style="border-bottom: 1px solid rgba(0,0,0,0.05);">
+                                    <td class="py-3">
                                         <div class="d-flex align-items-center">
-                                            <div class="ms-2">
-                                                <p class="fw-bold mb-0">@loan.Book?.Title</p>
-                                                <small class="text-muted">@loan.Book?.Author</small>
+                                            <div class="rounded bg-light d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 60px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                                                <i class="fas fa-book text-muted"></i>
+                                            </div>
+                                            <div>
+                                                <p class="fw-bold mb-1 text-dark book-title">@loan.Book?.Title</p>
+                                                <small class="text-muted book-author"><i class="fas fa-pen-nib me-1"></i>@loan.Book?.Author</small>
                                             </div>
                                         </div>
                                     </td>
-                                    <td>@loan.BorrowDate.ToString("dd/MM/yyyy")</td>
-                                    <td>@loan.DueDate.ToString("dd/MM/yyyy")</td>
-                                    <td class="@statusClass">@statusText</td>
+                                    <td><span class="fw-500">@loan.BorrowDate.ToString("dd/MM/yyyy")</span></td>
                                     <td>
-                                        @if(loan.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DangMuon && DateTime.Now > loan.DueDate)
+                                        <span class="@(isOverdue ? "text-danger fw-bold" : "fw-500")">
+                                            @loan.DueDate.ToString("dd/MM/yyyy")
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center @statusClass fw-bold" style="font-size: 0.9rem;">
+                                            <i class="fas @statusIcon me-2"></i> @statusText
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @if (isOverdue)
                                         {
-                                             <span class="badge bg-danger">Quá hạn</span>
+                                            <span class="badge bg-danger rounded-pill px-3">
+                                                <i class="fas fa-exclamation-circle me-1"></i> Quá hạn
+                                            </span>
+                                        }
+                                        else if (loan.Status == QuanLyThuVienTruongHoc.Models.Library.LoanStatus.DaTra)
+                                        {
+                                            <span class="badge bg-light text-success border border-success rounded-pill">Hoàn thành</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-light text-primary border border-primary rounded-pill">Đang thực hiện</span>
                                         }
                                     </td>
                                 </tr>
                             }
                         </tbody>
                     </table>
+                    <div id="noResultsMsg" class="text-center py-4 text-muted" style="display: none;">
+                        <i class="fas fa-search-minus fa-2x mb-2"></i>
+                        <p>Không tìm thấy sách nào phù hợp.</p>
+                    </div>
                 </div>
             }
         </div>
-    </main>
+    </div>
 
+    <div id="instruction-modal">
+        <div class="instruction-box">
+            <div class="modal-head">
+                <h3><i class="fas fa-info-circle me-2"></i>Quy định mượn trả</h3>
+                <span class="close-btn" onclick="closeInstructionModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <ul>
+                    <li><i class="fas fa-check-circle"></i>Thời gian mượn tối đa: 14 ngày/cuốn.</li>
+                    <li><i class="fas fa-check-circle"></i>Số lượng tối đa: 5 cuốn/lần.</li>
+                    <li><i class="fas fa-check-circle"></i>Vui lòng giữ gìn sách cẩn thận, không vẽ bậy.</li>
+                    <li><i class="fas fa-exclamation-triangle text-warning"></i>Phí phạt quá hạn: 2.000đ/ngày.</li>
+                </ul>
+                <button class="btn-submit mt-3" onclick="closeInstructionModal()">Đã hiểu</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/js/loans.js" asp-append-version="true"></script>
 </body>
