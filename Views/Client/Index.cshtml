@@ -23,6 +23,7 @@
         overflow-x: hidden;
     }
 
+    /* --- HERO SECTION --- */
     .hero-modern {
         background: url('https://atm273446-s3user.vcos.cloudstorage.com.vn/dhdainam/asset/images/news/497529472_1116084437213279_3837768097926410454_n_1.jpg') center center/cover no-repeat;
         padding: 140px 0 180px 0;
@@ -79,6 +80,7 @@
         font-weight: 300;
     }
 
+    /* --- SEARCH --- */
     .search-modern {
         background: rgba(255, 255, 255, 0.95);
         padding: 10px;
@@ -121,6 +123,7 @@
                 transform: translateY(-3px);
             }
 
+    /* --- INFO CARDS --- */
     .info-cards-section {
         margin-top: -100px;
         position: relative;
@@ -196,6 +199,7 @@
         transform: translateY(-20px);
     }
 
+    /* --- BOOKS --- */
     .book-section {
         padding: 80px 0 100px 0;
         background: #fff;
@@ -252,6 +256,7 @@
             color: white;
         }
 
+    /* --- SECTION TITLE --- */
     .section-title {
         font-weight: 900;
         color: #2c3e50;
@@ -267,6 +272,7 @@
         margin-bottom: 60px;
     }
 
+    /* --- FACILITIES --- */
     .facilities-section {
         padding: 100px 0;
         background-color: var(--bg-light);
@@ -319,34 +325,81 @@
         transform: translateY(-5px);
     }
 
+    /* --- PARTNER SECTION (ĐÃ CẬP NHẬT: CHỮ LUÔN HIỂN THỊ) --- */
     .partner-section {
-        padding: 80px 0;
+        padding: 60px 0;
         background: #fff;
     }
 
     .partner-box {
-        background: white;
-        border-radius: 15px;
-        padding: 30px;
-        text-align: center;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        transition: 0.4s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        position: relative;
+        background: #fff;
+        border-radius: 12px;
         height: 120px;
-        font-weight: 700;
-        color: #6c757d;
-        border: 2px solid #f0f2f5;
+        border: 1px solid #e0e0e0;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        display: block;
+        cursor: pointer;
     }
 
         .partner-box:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-            color: var(--primary-color);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.12);
             border-color: var(--primary-color);
         }
 
+    .partner-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+        display: block;
+    }
+
+    .partner-box:hover .partner-img {
+        transform: scale(1.1); /* Zoom ảnh khi hover */
+    }
+
+    /* LỚP PHỦ + CHỮ */
+    .partner-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        /* Mặc định: Nền đen mờ 60% */
+        background-color: rgba(0, 0, 0, 0.6);
+        /* Luôn hiển thị */
+        opacity: 1;
+        transition: background-color 0.4s ease; /* Hiệu ứng chuyển màu mượt */
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    /* KHI HOVER: KHÔNG ẨN LỚP PHỦ, CHỈ GIẢM ĐỘ TỐI */
+    .partner-box:hover .partner-overlay {
+        /* Giảm độ đen xuống 30% để thấy ảnh rõ hơn, nhưng vẫn đủ tối để đọc chữ trắng */
+        background-color: rgba(0, 0, 0, 0.3);
+    }
+
+    .partner-text {
+        color: white;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 1.1rem;
+        letter-spacing: 1px;
+        text-align: center;
+        pointer-events: none;
+        /* QUAN TRỌNG: Bóng chữ để đọc được trên mọi nền */
+        text-shadow: 0 2px 5px rgba(0,0,0,0.9);
+    }
+
+    /* --- SERVICE OVERLAY --- */
     .service-overlay {
         position: fixed;
         top: 0;
@@ -437,14 +490,8 @@
                 <p class="hero-desc" data-aos="fade-up" data-aos-delay="200">
                     Hệ thống thư viện hiện đại, nguồn tài liệu phong phú, không gian học tập đầy cảm hứng dành cho sinh viên DNU.
                 </p>
-
                 <div class="search-modern" data-aos="fade-up" data-aos-delay="400">
-                    <input type="text"
-                           id="homeSearchInput"
-                           class="form-control"
-                           placeholder="Tìm kiếm sách, giáo trình, tài liệu số..."
-                           onkeypress="handleEnter(event)">
-
+                    <input type="text" id="homeSearchInput" class="form-control" placeholder="Tìm kiếm sách, giáo trình, tài liệu số..." onkeypress="handleEnter(event)">
                     <button class="btn btn-warning fw-bold text-dark" onclick="performSearch()">
                         <i class="fas fa-search me-2"></i> TÌM KIẾM
                     </button>
@@ -488,7 +535,6 @@
             <h3 class="section-title">Sách & Giáo trình mới nhất</h3>
             <p class="section-subtitle">Cập nhật liên tục các đầu sách phục vụ đào tạo và nghiên cứu</p>
         </div>
-
         <div class="swiper myBookSwiper" data-aos="fade-up" data-aos-delay="300">
             <div class="swiper-wrapper" id="book-carousel-inner">
                 @if (Model != null && Model.Any())
@@ -530,7 +576,6 @@
             <h3 class="section-title">Không gian & Dịch vụ</h3>
             <p class="section-subtitle">Khám phá các tiện ích học tập đa dạng tại Thư viện Đại Nam</p>
         </div>
-
         <div class="row g-4">
             <div class="col-md-4 col-sm-6" data-aos="zoom-in" data-aos-delay="0">
                 <a href="javascript:void(0)" onclick="openService('reading')" class="text-decoration-none">
@@ -588,23 +633,53 @@
     <div class="container">
         <div class="text-center" data-aos="fade-down">
             <h4 class="section-title" style="font-size: 2rem;">Đối tác liên kết</h4>
+            <div style="width: 60px; height: 3px; background: var(--primary-color); margin: 10px auto;"></div>
         </div>
+
         <div class="row g-4 justify-content-center mt-4" data-aos="fade-up" data-aos-delay="200">
-            <div class="col-md-4 col-6">
+
+            <div class="col-md-4 col-sm-6">
                 <a href="https://fibocapital.vn" target="_blank" class="text-decoration-none">
-                    <div class="partner-box"><span>Fibo Capital Việt Nam</span></div>
+                    <div class="partner-box">
+                        <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=800&q=80"
+                             class="partner-img" alt="Fibo Capital">
+
+                        <div class="partner-overlay">
+                            <span class="partner-text">Fibo Capital</span>
+                            <small class="text-light opacity-75 mt-1" style="font-size: 0.8rem; text-shadow: 0 1px 3px #000;">Đầu tư & Tài chính</small>
+                        </div>
+                    </div>
                 </a>
             </div>
-            <div class="col-md-4 col-6">
+
+            <div class="col-md-4 col-sm-6">
                 <a href="https://www.manulife.com.vn" target="_blank" class="text-decoration-none">
-                    <div class="partner-box"><span>Manulife Việt Nam</span></div>
+                    <div class="partner-box">
+                        <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=80"
+                             class="partner-img" alt="Manulife Vietnam">
+
+                        <div class="partner-overlay">
+                            <span class="partner-text">Manulife VN</span>
+                            <small class="text-light opacity-75 mt-1" style="font-size: 0.8rem; text-shadow: 0 1px 3px #000;">Bảo hiểm Nhân thọ</small>
+                        </div>
+                    </div>
                 </a>
             </div>
-            <div class="col-md-4 col-6">
+
+            <div class="col-md-4 col-sm-6">
                 <a href="https://xuanhoa.vn" target="_blank" class="text-decoration-none">
-                    <div class="partner-box"><span>Xuân Hòa Việt Nam</span></div>
+                    <div class="partner-box">
+                        <img src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=800&q=80"
+                             class="partner-img" alt="Xuan Hoa Vietnam">
+
+                        <div class="partner-overlay">
+                            <span class="partner-text">Xuân Hòa VN</span>
+                            <small class="text-light opacity-75 mt-1" style="font-size: 0.8rem; text-shadow: 0 1px 3px #000;">Nội thất Hàng đầu</small>
+                        </div>
+                    </div>
                 </a>
             </div>
+
         </div>
     </div>
 </section>
@@ -632,7 +707,7 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         AOS.init({ offset: 100, duration: 800, easing: 'ease-in-out', once: true });
-        
+
          new Swiper(".myBookSwiper", {
             slidesPerView: 1,
             spaceBetween: 20,
@@ -677,10 +752,6 @@
             performSearch();
         }
     }
-    
-    // loadCarouselBooks removed as data is server-side rendered
-
-
 
     const serviceData = {
         'reading': {
