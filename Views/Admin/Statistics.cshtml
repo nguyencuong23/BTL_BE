@@ -22,7 +22,7 @@
             <div class="stat-card-icon bg-primary bg-opacity-10 text-primary">
                 <i class="fas fa-book"></i>
             </div>
-            <div class="stat-card-value">5,432</div>
+            <div class="stat-card-value" id="stats-total-books"><i class="fas fa-spinner fa-spin"></i></div>
             <div class="stat-card-label">Tổng số sách</div>
         </div>
     </div>
@@ -31,7 +31,7 @@
             <div class="stat-card-icon bg-success bg-opacity-10 text-success">
                 <i class="fas fa-hand-holding"></i>
             </div>
-            <div class="stat-card-value">1,234</div>
+            <div class="stat-card-value" id="stats-total-borrowing"><i class="fas fa-spinner fa-spin"></i></div>
             <div class="stat-card-label">Sách đang mượn</div>
         </div>
     </div>
@@ -40,7 +40,7 @@
             <div class="stat-card-icon bg-warning bg-opacity-10 text-warning">
                 <i class="fas fa-exclamation-circle"></i>
             </div>
-            <div class="stat-card-value">89</div>
+            <div class="stat-card-value" id="stats-total-overdue"><i class="fas fa-spinner fa-spin"></i></div>
             <div class="stat-card-label">Sách quá hạn</div>
         </div>
     </div>
@@ -49,7 +49,7 @@
             <div class="stat-card-icon bg-info bg-opacity-10 text-info">
                 <i class="fas fa-money-bill-wave"></i>
             </div>
-            <div class="stat-card-value">2,450,000</div>
+            <div class="stat-card-value" id="stats-total-fine"><i class="fas fa-spinner fa-spin"></i></div>
             <div class="stat-card-label">Tổng tiền phạt (VNĐ)</div>
         </div>
     </div>
@@ -67,12 +67,8 @@
                 </h5>
             </div>
             <div class="card-body p-4">
-                <div class="chart-placeholder">
-                    <div class="text-center text-muted">
-                        <i class="fas fa-chart-bar fa-3x mb-3"></i>
-                        <p class="mb-0">Biểu đồ cột</p>
-                        <small>(Bar Chart - Placeholder)</small>
-                    </div>
+                <div style="height: 300px;">
+                    <canvas id="monthlyLoansChart"></canvas>
                 </div>
             </div>
         </div>
@@ -88,85 +84,23 @@
                 </h5>
             </div>
             <div class="card-body p-4">
-                <div class="chart-placeholder">
-                    <div class="text-center text-muted">
-                        <i class="fas fa-chart-pie fa-3x mb-3"></i>
-                        <p class="mb-0">Biểu đồ tròn</p>
-                        <small>(Pie Chart - Placeholder)</small>
-                    </div>
+                <div style="height: 300px;">
+                    <canvas id="detailsCategoriesChart"></canvas>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Data Table -->
-<div class="card shadow-sm border-0">
-    <div class="card-header bg-white border-bottom">
-        <h5 class="mb-0 fw-bold">
-            <i class="fas fa-table me-2 text-info"></i>
-            Bảng thống kê chi tiết
-        </h5>
-    </div>
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th>STT</th>
-                        <th>Danh mục</th>
-                        <th>Số lượng</th>
-                        <th>Tỷ lệ</th>
-                        <th>Trạng thái</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td><i class="fas fa-book text-primary me-2"></i>Sách giáo khoa</td>
-                        <td><strong>2,145</strong></td>
-                        <td>
-                            <div class="progress progress-sm">
-                                <div class="progress-bar bg-primary" style="width: 65%"></div>
-                            </div>
-                        </td>
-                        <td><span class="badge bg-success">Tốt</span></td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td><i class="fas fa-book text-info me-2"></i>Sách tham khảo</td>
-                        <td><strong>1,876</strong></td>
-                        <td>
-                            <div class="progress progress-sm">
-                                <div class="progress-bar bg-info" style="width: 55%"></div>
-                            </div>
-                        </td>
-                        <td><span class="badge bg-success">Tốt</span></td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td><i class="fas fa-book text-warning me-2"></i>Tài liệu nghiên cứu</td>
-                        <td><strong>987</strong></td>
-                        <td>
-                            <div class="progress" style="height: 8px;">
-                                <div class="progress-bar bg-warning" style="width: 30%"></div>
-                            </div>
-                        </td>
-                        <td><span class="badge bg-warning">Cần bổ sung</span></td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td><i class="fas fa-book text-success me-2"></i>Tạp chí</td>
-                        <td><strong>424</strong></td>
-                        <td>
-                            <div class="progress progress-sm">
-                                <div class="progress-bar bg-success" style="width: 15%"></div>
-                            </div>
-                        </td>
-                        <td><span class="badge bg-info">Ổn định</span></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+@section Scripts {
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="~/js/admin-dashboard.js"></script>
+<script>
+    // Trigger loading stats specifically for this page
+    document.addEventListener("DOMContentLoaded", function() {
+        if (typeof loadStatisticsPage === 'function') {
+            loadStatisticsPage();
+        }
+    });
+</script>
+}
