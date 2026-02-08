@@ -589,3 +589,99 @@ form {
 .custom-checkbox input:checked ~ .checkmark:after {
   display: block;
 }
+
+/* === FORGOT PASSWORD STICKERS === */
+.forgot-stickers {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin: 25px 0 20px;
+  flex-wrap: wrap;
+}
+
+.sticker-item {
+  position: relative;
+  display: inline-block;
+  transition: transform 0.3s ease;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Individual rotation for each sticker */
+.sticker-1 {
+  transform: rotate(-4deg);
+}
+
+.sticker-2 {
+  transform: rotate(2deg);
+}
+
+.sticker-3 {
+  transform: rotate(5deg);
+}
+
+/* Sticker image with paper effect - OPTIMIZED */
+.sticker-img {
+  display: block;
+  width: 185px;
+  height: auto;
+
+  /* OPTIMIZED: Reduced from 20+ to 8 shadows for performance */
+  filter: 
+    /* White border - core 4 directions */ drop-shadow(
+      2px 0px 0px #fff
+    )
+    drop-shadow(-2px 0px 0px #fff) drop-shadow(0px 2px 0px #fff)
+    drop-shadow(0px -2px 0px #fff) /* Diagonal corners */
+    drop-shadow(2px 2px 0px #fff) drop-shadow(-2px -2px 0px #fff)
+    /* Shadow for depth */ drop-shadow(3px 4px 8px rgba(0, 0, 0, 0.25))
+    drop-shadow(1px 2px 3px rgba(0, 0, 0, 0.15));
+
+  /* Smooth rendering */
+  image-rendering: auto;
+}
+
+.sticker-img-left {
+  width: 240px !important;
+}
+
+/* Subtle hover effect */
+.sticker-item:hover {
+  transform: rotate(0deg) scale(1.05);
+  transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.sticker-1:hover {
+  transform: rotate(-2deg) scale(1.05);
+}
+
+.sticker-2:hover {
+  transform: rotate(1deg) scale(1.05);
+}
+
+.sticker-3:hover {
+  transform: rotate(3deg) scale(1.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .forgot-stickers {
+    gap: 10px;
+    margin: 20px 0 15px;
+  }
+
+  .sticker-img {
+    width: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sticker-img {
+    width: 100px;
+  }
+
+  .forgot-stickers {
+    gap: 8px;
+  }
+}
