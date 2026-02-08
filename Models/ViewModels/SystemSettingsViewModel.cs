@@ -26,12 +26,12 @@ namespace QuanLyThuVienTruongHoc.Models.ViewModels
         public decimal DailyFineAmount { get; set; } = 5000;
 
         [Display(Name = "Link Facebook")]
-        public string FacebookUrl { get; set; } = "https://facebook.com";
+        public string FacebookUrl { get; set; } = "https://facebook.com/hongchucdangiu";
 
         [Display(Name = "Link Youtube")]
-        public string YoutubeUrl { get; set; } = "https://youtube.com";
+        public string YoutubeUrl { get; set; } = "https://www.youtube.com/@Chenny_Cute";
 
         [Display(Name = "Link Tiktok")]
-        public string TiktokUrl { get; set; } = "https://tiktok.com";
+        public string TiktokUrl { get; set; } = "https://tiktok.com/@chennysocute";
     }
 }

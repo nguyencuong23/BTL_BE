@@ -12,10 +12,10 @@ public static class DbSeeder
         using var scope = services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-        // đảm bảo đã migrate
-        await db.Database.MigrateAsync();
+        // Đảm bảo đã migrate (COMMENT khi dùng EnsureCreated)
+        // await db.Database.MigrateAsync();
 
-        // đã có dữ liệu thì không seed nữa
+        // Đã có dữ liệu thì không seed nữa
         if (await db.Categories.AnyAsync() || await db.Books.AnyAsync() || await db.Users.AnyAsync() || await db.Loans.AnyAsync())
             return;
 
@@ -47,7 +47,8 @@ public static class DbSeeder
         {
             Username = "admin",
             FullName = "Nguyễn Mạnh Cường",
-            Email = "admin@dainam.edu.vn",
+            // Email = "admin@dainam.edu.vn",
+            Email = "kct2378@gmail.com",
             PhoneNumber = "0900000000",
             Role = 1,
             IsActive = true,

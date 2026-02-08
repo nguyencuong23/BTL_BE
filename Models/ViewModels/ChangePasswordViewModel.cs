@@ -7,7 +7,8 @@ namespace QuanLyThuVienTruongHoc.Models.ViewModels
         public int UserId { get; set; }
 
         [Required(ErrorMessage = "Vui lòng nhập mật khẩu mới")]
-        [StringLength(100, MinimumLength = 6, ErrorMessage = "Mật khẩu phải có ít nhất 6 ký tự")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$",
+            ErrorMessage = "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt")]
         [Display(Name = "Mật khẩu mới")]
         public string NewPassword { get; set; }
 

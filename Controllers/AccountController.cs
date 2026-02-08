@@ -90,6 +90,11 @@ namespace QuanLyThuVienTruongHoc.Controllers
                 IsPersistent = model.RememberMe
             };
 
+            if (model.RememberMe)
+            {
+                authProperties.ExpiresUtc = DateTime.UtcNow.AddDays(30);
+            }
+
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(identity),
@@ -179,6 +184,79 @@ namespace QuanLyThuVienTruongHoc.Controllers
         public IActionResult Maintenance()
         {
             return View();
+        }
+
+        // ==================== FORGOT PASSWORD ACTIONS ====================
+
+        [HttpPost]
+        public async Task<IActionResult> SendOtp([FromBody] SendOtpViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false, message = "Email không hợp lệ" });
+            }
+
+            // Check email tồn tại
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
+            if (user == null)
+            {
+                return Json(new { success = false, message = "Email không tồn tại trên hệ thống" });
+            }
+
+            try
+            {
+                // Tạo OTP
+                var otpService = HttpContext.RequestServices.GetRequiredService<Services.IOtpService>();
+                var emailSender = HttpContext.RequestServices.GetRequiredService<Services.IEmailSender>();
+
+                var otp = await otpService.CreateOtpAsync(model.Email);
+
+                // Gửi email
+                await emailSender.SendOtpEmailAsync(model.Email, otp, user.FullName);
+
+                return Json(new { success = true, message = "Mã OTP đã được gửi đến email của bạn" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi xảy ra khi gửi email. Vui lòng thử lại sau" });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, message = string.Join(", ", errors) });
+            }
+
+            var otpService = HttpContext.RequestServices.GetRequiredService<Services.IOtpService>();
+
+            // Validate OTP
+            var (isValid, errorMessage) = await otpService.ValidateOtpAsync(model.Email, model.Otp);
+            if (!isValid)
+            {
+                return Json(new { success = false, message = errorMessage });
+            }
+
+            // Find user
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
+            if (user == null)
+            {
+                return Json(new { success = false, message = "Email không tồn tại trên hệ thống" });
+            }
+
+            // Update password
+            var hasher = new PasswordHasher<User>();
+            user.PasswordHash = hasher.HashPassword(user, model.NewPassword);
+
+            await _context.SaveChangesAsync();
+
+            // Mark OTP as used
+            await otpService.MarkOtpAsUsedAsync(model.Email);
+
+            return Json(new { success = true, message = "Đổi mật khẩu thành công" });
         }
     }
 }

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using QuanLyThuVienTruongHoc.Models;
 using QuanLyThuVienTruongHoc.Models.Library;
 using QuanLyThuVienTruongHoc.Models.Users;
 
@@ -16,7 +17,8 @@ namespace QuanLyThuVienTruongHoc.Data
         public DbSet<Book> Books { get; set; } = null!;
         public DbSet<Loan> Loans { get; set; } = null!;
         public DbSet<QuanLyThuVienTruongHoc.Models.System.Setting> Settings { get; set; } = null!;
-
+        public DbSet<PasswordResetOtp> PasswordResetOtps { get; set; } = null!;
+        public DbSet<Notification> Notifications { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -49,6 +51,12 @@ namespace QuanLyThuVienTruongHoc.Data
                 .HasIndex(u => u.StudentCode)
                 .IsUnique()
                 .HasFilter("[StudentCode] IS NOT NULL");
+
+            modelBuilder.Entity<PasswordResetOtp>()
+                .HasIndex(p => p.Email);
+
+            modelBuilder.Entity<Notification>()
+                .HasIndex(n => n.UserId);
         }
     }
 }

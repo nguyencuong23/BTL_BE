@@ -27,45 +27,106 @@
         <div class="back-cover"></div>
 
         <div class="static-page">
-            <div class="header-text">
-                <h2>KHÔI PHỤC</h2>
-                <span>Cấp lại mật khẩu</span>
-            </div>
-
-            <div style="text-align: center; margin-bottom: 20px; color: #666; font-size: 13px;">
-                <p>Vui lòng nhập Mã số (SV/GV) và Email nhà trường để hệ thống gửi liên kết đặt lại mật khẩu.</p>
-            </div>
-
-            <form asp-controller="Account" asp-action="ForgotPassword" method="post" autocomplete="off" onsubmit="return handleRecovery(event)">
-                @Html.AntiForgeryToken()
-
-                <div class="row">
-                    <div class="col-12">
-                        <label class="form-label">Mã sinh viên / Giảng viên</label>
-                        <input id="Rec_Username" name="Username" class="form-control" placeholder="Ví dụ: SV2024..." required>
-                    </div>
+            <!-- BƯỚC 1: GỬI OTP -->
+            <div id="forgotStep1">
+                <div class="header-text">
+                    <h2>KHÔI PHỤC</h2>
+                    <span>Lấy lại mật khẩu</span>
                 </div>
 
-                <div class="row">
-                    <div class="col-12">
-                        <label class="form-label">Email đăng ký</label>
-                        <input id="Rec_Email" name="Email" type="email" class="form-control" placeholder="email@truongdaihoc.edu.vn" required>
-                    </div>
+                <div style="text-align: center; margin-bottom: 20px; color: #666; font-size: 13px;">
+                    <p>Nhập email đã đăng ký để nhận mã OTP khôi phục mật khẩu.</p>
                 </div>
 
-                <button type="submit" class="btn btn-main btn-register">
-                    <i class="fa-regular fa-paper-plane me-2"></i> GỬI YÊU CẦU
-                </button>
-            </form>
+                <form id="sendOtpForm" onsubmit="return handleSendOtp(event)">
+                    <div class="row">
+                        <div class="col-12">
+                            <label class="form-label">Email đăng ký</label>
+                            <div class="input-group-inline">
+                                <input type="email" id="forgotEmail" class="form-control" 
+                                       placeholder="example@domain.com" required>
+                                <button type="submit" class="btn btn-send" id="sendOtpBtn">
+                                    <span class="btn-text">Gửi</span>
+                                    <span class="btn-loader"></span>
+                                </button>
+                            </div>
+                            <div id="emailError" class="error-text"></div>
+                        </div>
+                    </div>
+                </form>
 
-            <div class="switch-btn" onclick="togglePage()">
-                <i class="fa-solid fa-arrow-left me-2"></i> Quay lại Đăng nhập
+                <div class="switch-btn" onclick="togglePage()">
+                    <i class="fa-solid fa-arrow-left me-2"></i> Quay lại Đăng nhập
+                </div>
+            </div>
+
+            <!-- BƯỚC 2: ĐỔI MẬT KHẨU -->
+            <div id="forgotStep2" style="display:none;">
+                <div class="header-text">
+                    <h2>KHÔI PHỤC</h2>
+                    <span>Đặt lại mật khẩu</span>
+                </div>
+
+                <div class="success-notice" id="otpSuccessNotice">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span>Mã OTP đã được gửi đến email của bạn.</span>
+                </div>
+
+                <form id="resetPasswordForm" onsubmit="return handleResetPassword(event)">
+                    <input type="hidden" id="hiddenEmail">
+
+                    <div class="row">
+                        <div class="col-12">
+                            <label class="form-label">Mã OTP (6 chữ số)</label>
+                            <input type="text" id="otpInput" class="form-control" 
+                                   placeholder="Nhập mã OTP" maxlength="6" pattern="\d{6}" required>
+                            <small class="hint-text">Mã OTP có hiệu lực trong 5 phút</small>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <label class="form-label">Mật khẩu mới</label>
+                            <div class="password-wrapper">
+                                <input type="password" id="newPassword" class="form-control" 
+                                       placeholder="Ít nhất 8 ký tự" required>
+                                <i class="fa-solid fa-eye-slash password-toggle" onclick="togglePasswordVisibility('newPassword', this)"></i>
+                            </div>
+                            <small class="hint-text">Phải có chữ hoa, chữ thường, số và ký tự đặc biệt</small>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <label class="form-label">Xác nhận mật khẩu</label>
+                            <div class="password-wrapper">
+                                <input type="password" id="confirmPassword" class="form-control" 
+                                       placeholder="Nhập lại mật khẩu" required>
+                                <i class="fa-solid fa-eye-slash password-toggle" onclick="togglePasswordVisibility('confirmPassword', this)"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="resetError" class="error-text"></div>
+
+                    <button type="submit" class="btn btn-main btn-register" id="resetPasswordBtn">
+                        <span class="btn-text"><i class="fa-solid fa-check-circle me-2"></i>ĐỔI MẬT KHẨU</span>
+                        <span class="btn-loader" style="display:none;"></span>
+                    </button>
+                </form>
+
+                <div class="switch-btn" onclick="backToForgotStep1()">
+                    <i class="fa-solid fa-arrow-left me-2"></i> Gửi lại OTP
+                </div>
             </div>
         </div>
 
         <div class="flipping-page">
 
             <div class="page-front">
+                <!-- BOOKMARK RIBBON -->
+                <div class="bookmark-ribbon" id="bookmarkRibbon">
+                </div>
                 <div class="header-text">
                     <h2>ĐĂNG NHẬP</h2>
                     <span>Thư viện Đại Nam</span>
@@ -80,10 +141,22 @@
                     <div asp-validation-summary="ModelOnly" class="text-danger mb-3 text-center" style="font-size: 0.9rem;"></div>
 
                     <label class="form-label">Tài khoản</label>
-                    <input name="Username" class="form-control" placeholder="Mã số sinh viên / GV" required>
+                    <input name="Username" class="form-control" placeholder="Tên đăng nhập" required>
 
                     <label class="form-label">Mật khẩu</label>
-                    <input name="Password" type="password" class="form-control" placeholder="Mật khẩu" required>
+                    <div class="password-wrapper">
+                        <input name="Password" id="loginPassword" type="password" class="form-control" placeholder="Mật khẩu" required>
+                        <i class="fa-solid fa-eye-slash password-toggle" onclick="togglePasswordVisibility('loginPassword', this)"></i>
+                    </div>
+
+                    <!-- REMEMBER ME CHECKBOX -->
+                    <div class="remember-me-container mb-3">
+                        <label class="custom-checkbox">
+                            <input type="checkbox" name="RememberMe" id="chkRememberMe" value="true" onchange="toggleBookmark()">
+                            <span class="checkmark"></span>
+                            <span class="label-text">Ghi nhớ đăng nhập</span>
+                        </label>
+                    </div>
 
                     <button type="submit" class="btn btn-main btn-login">ĐĂNG NHẬP</button>
                 </form>
@@ -95,6 +168,10 @@
             </div>
 
             <div class="page-back">
+                <!-- BACK BOOKMARK RIBBON -->
+                <div class="bookmark-ribbon-back" id="bookmarkRibbonBack">
+                </div>
+
                 <div class="text-center mb-4">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/d/d3/Logo_DAI_NAM.png" style="width: 80px; opacity: 0.8;">
                 </div>

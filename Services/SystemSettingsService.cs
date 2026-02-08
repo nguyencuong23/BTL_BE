@@ -52,9 +52,9 @@ namespace QuanLyThuVienTruongHoc.Services
                 MaintenanceMode = bool.TryParse(Get(SettingsKeys.MaintenanceMode, "false"), out var m) && m,
                 DefaultLoanDays = int.TryParse(Get(SettingsKeys.DefaultLoanDays, "14"), out var d) ? d : 14,
                 DailyFineAmount = decimal.TryParse(Get(SettingsKeys.DailyFineAmount, "5000"), out var f) ? f : 5000,
-                FacebookUrl = Get(SettingsKeys.FacebookUrl, "https://facebook.com"),
-                YoutubeUrl = Get(SettingsKeys.YoutubeUrl, "https://youtube.com"),
-                TiktokUrl = Get(SettingsKeys.TiktokUrl, "https://tiktok.com")
+                FacebookUrl = Get(SettingsKeys.FacebookUrl, "https://facebook.com/hongchucdangiu"),
+                YoutubeUrl = Get(SettingsKeys.YoutubeUrl, "https://www.youtube.com/@Chenny_Cute"),
+                TiktokUrl = Get(SettingsKeys.TiktokUrl, "https://tiktok.com/@chennysocute")
             };
         }
 
