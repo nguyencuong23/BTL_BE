@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -19,10 +19,7 @@ namespace QuanLyThuVienTruongHoc.Migrations
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Categories", x => x.CategoryId);
-                });
+                constraints: table => table.PrimaryKey("PK_Categories", x => x.CategoryId));
 
             migrationBuilder.CreateTable(
                 name: "Settings",
@@ -32,10 +29,7 @@ namespace QuanLyThuVienTruongHoc.Migrations
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Settings", x => x.Key);
-                });
+                constraints: table => table.PrimaryKey("PK_Settings", x => x.Key));
 
             migrationBuilder.CreateTable(
                 name: "Users",
@@ -51,14 +45,26 @@ namespace QuanLyThuVienTruongHoc.Migrations
                     PhoneNumber = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
                     Role = table.Column<int>(type: "int", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    TotalFine = table.Column<decimal>(type: "decimal(18,0)", precision: 18, scale: 0, nullable: false),
+                    TotalFine = table.Column<decimal>(type: "decimal(18,0)", precision: 18, nullable: false),
                     PaidAmount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
-                constraints: table =>
+                constraints: table => table.PrimaryKey("PK_Users", x => x.Id));
+
+            migrationBuilder.CreateTable(
+                name: "PasswordResetOtps",
+                columns: table => new
                 {
-                    table.PrimaryKey("PK_Users", x => x.Id);
-                });
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    OtpHash = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    ExpireAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    AttemptCount = table.Column<int>(type: "int", nullable: false),
+                    IsUsed = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table => table.PrimaryKey("PK_PasswordResetOtps", x => x.Id));
 
             migrationBuilder.CreateTable(
                 name: "Books",
@@ -86,6 +92,23 @@ namespace QuanLyThuVienTruongHoc.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Notifications",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Link = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RelatedEntityId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table => table.PrimaryKey("PK_Notifications", x => x.Id));
+
+            migrationBuilder.CreateTable(
                 name: "Loans",
                 columns: table => new
                 {
@@ -96,7 +119,7 @@ namespace QuanLyThuVienTruongHoc.Migrations
                     BorrowDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ReturnDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Fine = table.Column<decimal>(type: "decimal(18,0)", precision: 18, scale: 0, nullable: false),
+                    Fine = table.Column<decimal>(type: "decimal(18,0)", precision: 18, nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -132,6 +155,16 @@ namespace QuanLyThuVienTruongHoc.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Notifications_UserId",
+                table: "Notifications",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PasswordResetOtps_Email",
+                table: "PasswordResetOtps",
+                column: "Email");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_Email",
                 table: "Users",
                 column: "Email",
@@ -160,20 +193,13 @@ namespace QuanLyThuVienTruongHoc.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Loans");
-
-            migrationBuilder.DropTable(
-                name: "Settings");
-
-            migrationBuilder.DropTable(
-                name: "Books");
-
-            migrationBuilder.DropTable(
-                name: "Users");
-
-            migrationBuilder.DropTable(
-                name: "Categories");
+            migrationBuilder.DropTable(name: "Loans");
+            migrationBuilder.DropTable(name: "Notifications");
+            migrationBuilder.DropTable(name: "PasswordResetOtps");
+            migrationBuilder.DropTable(name: "Books");
+            migrationBuilder.DropTable(name: "Users");
+            migrationBuilder.DropTable(name: "Settings");
+            migrationBuilder.DropTable(name: "Categories");
         }
     }
 }

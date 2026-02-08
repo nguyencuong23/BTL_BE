@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using QuanLyThuVienTruongHoc.Data;
+using QuanLyThuVienTruongHoc.Models.Users;
 using QuanLyThuVienTruongHoc.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -121,6 +123,59 @@ namespace QuanLyThuVienTruongHoc.Controllers
             }
 
             return RedirectToAction("Index");
+        }
+
+        /// <summary>
+        /// Đổi mật khẩu cho user hiện tại
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordViewModel model)
+        {
+            // Lấy UserId từ Claims
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
+            {
+                return Json(new { success = false, message = "Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại." });
+            }
+
+            // Validate model
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                return Json(new { success = false, message = string.Join(", ", errors) });
+            }
+
+            // Lấy user từ database
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                return Json(new { success = false, message = "Không tìm thấy thông tin người dùng." });
+            }
+
+            // Validate password format (double check)
+            var passwordRegex = new System.Text.RegularExpressions.Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$");
+            if (!passwordRegex.IsMatch(model.NewPassword))
+            {
+                return Json(new { success = false, message = "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt." });
+            }
+
+            try
+            {
+                // Hash password
+                var hasher = new PasswordHasher<User>();
+                user.PasswordHash = hasher.HashPassword(user, model.NewPassword);
+
+                // Save to database
+                _context.Entry(user).Property(u => u.PasswordHash).IsModified = true;
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Đổi mật khẩu thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi xảy ra khi đổi mật khẩu: " + ex.Message });
+            }
         }
     }
 }

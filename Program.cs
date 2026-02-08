@@ -22,6 +22,9 @@ builder.Services.AddCors(options =>
 
 // 3. Add Services
 builder.Services.AddScoped<QuanLyThuVienTruongHoc.Services.SystemSettingsService>();
+builder.Services.AddScoped<QuanLyThuVienTruongHoc.Services.NotificationService>();
+builder.Services.AddScoped<QuanLyThuVienTruongHoc.Services.IEmailSender, QuanLyThuVienTruongHoc.Services.EmailSender>();
+builder.Services.AddScoped<QuanLyThuVienTruongHoc.Services.IOtpService, QuanLyThuVienTruongHoc.Services.OtpService>();
 
 
 
@@ -53,7 +56,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LoginPath = "/Account/Login";
         options.LogoutPath = "/Account/Logout";
         options.AccessDeniedPath = "/Account/AccessDenied";
-        options.ExpireTimeSpan = TimeSpan.FromHours(2);
+        options.ExpireTimeSpan = TimeSpan.FromHours(3);
         options.SlidingExpiration = true;
 
         // Lưu ý: Dòng này làm Logout mỗi khi Restart server. 
@@ -95,18 +98,15 @@ app.UseMiddleware<QuanLyThuVienTruongHoc.Middleware.MaintenanceCheckMiddleware>(
 app.UseSession();
 
     // 6. Khởi tạo Database
-    // Note: Đã comment lại để tránh conflict giữa Migrations và EnsureCreated.
-    // DbSeeder.SeedAsync sẽ tự động gọi MigrateAsync().
-    /*
-    using (var scope = app.Services.CreateScope())
-    {
-        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-        await db.Database.EnsureDeletedAsync();
-        await db.Database.EnsureCreatedAsync();
-    }
-    */
-await DbSeeder.SeedAsync(app.Services);
+    // using (var scope = app.Services.CreateScope())
+    // {
+    //     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    //     await db.Database.EnsureDeletedAsync();
+    //     await db.Database.EnsureCreatedAsync();
+    // }
+    
+    // Seed data sau khi tạo database
+    await DbSeeder.SeedAsync(app.Services);
 
 app.MapControllers();
 
