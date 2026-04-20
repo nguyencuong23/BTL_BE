@@ -45,13 +45,16 @@ namespace QuanLyThuVienTruongHoc.Services
 
             return new SystemSettingsViewModel
             {
-                SystemName = Get(SettingsKeys.SystemName, "Hệ thống Quản lý Thư viện Đại học Đại Nam"),
+                SystemName = Get(SettingsKeys.SystemName, "BookPlanet - Thế giới của những người yêu sách"),
                 AdminEmail = Get(SettingsKeys.AdminEmail, "admin@thuvien.dainam.edu.vn"),
                 ContactPhone = Get(SettingsKeys.ContactPhone, "0243.123.4567"),
                 Address = Get(SettingsKeys.Address, "Hà Đông, Hà Nội"),
                 MaintenanceMode = bool.TryParse(Get(SettingsKeys.MaintenanceMode, "false"), out var m) && m,
-                DefaultLoanDays = int.TryParse(Get(SettingsKeys.DefaultLoanDays, "14"), out var d) ? d : 14,
-                DailyFineAmount = decimal.TryParse(Get(SettingsKeys.DailyFineAmount, "5000"), out var f) ? f : 5000,
+                DefaultShippingFee = decimal.TryParse(Get(SettingsKeys.DefaultShippingFee, "30000"), out var ship) ? ship : 30000,
+                FreeShippingThreshold = decimal.TryParse(Get(SettingsKeys.FreeShippingThreshold, "300000"), out var free) ? free : 300000,
+                BankName = Get(SettingsKeys.BankName, ""),
+                BankAccountNumber = Get(SettingsKeys.BankAccountNumber, ""),
+                BankAccountName = Get(SettingsKeys.BankAccountName, ""),
                 FacebookUrl = Get(SettingsKeys.FacebookUrl, "https://facebook.com/hongchucdangiu"),
                 YoutubeUrl = Get(SettingsKeys.YoutubeUrl, "https://www.youtube.com/@Chenny_Cute"),
                 TiktokUrl = Get(SettingsKeys.TiktokUrl, "https://tiktok.com/@chennysocute")
@@ -63,10 +66,13 @@ namespace QuanLyThuVienTruongHoc.Services
             await SetValueAsync(SettingsKeys.SystemName, model.SystemName, "Tên hệ thống hiển thị");
             await SetValueAsync(SettingsKeys.AdminEmail, model.AdminEmail, "Email quản trị");
             await SetValueAsync(SettingsKeys.ContactPhone, model.ContactPhone, "Số điện thoại liên hệ");
-            await SetValueAsync(SettingsKeys.Address, model.Address, "Địa chỉ thư viện");
+            await SetValueAsync(SettingsKeys.Address, model.Address, "Địa chỉ cửa hàng");
             await SetValueAsync(SettingsKeys.MaintenanceMode, model.MaintenanceMode.ToString(), "Trạng thái bảo trì");
-            await SetValueAsync(SettingsKeys.DefaultLoanDays, model.DefaultLoanDays.ToString(), "Thời gian mượn mặc định");
-            await SetValueAsync(SettingsKeys.DailyFineAmount, model.DailyFineAmount.ToString(), "Tiền phạt quá hạn mỗi ngày");
+            await SetValueAsync(SettingsKeys.DefaultShippingFee, model.DefaultShippingFee.ToString(), "Phí ship mặc định");
+            await SetValueAsync(SettingsKeys.FreeShippingThreshold, model.FreeShippingThreshold.ToString(), "Ngưỡng miễn phí ship");
+            await SetValueAsync(SettingsKeys.BankName, model.BankName, "Ngân hàng nhận chuyển khoản");
+            await SetValueAsync(SettingsKeys.BankAccountNumber, model.BankAccountNumber, "Số tài khoản nhận chuyển khoản");
+            await SetValueAsync(SettingsKeys.BankAccountName, model.BankAccountName, "Chủ tài khoản nhận chuyển khoản");
             await SetValueAsync(SettingsKeys.FacebookUrl, model.FacebookUrl, "Link Facebook");
             await SetValueAsync(SettingsKeys.YoutubeUrl, model.YoutubeUrl, "Link Youtube");
             await SetValueAsync(SettingsKeys.TiktokUrl, model.TiktokUrl, "Link Tiktok");

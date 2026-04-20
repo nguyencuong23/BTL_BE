@@ -1,0 +1,53 @@
+@model IEnumerable<QuanLyThuVienTruongHoc.Models.Commerce.Order>
+@using QuanLyThuVienTruongHoc.Models.Commerce
+
+@{
+    ViewData["Title"] = "Đơn hàng của tôi";
+    Layout = "~/Views/Shared/_ClientLayout.cshtml";
+}
+
+<div class="container py-4">
+    <h3 class="fw-bold mb-3"><i class="fas fa-receipt me-2"></i>Đơn hàng của tôi</h3>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">Bạn chưa có đơn hàng nào.</div>
+        <a asp-controller="Client" asp-action="Search" class="btn btn-primary">Mua sắm ngay</a>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Mã đơn</th>
+                        <th>Ngày</th>
+                        <th>Thanh toán</th>
+                        <th>Trạng thái</th>
+                        <th class="text-end">Tổng</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var o in Model)
+                {
+                    <tr>
+                        <td class="fw-bold">@o.OrderCode</td>
+                        <td>@o.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>
+                            <div>@o.PaymentMethod</div>
+                            <div class="text-muted small">@o.PaymentStatus</div>
+                        </td>
+                        <td>@o.Status</td>
+                        <td class="text-end fw-bold">@o.Total.ToString("N0") đ</td>
+                        <td class="text-end">
+                            <a asp-action="Details" asp-route-id="@o.OrderId" class="btn btn-outline-primary btn-sm">Chi tiết</a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+

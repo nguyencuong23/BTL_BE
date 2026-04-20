@@ -2,6 +2,10 @@ function closeModal() {
   document.getElementById("modal-overlay").classList.remove("active");
 }
 
+function formatVnd(number) {
+  return new Intl.NumberFormat("vi-VN").format(number || 0) + " đ";
+}
+
 // --- HELPER: Detect Group for Smart Description ---
 function detectGroup(bookId) {
   if (!bookId || bookId.length < 2) return "Tài liệu Khác";
@@ -43,7 +47,7 @@ function getSmartDescription(title, author, bookId) {
       template = `Cuốn sách hệ thống hóa các quy định pháp luật hiện hành và các tình huống thực tiễn. <b>"${title}"</b> là tài liệu quan trọng giúp người đọc hiểu rõ hơn về hệ thống pháp lý và cách áp dụng luật vào đời sống.`;
       break;
     default:
-      template = `Tác phẩm <b>"${title}"</b> được biên soạn bởi tác giả <b>${author}</b>. Đây là một trong những tài liệu được lưu trữ cẩn thận tại thư viện, phục vụ nhu cầu học tập và nghiên cứu đa dạng của sinh viên và giảng viên nhà trường. Mời bạn đọc mượn sách để tìm hiểu chi tiết nội dung.`;
+      template = `Tác phẩm <b>"${title}"</b> của tác giả <b>${author}</b> là lựa chọn phù hợp để bạn bổ sung vào tủ sách của mình. Thêm vào giỏ để đặt mua nhanh chóng.`;
       break;
   }
   return template;
@@ -61,6 +65,15 @@ function openDetailModal(bookId) {
   const quantity = parseInt(
     dataContainer.querySelector(".data-quantity").innerText,
   );
+  const price = parseFloat(
+    (dataContainer.querySelector(".data-price")?.innerText || "0").replace(
+      ",",
+      ".",
+    ),
+  );
+  const salePriceRaw = dataContainer.querySelector(".data-sale-price")?.innerText;
+  const salePrice = salePriceRaw ? parseFloat(salePriceRaw.replace(",", ".")) : null;
+  const unitPrice = salePrice && salePrice > 0 && salePrice < price ? salePrice : price;
   const image = dataContainer.querySelector(".data-image").innerText;
   const publisher =
     dataContainer.querySelector(".data-publisher").innerText || "NXB Giáo Dục";
@@ -68,10 +81,6 @@ function openDetailModal(bookId) {
 
   // Generate dynamic description
   const description = getSmartDescription(title, author, bookId);
-
-  // Random ISBN and Language for demo (since removed from model)
-  const isbn = `978-604-${Math.floor(Math.random() * 1000)}-X`;
-  const language = "Tiếng Việt";
 
   const statusText =
     quantity > 0
@@ -85,7 +94,15 @@ function openDetailModal(bookId) {
 
   // READ CONFIG FROM DOM
   const csrfToken = document.getElementById("csrf-container").innerHTML.trim();
-  const defaultDueDate = document.getElementById("default-due-date").value;
+  const returnUrl = window.location.pathname + window.location.search;
+
+  const priceHtml =
+    salePrice && salePrice > 0 && salePrice < price
+      ? `<div class="d-flex align-items-end gap-2" style="margin-bottom: 18px;">
+            <div style="font-size: 1.6rem; font-weight: 800; color:#0f172a;">${formatVnd(unitPrice)}</div>
+            <div class="text-muted text-decoration-line-through">${formatVnd(price)}</div>
+         </div>`
+      : `<div style="margin-bottom: 18px; font-size: 1.6rem; font-weight: 800; color:#0f172a;">${formatVnd(unitPrice)}</div>`;
 
   const html = `
         <div class="modal-content-flex">
@@ -100,6 +117,8 @@ function openDetailModal(bookId) {
                 <div style="margin-bottom: 20px; color: #475569; font-size: 1.1rem;">
                     <i class="fas fa-pen-nib"></i> Tác giả: <strong>${author}</strong>
                 </div>
+
+                ${priceHtml}
 
                 <div style="display: flex; gap: 15px; margin-bottom: 25px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 15px;">
                     <span style="background: ${statusBg}; color: ${statusColor}; padding: 6px 15px; border-radius: 20px; font-weight: 600; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 6px;">
@@ -123,13 +142,14 @@ function openDetailModal(bookId) {
                     </div>
                 </div>
 
-                <form action="/Client/Borrow" method="post" class="modal-actions mt-4 d-flex gap-2">
+                <form action="/Cart/Add" method="post" class="modal-actions mt-4 d-flex gap-2">
                     ${csrfToken}
                     <input type="hidden" name="bookId" value="${bookId}" />
-                    <input type="hidden" name="dueDate" value="${defaultDueDate}" />
+                    <input type="number" name="quantity" value="1" min="1" max="${Math.max(1, quantity)}" class="form-control" style="max-width: 110px;" ${quantity > 0 ? "" : "disabled"} />
+                    <input type="hidden" name="returnUrl" value="${returnUrl}" />
                     
-                    <button type="submit" class="btn btn-primary flex-grow-1 py-2 rounded-pill fw-bold text-decoration-none d-flex align-items-center justify-content-center">
-                        <i class="fa-solid fa-book-reader me-2"></i> Đăng ký mượn ngay
+                    <button type="submit" class="btn btn-primary flex-grow-1 py-2 rounded-pill fw-bold text-decoration-none d-flex align-items-center justify-content-center" ${quantity > 0 ? "" : "disabled"}>
+                        <i class="fa-solid fa-cart-plus me-2"></i> Thêm vào giỏ
                     </button>
 
                         <button type="button" class="btn btn-outline-secondary rounded-circle" style="width: 45px; height: 45px;" onclick="closeModal()">

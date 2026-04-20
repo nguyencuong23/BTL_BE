@@ -12,8 +12,8 @@ function loadTrendCharts() {
   fetch("/api/admin/borrowing-trends")
     .then((response) => response.json())
     .then((data) => {
-      renderBorrowVolumeChart(data.borrowVolume);
-      renderActiveLoansChart(data.activeLoans);
+      renderBorrowVolumeChart(data.orderVolume);
+      renderRevenueChart(data.revenue);
     })
     .catch((error) => console.error("Error loading trend charts:", error));
 }
@@ -39,7 +39,7 @@ function renderBorrowVolumeChart(data) {
       labels: dates,
       datasets: [
         {
-          label: "Lượt mượn",
+          label: "Đơn hàng",
           data: counts,
           backgroundColor: gradient,
           borderRadius: 4,
@@ -58,7 +58,7 @@ function renderBorrowVolumeChart(data) {
           padding: 10,
           callbacks: {
             title: (context) => `Ngày: ${context[0].label}`,
-            label: (context) => ` ${context.raw} lượt mượn`,
+            label: (context) => ` ${context.raw} đơn`,
           },
         },
       },
@@ -81,7 +81,7 @@ function renderBorrowVolumeChart(data) {
   });
 }
 
-function renderActiveLoansChart(data) {
+function renderRevenueChart(data) {
   const ctx = document.getElementById("activeLoansChart");
   if (!ctx) return;
 
@@ -89,7 +89,7 @@ function renderActiveLoansChart(data) {
     const date = new Date(d.date);
     return `${date.getDate()}/${date.getMonth() + 1}`;
   });
-  const counts = data.map((d) => d.count);
+  const revenue = data.map((d) => d.revenue);
 
   new Chart(ctx, {
     type: "line",
@@ -97,8 +97,8 @@ function renderActiveLoansChart(data) {
       labels: dates,
       datasets: [
         {
-          label: "Sách đang mượn",
-          data: counts,
+          label: "Doanh thu",
+          data: revenue,
           borderColor: "#10b981", // emerald-500
           backgroundColor: "rgba(16, 185, 129, 0.1)",
           borderWidth: 3,
@@ -124,7 +124,12 @@ function renderActiveLoansChart(data) {
           mode: "index",
           callbacks: {
             title: (context) => `Ngày: ${context[0].label}`,
-            label: (context) => ` ${context.raw} sách đang mượn`,
+            label: (context) => {
+              const formatted = new Intl.NumberFormat("vi-VN").format(
+                context.raw || 0,
+              );
+              return ` ${formatted} đ`;
+            },
           },
         },
       },
@@ -156,13 +161,13 @@ function loadDashboardData() {
     .then((data) => {
       // Render Charts
       if (document.getElementById("loanStatusChart"))
-        renderLoanStatusChart(data);
+        renderOrderStatusChart(data);
       if (document.getElementById("categoriesChart"))
         renderCategoriesChart(data.categoryStats, "categoriesChart");
 
       // Render Tables
-      if (document.getElementById("recent-loans-table-body"))
-        renderRecentLoans(data.recentLoans);
+      if (document.getElementById("recent-orders-table-body"))
+        renderRecentOrders(data.recentOrders);
       if (document.getElementById("top-books-list"))
         renderTopBooks(data.topBooks);
     })
@@ -175,38 +180,32 @@ function loadDashboardData() {
       return response.json();
     })
     .then((data) => {
-      // Card 1: Books
-      updateElementText("stats-total-books", data.totalBooks);
-      const bookFooter = `<span class="text-white fw-bold"><i class="fas fa-swatchbook"></i> ${data.totalTitles} đầu sách</span>`;
-      updateElementHtml("stats-footer-books", bookFooter);
-
-      // Card 2: Readers
-      updateElementText("stats-total-readers", data.totalStudents);
+      updateElementText("stats-total-orders", data.totalOrders);
       updateElementHtml(
-        "stats-footer-readers",
-        `<i class="fas fa-book-reader text-white"></i> <span class="text-white fw-bold">${data.activeBorrowers} / ${data.totalStudents}</span> <span class="text-white fw-bold">đang mượn sách</span>`,
+        "stats-footer-orders",
+        `<span class="text-white fw-bold"><i class="fas fa-calendar-day"></i> Hôm nay: +${data.ordersToday} đơn</span>`,
       );
 
-      // Card 3: Borrowing
-      updateElementText("stats-total-borrowing", data.totalBorrowing);
-      const borrowingFooter =
-        data.dueSoonCount > 0
-          ? `<span class="text-white fw-bold"><i class="fas fa-clock"></i> ${data.dueSoonCount} lượt</span> <span class="text-white fw-bold">sắp đến hạn (3 ngày)</span>`
-          : `<span class="text-white fw-bold"><i class="fas fa-check-circle"></i> Hôm nay: +${data.borrowedToday} lượt</span>`;
-      updateElementHtml("stats-footer-borrowing", borrowingFooter);
+      const revenueFormatted = new Intl.NumberFormat("vi-VN").format(
+        data.revenueThisMonth || 0,
+      );
+      updateElementText("stats-total-revenue", revenueFormatted);
+      updateElementHtml(
+        "stats-footer-revenue",
+        `<span class="text-white fw-bold"><i class="fas fa-users"></i> ${data.totalCustomers} khách hàng</span>`,
+      );
 
-      // Card 4: Overdue
-      updateElementText("stats-total-overdue", data.totalOverdue);
-      let overdueFooter = "";
+      updateElementText("stats-pending-transfers", data.pendingBankTransfers);
+      updateElementHtml(
+        "stats-footer-pending-transfers",
+        `<span class="text-white fw-bold"><i class="fas fa-hourglass-half"></i> Pending: ${data.pendingOrders} đơn</span>`,
+      );
 
-      const fineFormatted = new Intl.NumberFormat("vi-VN", {
-        style: "currency",
-        currency: "VND",
-      }).format(data.totalFine || 0);
-
-      overdueFooter = `<i class="fas fa-coins text-white"></i> <span class="text-white fw-bold">Tổng tiền phạt: ${fineFormatted}</span>`;
-
-      updateElementHtml("stats-footer-overdue", overdueFooter);
+      updateElementText("stats-total-books", data.totalBooks);
+      updateElementHtml(
+        "stats-footer-books",
+        `<span class="text-white fw-bold"><i class="fas fa-swatchbook"></i> ${data.totalTitles} đầu sách</span>`,
+      );
     })
     .catch((error) => {
       console.error("Error loading summary data:", error);
@@ -284,18 +283,18 @@ Chart.register(centerTextPlugin);
 
 // --- Chart Rendering Functions ---
 
-function renderLoanStatusChart(data) {
+function renderOrderStatusChart(data) {
   const ctx = document.getElementById("loanStatusChart");
   if (!ctx) return;
 
-  const totalLoans =
-    data.totalReturned + data.totalBorrowing + data.totalOverdue;
+  const total =
+    data.totalPending + data.totalShipping + data.totalDelivered + data.totalCancelled;
   const configData = {
-    labels: ["Đã trả", "Đang mượn", "Quá hạn"],
+    labels: ["Chờ xử lý", "Đang giao", "Đã giao", "Đã hủy"],
     datasets: [
       {
-        data: [data.totalReturned, data.totalBorrowing, data.totalOverdue],
-        backgroundColor: ["#22c55e", "#f59e0b", "#ef4444"],
+        data: [data.totalPending, data.totalShipping, data.totalDelivered, data.totalCancelled],
+        backgroundColor: ["#f59e0b", "#3b82f6", "#22c55e", "#ef4444"],
         borderWidth: 2,
         borderColor: "#ffffff",
         hoverOffset: 10,
@@ -324,14 +323,14 @@ function renderLoanStatusChart(data) {
               let label = context.label || "";
               let value = context.raw || 0;
               let percentage =
-                totalLoans > 0 ? Math.round((value / totalLoans) * 100) : 0;
+                total > 0 ? Math.round((value / total) * 100) : 0;
               return ` ${label}: ${value} (${percentage}%)`;
             },
           },
         },
         centerText: {
-          text: totalLoans.toString(),
-          subText: "Tổng phiếu",
+          text: total.toString(),
+          subText: "Tổng đơn",
         },
       },
       interaction: {
@@ -455,7 +454,7 @@ function renderMonthlyLoansChart(monthlyData) {
       labels: labels,
       datasets: [
         {
-          label: "Số lượt mượn",
+          label: "Số đơn",
           data: data,
           backgroundColor: "#3b82f6",
           borderRadius: 4,
@@ -524,38 +523,31 @@ function generateCustomLegend(elementId, data) {
 
 // --- List/Table Rendering Functions ---
 
-function renderRecentLoans(loans) {
-  const tbody = document.getElementById("recent-loans-table-body");
+function renderRecentOrders(orders) {
+  const tbody = document.getElementById("recent-orders-table-body");
   if (!tbody) return;
 
-  if (!loans || loans.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">Chưa có phiếu mượn nào</td></tr>`;
+  if (!orders || orders.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">Chưa có đơn hàng nào</td></tr>`;
     return;
   }
 
-  tbody.innerHTML = loans
-    .map((loan) => {
-      let statusBadge = "";
-      // Check API response structure: Status: "returned" | "overdue" | "borrowing"
-      if (loan.status === "returned")
-        statusBadge = '<span class="badge badge-returned">Đã trả</span>';
-      else if (loan.status === "overdue")
-        statusBadge = '<span class="badge badge-overdue">Quá hạn</span>';
-      else statusBadge = '<span class="badge badge-borrowing">Đang mượn</span>';
-
+  tbody.innerHTML = orders
+    .map((o) => {
+      const totalFormatted = new Intl.NumberFormat("vi-VN").format(o.total || 0);
       return `
             <tr>
-                <td><span class="badge bg-secondary">#${loan.loanId}</span></td>
+                <td><span class="badge bg-secondary">${o.orderCode}</span></td>
                 <td>
                     <div class="d-flex align-items-center">
-                        <div class="user-avatar-small">${loan.userFullName.charAt(0)}</div>
-                        <span class="ms-2">${loan.userFullName}</span>
+                        <div class="user-avatar-small">${o.userFullName.charAt(0)}</div>
+                        <span class="ms-2">${o.userFullName}</span>
                     </div>
                 </td>
-                <td><small>${loan.bookTitle}</small></td>
-                <td><small>${new Date(loan.borrowDate).toLocaleDateString("vi-VN")}</small></td>
-                <td><small>${new Date(loan.dueDate).toLocaleDateString("vi-VN")}</small></td>
-                <td>${statusBadge}</td>
+                <td><small>${new Date(o.createdAt).toLocaleString("vi-VN")}</small></td>
+                <td><small>${o.paymentMethod} (${o.paymentStatus})</small></td>
+                <td><span class="badge bg-light text-dark">${o.status}</span></td>
+                <td class="text-end"><b>${totalFormatted} đ</b></td>
             </tr>
         `;
     })
@@ -581,6 +573,9 @@ function renderTopBooks(books) {
             : index === 2
               ? "bronze"
               : "";
+      const revenueFormatted = new Intl.NumberFormat("vi-VN").format(
+        book.revenue || 0,
+      );
       return `
             <div class="top-book-item">
                 <div class="rank-badge ${rankClass}">${index + 1}</div>
@@ -589,7 +584,8 @@ function renderTopBooks(books) {
                     <small class="text-muted">${book.author}</small>
                 </div>
                 <div class="borrow-count">
-                    <span class="badge bg-primary">${book.borrowCount} <i class="fas fa-book-reader ms-1"></i></span>
+                    <span class="badge bg-primary">${book.soldQuantity} <i class="fas fa-cart-shopping ms-1"></i></span>
+                    <div class="small text-muted text-end">${revenueFormatted} đ</div>
                 </div>
             </div>
         `;

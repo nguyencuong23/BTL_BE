@@ -64,8 +64,8 @@
                 <li class="nav-item">
                     <a asp-controller="Readers" asp-action="Index" 
                        class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Readers" ? "active" : "")">
-                        <i class="fas fa-user-graduate"></i>
-                        <span>Sinh viên/Độc giả</span>
+                        <i class="fas fa-users"></i>
+                        <span>Khách hàng</span>
                     </a>
                 </li>
 
@@ -73,15 +73,15 @@
                     <a asp-controller="Librarians" asp-action="Index" 
                        class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Librarians" ? "active" : "")">
                         <i class="fas fa-user-tie"></i>
-                        <span>Thủ thư/Admin</span>
+                        <span>Nhân viên/Admin</span>
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a asp-controller="Loans" asp-action="Index" 
-                       class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Loans" ? "active" : "")">
-                        <i class="fas fa-exchange-alt"></i>
-                        <span>Quản lý mượn trả</span>
+                    <a asp-controller="AdminOrders" asp-action="Index" 
+                       class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminOrders" ? "active" : "")">
+                        <i class="fas fa-receipt"></i>
+                        <span>Đơn hàng</span>
                     </a>
                 </li>
 

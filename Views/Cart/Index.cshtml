@@ -1,0 +1,93 @@
+@model QuanLyThuVienTruongHoc.Models.ViewModels.CartViewModel
+
+@{
+    ViewData["Title"] = "Giỏ hàng";
+    Layout = "~/Views/Shared/_ClientLayout.cshtml";
+}
+
+<div class="container py-4">
+    <h3 class="fw-bold mb-3"><i class="fas fa-shopping-cart me-2"></i>Giỏ hàng</h3>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    @if (!Model.Lines.Any())
+    {
+        <div class="alert alert-info">Giỏ hàng đang trống. Hãy chọn sách bạn muốn mua.</div>
+        <a asp-controller="Client" asp-action="Search" class="btn btn-primary">Tiếp tục mua sắm</a>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Sách</th>
+                        <th style="width:140px;">Đơn giá</th>
+                        <th style="width:160px;">Số lượng</th>
+                        <th class="text-end" style="width:140px;">Thành tiền</th>
+                        <th style="width:90px;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var line in Model.Lines)
+                {
+                    var imgUrl = !string.IsNullOrEmpty(line.Book.ImagePath) ? line.Book.ImagePath : "https://via.placeholder.com/60x90?text=No+Image";
+                    var maxQty = Math.Max(0, line.Book.Quantity);
+                    <tr>
+                        <td>
+                            <div class="d-flex gap-3 align-items-center">
+                                <img src="@imgUrl" style="width:60px;height:90px;object-fit:contain;background:#fff;border:1px solid #eee;border-radius:8px;" />
+                                <div>
+                                    <div class="fw-bold">@line.Book.Title</div>
+                                    <div class="text-muted small">@line.Book.Author</div>
+                                    <div class="text-muted small">Kho: @line.Book.Quantity</div>
+                                    @if (line.Quantity > line.Book.Quantity)
+                                    {
+                                        <div class="text-danger small fw-semibold">Số lượng trong giỏ đang vượt tồn kho, vui lòng giảm xuống.</div>
+                                    }
+                                </div>
+                            </div>
+                        </td>
+                        <td>@line.UnitPrice.ToString("N0") đ</td>
+                        <td>
+                            <form asp-action="Update" method="post" class="d-flex gap-2">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="bookId" value="@line.Book.BookId" />
+                                <input type="number" class="form-control" name="quantity" min="0" max="@maxQty" value="@line.Quantity" />
+                                <button class="btn btn-outline-primary" type="submit">Cập nhật</button>
+                            </form>
+                        </td>
+                        <td class="text-end fw-bold">@line.LineTotal.ToString("N0") đ</td>
+                        <td class="text-end">
+                            <form asp-action="Remove" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="bookId" value="@line.Book.BookId" />
+                                <button class="btn btn-outline-danger btn-sm" type="submit">Xóa</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <form asp-action="Clear" method="post">
+                @Html.AntiForgeryToken()
+                <button class="btn btn-outline-secondary" type="submit">Xóa giỏ hàng</button>
+            </form>
+
+            <div class="text-end">
+                <div class="text-muted">Tạm tính</div>
+                <div class="fs-4 fw-bold">@Model.Subtotal.ToString("N0") đ</div>
+                <a asp-controller="Checkout" asp-action="Index" class="btn btn-primary btn-lg mt-2">
+                    Thanh toán
+                </a>
+            </div>
+        </div>
+    }
+</div>
+

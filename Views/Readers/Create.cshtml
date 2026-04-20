@@ -2,11 +2,11 @@
 
 @{
     Layout = "_AdminLayout";
-    ViewData["Title"] = "Thêm sinh viên mới";
+    ViewData["Title"] = "Thêm khách hàng";
 }
 
 <div class="page-header">
-    <h1><i class="fas fa-plus-circle me-2"></i>Thêm sinh viên mới</h1>
+    <h1><i class="fas fa-plus-circle me-2"></i>Thêm khách hàng</h1>
     <a asp-action="Index" class="btn btn-outline-secondary">
         <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách
     </a>
@@ -14,7 +14,7 @@
 
 <div class="form-card">
     <div class="card-header">
-        <h4><i class="fas fa-user-graduate me-2"></i>Thông tin sinh viên</h4>
+        <h4><i class="fas fa-user me-2"></i>Thông tin khách hàng</h4>
     </div>
 
     <form asp-action="Create" method="post">
@@ -24,9 +24,9 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label asp-for="StudentCode" class="form-label">
-                        <i class="fas fa-id-card me-1"></i>Mã sinh viên <span class="text-danger">*</span>
+                        <i class="fas fa-id-card me-1"></i>Mã khách (tuỳ chọn)
                     </label>
-                    <input asp-for="StudentCode" class="form-control" placeholder="VD: SV001" data-val="true" data-val-required="Mã sinh viên không được để trống" />
+                    <input asp-for="StudentCode" class="form-control" placeholder="VD: KH001" />
                     <span asp-validation-for="StudentCode" class="text-danger"></span>
                 </div>
             </div>

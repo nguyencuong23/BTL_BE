@@ -5,7 +5,7 @@ namespace QuanLyThuVienTruongHoc.Models.ViewModels
     public class SystemSettingsViewModel
     {
         [Display(Name = "Tên hệ thống")]
-        public string SystemName { get; set; } = "Hệ thống Quản lý Thư viện Đại học Đại Nam";
+        public string SystemName { get; set; } = "BookPlanet - Thế giới của những người yêu sách";
 
         [Display(Name = "Email quản trị viên")]
         public string AdminEmail { get; set; } = "admin@thuvien.dainam.edu.vn";
@@ -19,11 +19,20 @@ namespace QuanLyThuVienTruongHoc.Models.ViewModels
         [Display(Name = "Bật chế độ bảo trì")]
         public bool MaintenanceMode { get; set; } = false;
 
-        [Display(Name = "Thời gian mượn sách mặc định (ngày)")]
-        public int DefaultLoanDays { get; set; } = 14;
+        [Display(Name = "Phí ship mặc định (VNĐ)")]
+        public decimal DefaultShippingFee { get; set; } = 30000;
 
-        [Display(Name = "Tiền phạt mỗi ngày quá hạn (VNĐ)")]
-        public decimal DailyFineAmount { get; set; } = 5000;
+        [Display(Name = "Ngưỡng miễn phí ship (VNĐ)")]
+        public decimal FreeShippingThreshold { get; set; } = 300000;
+
+        [Display(Name = "Ngân hàng")]
+        public string BankName { get; set; } = "";
+
+        [Display(Name = "Số tài khoản")]
+        public string BankAccountNumber { get; set; } = "";
+
+        [Display(Name = "Chủ tài khoản")]
+        public string BankAccountName { get; set; } = "";
 
         [Display(Name = "Link Facebook")]
         public string FacebookUrl { get; set; } = "https://facebook.com/hongchucdangiu";

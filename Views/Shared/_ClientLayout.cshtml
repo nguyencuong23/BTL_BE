@@ -1,5 +1,6 @@
 @using QuanLyThuVienTruongHoc.Helpers
 @inject QuanLyThuVienTruongHoc.Services.SystemSettingsService SettingsService
+@inject QuanLyThuVienTruongHoc.Services.CartService CartService
 @{
     var systemName = await SettingsService.GetValueAsync(SettingsKeys.SystemName, "Thư viện Đại học Đại Nam");
     var address = await SettingsService.GetValueAsync(SettingsKeys.Address, "Hà Đông, Hà Nội");
@@ -8,6 +9,7 @@
     var fbUrl = await SettingsService.GetValueAsync(SettingsKeys.FacebookUrl, "#");
     var ytUrl = await SettingsService.GetValueAsync(SettingsKeys.YoutubeUrl, "#");
     var ttUrl = await SettingsService.GetValueAsync(SettingsKeys.TiktokUrl, "#");
+    var cartCount = CartService.GetCart().Items.Sum(i => i.Quantity);
 }
 <!DOCTYPE html>
 <html lang="vi">
@@ -39,17 +41,29 @@
 
                 <a asp-controller="Client" asp-action="Search"
                    class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Client" && ViewContext.RouteData.Values["Action"]?.ToString() == "Search" ? "nav-active" : "")">
-                   Tra cứu
+                   Cửa hàng
                 </a>
                 <a asp-controller="Client" asp-action="News"
                    class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Client" && ViewContext.RouteData.Values["Action"]?.ToString() == "News" ? "nav-active" : "")">
                    Tin tức
                 </a>
+                <a asp-controller="Cart" asp-action="Index"
+                   class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Cart" ? "nav-active" : "")">
+                   <span class="position-relative">
+                       Giỏ hàng
+                       @if (cartCount > 0)
+                       {
+                           <span class="badge rounded-pill bg-warning text-dark position-absolute top-0 start-100 translate-middle" style="font-size: 0.75rem;">
+                               @cartCount
+                           </span>
+                       }
+                   </span>
+                </a>
                 @if (User.Identity != null && User.Identity.IsAuthenticated)
                 {
-                    <a asp-controller="Client" asp-action="Loans"
-                       class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Client" && ViewContext.RouteData.Values["Action"]?.ToString() == "Loans" ? "nav-active" : "")">
-                       Mượn trả sách
+                    <a asp-controller="Orders" asp-action="Index"
+                       class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Orders" ? "nav-active" : "")">
+                       Đơn hàng
                     </a>
                 }
 
@@ -139,8 +153,8 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4 mb-3">
-                    <h6 class="fw-bold text-white">Đại học Đại Nam</h6>
-                    <p>Thư viện & Trung tâm tri thức</p>
+                    <h6 class="fw-bold text-white">@systemName</h6>
+                    <p>Cửa hàng sách online</p>
                 </div>
 
                 <div class="col-md-4 mb-3">
@@ -160,7 +174,7 @@
 
             <hr class="border-secondary">
             <div class="text-center pb-3">
-                © Đại học Đại Nam
+                © @DateTime.Now.Year - @systemName
             </div>
         </div>
     </footer>

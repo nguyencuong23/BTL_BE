@@ -84,23 +84,42 @@
                         <small class="text-muted">Khi bật, người dùng sẽ thấy thông báo bảo trì</small>
                     </div>
 
-                    <!-- Thời gian mượn sách mặc định -->
+                    <!-- Shipping -->
                     <div class="mb-4">
-                        <label class="form-label fw-semibold" asp-for="DefaultLoanDays">
-                            <i class="fas fa-calendar-alt me-2 text-primary"></i>
-                            Thời gian mượn sách mặc định (ngày)
+                        <label class="form-label fw-semibold" asp-for="DefaultShippingFee">
+                            <i class="fas fa-truck me-2 text-primary"></i>
+                            Phí ship mặc định (VNĐ)
                         </label>
-                        <input type="number" class="form-control" asp-for="DefaultLoanDays" min="1" max="90" />
-                        <small class="text-muted">Số ngày mượn sách mặc định cho người dùng</small>
+                        <input type="number" class="form-control" asp-for="DefaultShippingFee" min="0" />
                     </div>
 
-                    <!-- Số tiền phạt mỗi ngày -->
                     <div class="mb-4">
-                        <label class="form-label fw-semibold" asp-for="DailyFineAmount">
-                            <i class="fas fa-money-bill-wave me-2 text-success"></i>
-                            Tiền phạt mỗi ngày quá hạn (VNĐ)
+                        <label class="form-label fw-semibold" asp-for="FreeShippingThreshold">
+                            <i class="fas fa-gift me-2 text-success"></i>
+                            Ngưỡng miễn phí ship (VNĐ)
                         </label>
-                        <input type="number" class="form-control" asp-for="DailyFineAmount" min="0" />
+                        <input type="number" class="form-control" asp-for="FreeShippingThreshold" min="0" />
+                        <small class="text-muted">Đơn hàng có tạm tính >= ngưỡng sẽ được freeship.</small>
+                    </div>
+
+                    <!-- Bank transfer info -->
+                    <div class="mb-4">
+                        <div class="form-label fw-semibold mb-3">
+                            <i class="fas fa-university me-2 text-info"></i>
+                            Thông tin nhận chuyển khoản
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold" asp-for="BankName"></label>
+                            <input type="text" class="form-control" asp-for="BankName" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold" asp-for="BankAccountNumber"></label>
+                            <input type="text" class="form-control" asp-for="BankAccountNumber" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold" asp-for="BankAccountName"></label>
+                            <input type="text" class="form-control" asp-for="BankAccountName" />
+                        </div>
                     </div>
 
                     <!-- Mạng xã hội -->

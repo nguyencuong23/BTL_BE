@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyThuVienTruongHoc.Data;
+using QuanLyThuVienTruongHoc.Models.Commerce;
 
 namespace QuanLyThuVienTruongHoc.Controllers
 {
@@ -20,58 +21,40 @@ namespace QuanLyThuVienTruongHoc.Controllers
         [HttpGet("dashboard-summary")]
         public async Task<IActionResult> GetDashboardSummary()
         {
-            // 1. Books
-            var totalBooks = await _context.Books.SumAsync(b => b.Quantity); // Tổng số lượng bản sách
-            var totalTitles = await _context.Books.CountAsync(); // Tổng số đầu sách (unique titles)
+            // Books
+            var totalBooks = await _context.Books.SumAsync(b => b.Quantity);
+            var totalTitles = await _context.Books.CountAsync();
 
-            // 2. Readers
-            var totalStudents = await _context.Users.CountAsync(u => u.Role == 2);
-            var activeBorrowers = await _context.Loans
-                .Where(l => l.ReturnDate == null)
-                .Select(l => l.UserId)
-                .Distinct()
-                .CountAsync();
+            // Customers
+            var totalCustomers = await _context.Users.CountAsync(u => u.Role == 2);
 
-            // 3. Borrowing
+            // Orders
+            var orders = _context.Orders.AsQueryable();
+            var totalOrders = await orders.CountAsync();
+            var pendingOrders = await orders.CountAsync(o => o.Status == OrderStatus.Pending);
+            var pendingBankTransfers = await orders.CountAsync(o =>
+                o.PaymentMethod == PaymentMethod.BankTransfer &&
+                o.PaymentStatus == PaymentStatus.PendingConfirmation);
+
             var today = DateTime.Today;
-            var loans = _context.Loans.AsQueryable();
-            var totalBorrowing = await loans.CountAsync(l => l.ReturnDate == null);
-            var borrowedToday = await loans.CountAsync(l => l.BorrowDate.Date == today);
-            
-            var threeDaysLater = DateTime.Now.AddDays(3);
-            var dueSoonCount = await loans.CountAsync(l => 
-                l.ReturnDate == null && 
-                l.DueDate <= threeDaysLater && 
-                l.DueDate >= DateTime.Now);
+            var ordersToday = await orders.CountAsync(o => o.CreatedAt.Date == today);
 
-            // 4. Overdue
-            var totalOverdue = await loans.CountAsync(l => l.ReturnDate == null && l.DueDate < DateTime.Now);
-            var sevenDaysAgo = DateTime.Now.AddDays(-7);
-            var overdueMoreThan7Days = await loans.CountAsync(l => 
-                l.ReturnDate == null && 
-                l.DueDate < sevenDaysAgo);
-            
-            var totalFine = await _context.Users.SumAsync(u => u.TotalFine);
+            var currentMonth = DateTime.Now.Month;
+            var currentYear = DateTime.Now.Year;
+            var revenueThisMonth = await orders
+                .Where(o => o.CreatedAt.Year == currentYear && o.CreatedAt.Month == currentMonth && o.Status != OrderStatus.Cancelled)
+                .SumAsync(o => (decimal?)o.Total) ?? 0;
 
             return Ok(new
             {
-                // Card 1
                 totalBooks,
                 totalTitles,
-                
-                // Card 2
-                totalStudents,
-                activeBorrowers,
-                
-                // Card 3
-                totalBorrowing,
-                borrowedToday,
-                dueSoonCount,
-                
-                // Card 4
-                totalOverdue,
-                overdueMoreThan7Days,
-                totalFine
+                totalCustomers,
+                totalOrders,
+                pendingOrders,
+                pendingBankTransfers,
+                ordersToday,
+                revenueThisMonth
             });
         }
 
@@ -79,42 +62,49 @@ namespace QuanLyThuVienTruongHoc.Controllers
         public async Task<IActionResult> GetDashboardStats()
         {
             var totalBooks = await _context.Books.SumAsync(b => b.Quantity);
-            var totalReaders = await _context.Users.CountAsync(u => u.Role == 2); // Role 2 is User/Student
-            
-            // Loan status
-            var loans = _context.Loans.AsQueryable();
-            var totalBorrowing = await loans.CountAsync(l => l.ReturnDate == null);
-            var totalOverdue = await loans.CountAsync(l => l.ReturnDate == null && l.DueDate < DateTime.Now);
-            var totalReturned = await loans.CountAsync(l => l.ReturnDate != null);
-            var totalFine = await _context.Users.SumAsync(u => u.TotalFine);
+            var totalCustomers = await _context.Users.CountAsync(u => u.Role == 2);
 
-            // Recent loans
-            var recentLoans = await _context.Loans
-                .Include(l => l.User)
-                .Include(l => l.Book)
-                .OrderByDescending(l => l.BorrowDate)
+            var orders = _context.Orders.AsQueryable();
+            var totalPending = await orders.CountAsync(o => o.Status == OrderStatus.Pending);
+            var totalShipping = await orders.CountAsync(o => o.Status == OrderStatus.Shipping);
+            var totalDelivered = await orders.CountAsync(o => o.Status == OrderStatus.Delivered);
+            var totalCancelled = await orders.CountAsync(o => o.Status == OrderStatus.Cancelled);
+
+            var recentOrders = await _context.Orders
+                .Include(o => o.User)
+                .OrderByDescending(o => o.CreatedAt)
                 .Take(5)
-                .Select(l => new
+                .Select(o => new
                 {
-                    l.LoanId,
-                    UserFullName = l.User.FullName,
-                    BookTitle = l.Book.Title,
-                    BorrowDate = l.BorrowDate,
-                    DueDate = l.DueDate,
-                    ReturnDate = l.ReturnDate,
-                    Status = l.ReturnDate != null ? "returned" : (l.DueDate < DateTime.Now ? "overdue" : "borrowing")
+                    o.OrderId,
+                    o.OrderCode,
+                    UserFullName = o.User.FullName,
+                    o.Total,
+                    o.CreatedAt,
+                    Status = o.Status.ToString(),
+                    PaymentMethod = o.PaymentMethod.ToString(),
+                    PaymentStatus = o.PaymentStatus.ToString()
                 })
                 .ToListAsync();
 
-            // Top borrowed books
-            var topBooks = await _context.Books
-                .OrderByDescending(b => b.Loans.Count)
+            // Top selling books (by delivered qty)
+            var topBooks = await _context.OrderItems
+                .Where(i => i.Order != null && i.Order.Status != OrderStatus.Cancelled)
+                .GroupBy(i => i.BookId)
+                .Select(g => new
+                {
+                    BookId = g.Key,
+                    Quantity = g.Sum(x => x.Quantity),
+                    Revenue = g.Sum(x => x.LineTotal)
+                })
+                .OrderByDescending(x => x.Quantity)
                 .Take(5)
-                .Select(b => new
+                .Join(_context.Books, x => x.BookId, b => b.BookId, (x, b) => new
                 {
                     b.Title,
                     b.Author,
-                    BorrowCount = b.Loans.Count
+                    SoldQuantity = x.Quantity,
+                    Revenue = x.Revenue
                 })
                 .ToListAsync();
 
@@ -130,12 +120,12 @@ namespace QuanLyThuVienTruongHoc.Controllers
             return Ok(new
             {
                 totalBooks,
-                totalReaders,
-                totalBorrowing,
-                totalOverdue,
-                totalReturned,
-                totalFine,
-                recentLoans,
+                totalCustomers,
+                totalPending,
+                totalShipping,
+                totalDelivered,
+                totalCancelled,
+                recentOrders,
                 topBooks,
                 categoryStats
             });
@@ -146,10 +136,9 @@ namespace QuanLyThuVienTruongHoc.Controllers
         {
             var currentYear = DateTime.Now.Year;
             
-            // Group loans by month in current year
-            var monthlyData = await _context.Loans
-                .Where(l => l.BorrowDate.Year == currentYear)
-                .GroupBy(l => l.BorrowDate.Month)
+            var monthlyData = await _context.Orders
+                .Where(o => o.CreatedAt.Year == currentYear && o.Status != OrderStatus.Cancelled)
+                .GroupBy(o => o.CreatedAt.Month)
                 .Select(g => new
                 {
                     Month = g.Key,
@@ -172,43 +161,37 @@ namespace QuanLyThuVienTruongHoc.Controllers
             var endDate = DateTime.Today;
             var startDate = endDate.AddDays(-29); // 30 days range
 
-            // 1. Borrow Volume (Loans created per day)
-            var borrowData = await _context.Loans
-                .Where(l => l.BorrowDate >= startDate && l.BorrowDate <= endDate.AddDays(1)) // Include full end date
-                .GroupBy(l => l.BorrowDate.Date)
+            var orderData = await _context.Orders
+                .Where(o => o.CreatedAt >= startDate && o.CreatedAt <= endDate.AddDays(1) && o.Status != OrderStatus.Cancelled)
+                .GroupBy(o => o.CreatedAt.Date)
                 .Select(g => new { Date = g.Key, Count = g.Count() })
                 .ToListAsync();
 
-            var borrowVolume = Enumerable.Range(0, 30)
+            var orderVolume = Enumerable.Range(0, 30)
                 .Select(offset => startDate.AddDays(offset))
                 .Select(date => new
                 {
                     Date = date.ToString("yyyy-MM-dd"),
-                    Count = borrowData.FirstOrDefault(d => d.Date == date)?.Count ?? 0
+                    Count = orderData.FirstOrDefault(d => d.Date == date)?.Count ?? 0
                 })
                 .ToList();
 
-            // 2. Active Loans History (Loans active at end of each day)
-            // Get all loans that could have been active during this period:
-            // Borrowed <= EndDate AND (Returned is NULL OR Returned > StartDate)
-            var relevantLoans = await _context.Loans
-                .Where(l => l.BorrowDate.Date <= endDate && (l.ReturnDate == null || l.ReturnDate.Value.Date > startDate))
-                .Select(l => new { l.BorrowDate, l.ReturnDate })
+            var revenueData = await _context.Orders
+                .Where(o => o.CreatedAt >= startDate && o.CreatedAt <= endDate.AddDays(1) && o.Status != OrderStatus.Cancelled)
+                .GroupBy(o => o.CreatedAt.Date)
+                .Select(g => new { Date = g.Key, Revenue = g.Sum(x => x.Total) })
                 .ToListAsync();
 
-            var activeLoans = Enumerable.Range(0, 30)
+            var revenue = Enumerable.Range(0, 30)
                 .Select(offset => startDate.AddDays(offset))
-                .Select(date =>
+                .Select(date => new
                 {
-                    // Active = Borrowed <= CurrentLoopDate AND (NotReturned OR Returned > CurrentLoopDate)
-                    var count = relevantLoans.Count(l => 
-                        l.BorrowDate.Date <= date && 
-                        (l.ReturnDate == null || l.ReturnDate.Value.Date > date));
-                    return new { Date = date.ToString("yyyy-MM-dd"), Count = count };
+                    Date = date.ToString("yyyy-MM-dd"),
+                    Revenue = revenueData.FirstOrDefault(d => d.Date == date)?.Revenue ?? 0
                 })
                 .ToList();
 
-            return Ok(new { borrowVolume, activeLoans });
+            return Ok(new { orderVolume, revenue });
         }
     }
 }

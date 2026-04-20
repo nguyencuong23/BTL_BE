@@ -1,0 +1,75 @@
+@model IEnumerable<QuanLyThuVienTruongHoc.Models.Commerce.Order>
+@using QuanLyThuVienTruongHoc.Models.Commerce
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản lý đơn hàng";
+    var status = ViewData["Status"] as OrderStatus?;
+    var paymentMethod = ViewData["PaymentMethod"] as PaymentMethod?;
+}
+
+<div class="page-header">
+    <h1><i class="fas fa-receipt me-2"></i>Quản lý đơn hàng</h1>
+</div>
+
+<div class="search-bar">
+    <form method="get" class="d-flex flex-wrap gap-2 align-items-center">
+        <select name="status" class="form-select" style="min-width: 220px;">
+            <option value="">-- Tất cả trạng thái --</option>
+            @foreach (var s in Enum.GetValues<OrderStatus>())
+            {
+                <option value="@((int)s)" selected="@(status.HasValue && status.Value == s)">@s</option>
+            }
+        </select>
+        <select name="paymentMethod" class="form-select" style="min-width: 220px;">
+            <option value="">-- Tất cả thanh toán --</option>
+            @foreach (var p in Enum.GetValues<PaymentMethod>())
+            {
+                <option value="@((int)p)" selected="@(paymentMethod.HasValue && paymentMethod.Value == p)">@p</option>
+            }
+        </select>
+        <button class="btn btn-primary" type="submit">Lọc</button>
+        <span class="ms-auto text-muted">Tổng: <b>@Model.Count()</b> đơn</span>
+    </form>
+</div>
+
+<div class="table-card" style="overflow: visible;">
+    <div class="table-responsive" style="overflow: visible;">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Mã đơn</th>
+                    <th>Khách</th>
+                    <th>Ngày</th>
+                    <th>Thanh toán</th>
+                    <th>Trạng thái</th>
+                    <th class="text-end">Tổng</th>
+                    <th class="text-center" style="width: 120px;">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var o in Model)
+                {
+                    <tr>
+                        <td class="fw-bold">@o.OrderCode</td>
+                        <td>
+                            <div class="fw-bold">@o.User?.FullName</div>
+                            <div class="text-muted small">@o.User?.PhoneNumber</div>
+                        </td>
+                        <td>@o.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>
+                            <div>@o.PaymentMethod</div>
+                            <div class="text-muted small">@o.PaymentStatus</div>
+                        </td>
+                        <td>@o.Status</td>
+                        <td class="text-end fw-bold">@o.Total.ToString("N0") đ</td>
+                        <td class="text-center">
+                            <a asp-action="Details" asp-route-id="@o.OrderId" class="btn btn-outline-primary btn-sm">Chi tiết</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

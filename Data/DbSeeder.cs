@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using QuanLyThuVienTruongHoc.Helpers;
+using QuanLyThuVienTruongHoc.Models.Commerce;
 using QuanLyThuVienTruongHoc.Models.Library;
 using QuanLyThuVienTruongHoc.Models.Users;
 
@@ -16,7 +18,7 @@ public static class DbSeeder
         // await db.Database.MigrateAsync();
 
         // Đã có dữ liệu thì không seed nữa
-        if (await db.Categories.AnyAsync() || await db.Books.AnyAsync() || await db.Users.AnyAsync() || await db.Loans.AnyAsync())
+        if (await db.Categories.AnyAsync() || await db.Books.AnyAsync() || await db.Users.AnyAsync() || await db.Orders.AnyAsync())
             return;
 
         var rnd = new Random(20260125);
@@ -164,30 +166,42 @@ public static class DbSeeder
 
         db.Books.AddRange(books);
 
+        // Set ecommerce fields for books
+        foreach (var b in books)
+        {
+            b.IsPublished = true;
+            b.Price = rnd.Next(50_000, 450_000);
+            if (rnd.NextDouble() < 0.25)
+            {
+                var sale = b.Price - rnd.Next(10_000, 60_000);
+                b.SalePrice = sale > 0 ? sale : null;
+            }
+            b.Description = $"Sách \"{b.Title}\" - tác giả {b.Author}.";
+            b.Slug = $"{b.BookId}-{b.Title}".ToLowerInvariant().Replace(' ', '-');
+        }
+
         await db.SaveChangesAsync();
 
         // =====================
-        // 4) LOANS (100)
-        // 70 đã trả, 25 đang mượn, 5 quá hạn
+        // 4) SETTINGS (shop)
         // =====================
-        var readerIds = users.Where(u => u.Role == 2).Select(u => u.Id).ToList();
+        db.Settings.AddRange(
+            new QuanLyThuVienTruongHoc.Models.System.Setting { Key = SettingsKeys.DefaultShippingFee, Value = "30000", Description = "Phí ship mặc định" },
+            new QuanLyThuVienTruongHoc.Models.System.Setting { Key = SettingsKeys.FreeShippingThreshold, Value = "300000", Description = "Ngưỡng miễn phí ship" },
+            new QuanLyThuVienTruongHoc.Models.System.Setting { Key = SettingsKeys.BankName, Value = "Vietcombank", Description = "Ngân hàng nhận chuyển khoản" },
+            new QuanLyThuVienTruongHoc.Models.System.Setting { Key = SettingsKeys.BankAccountNumber, Value = "0123456789", Description = "Số tài khoản nhận chuyển khoản" },
+            new QuanLyThuVienTruongHoc.Models.System.Setting { Key = SettingsKeys.BankAccountName, Value = "BOOKPLANET", Description = "Chủ tài khoản nhận chuyển khoản" }
+        );
+
+        await db.SaveChangesAsync();
+
+        // =====================
+        // 5) ORDERS (demo)
+        // =====================
+        var customerIds = users.Where(u => u.Role == 2).Select(u => u.Id).ToList();
         var bookIds = books.Select(b => b.BookId).ToList();
 
-        var loans = new List<Loan>();
-
-        // Helper: chọn user còn <3 khoản đang mượn/ quá hạn
-        int PickUserWithLessThan3Open()
-        {
-            while (true)
-            {
-                var uid = readerIds[rnd.Next(readerIds.Count)];
-                var openCount = loans.Count(l => l.UserId == uid && (l.Status == LoanStatus.DangMuon || l.Status == LoanStatus.QuaHan));
-                if (openCount < 3) return uid;
-            }
-        }
-
-        // Helper: chọn sách còn quantity > 0 (để tạo phiếu đang mượn)
-        string PickAvailableBook()
+        string PickBookInStock()
         {
             while (true)
             {
@@ -197,106 +211,67 @@ public static class DbSeeder
             }
         }
 
-        // 70 đã trả
-        for (int i = 0; i < 70; i++)
+        var orders = new List<Order>();
+        for (int i = 0; i < 40; i++)
         {
-            var uid = readerIds[rnd.Next(readerIds.Count)];
-            var bid = bookIds[rnd.Next(bookIds.Count)];
+            var uid = customerIds[rnd.Next(customerIds.Count)];
+            var created = DateTime.Now.AddDays(-rnd.Next(0, 40)).AddMinutes(-rnd.Next(0, 1440));
+            var paymentMethod = rnd.NextDouble() < 0.25 ? PaymentMethod.BankTransfer : PaymentMethod.Cod;
+            var statusRoll = rnd.NextDouble();
+            var status = statusRoll < 0.15 ? OrderStatus.Pending :
+                         statusRoll < 0.35 ? OrderStatus.Confirmed :
+                         statusRoll < 0.55 ? OrderStatus.Processing :
+                         statusRoll < 0.8 ? OrderStatus.Shipping :
+                         statusRoll < 0.95 ? OrderStatus.Delivered :
+                         OrderStatus.Cancelled;
 
-            var borrow = DateTime.Today.AddDays(-rnd.Next(5, 150));
-            var due = borrow.AddDays(14);
+            var paymentStatus = paymentMethod == PaymentMethod.BankTransfer
+                ? (status == OrderStatus.Pending ? PaymentStatus.PendingConfirmation : PaymentStatus.Paid)
+                : PaymentStatus.Unpaid;
 
-            // trả trong khoảng borrow+1 đến due+10
-            var returnDate = borrow.AddDays(rnd.Next(1, 25));
-            if (returnDate < borrow) returnDate = borrow;
-
-            var lateDays = (returnDate.Date - due.Date).Days;
-            var fine = lateDays > 0 ? lateDays * 5000m : 0m;
-
-            loans.Add(new Loan
+            var order = new Order
             {
                 UserId = uid,
-                BookId = bid,
-                BorrowDate = borrow,
-                DueDate = due,
-                ReturnDate = returnDate,
-                Fine = fine,
-                Status = LoanStatus.DaTra
-            });
-        }
+                OrderCode = $"BP{created:yyyyMMddHHmmss}{rnd.Next(100, 999)}",
+                CreatedAt = created,
+                Status = status,
+                PaymentMethod = paymentMethod,
+                PaymentStatus = paymentStatus,
+                ReceiverName = users.First(u => u.Id == uid).FullName,
+                ReceiverPhone = users.First(u => u.Id == uid).PhoneNumber ?? "0900000000",
+                ShippingAddress = "Hà Đông, Hà Nội",
+                ShippingFee = 30000,
+                Discount = 0
+            };
 
-        // 25 đang mượn (chưa quá hạn)
-        for (int i = 0; i < 25; i++)
-        {
-            var uid = PickUserWithLessThan3Open();
-            var bid = PickAvailableBook();
-
-            var borrow = DateTime.Today.AddDays(-rnd.Next(0, 10));
-            var due = borrow.AddDays(14);
-
-            loans.Add(new Loan
+            var lineCount = rnd.Next(1, 4);
+            var picked = new HashSet<string>();
+            for (int li = 0; li < lineCount; li++)
             {
-                UserId = uid,
-                BookId = bid,
-                BorrowDate = borrow,
-                DueDate = due,
-                ReturnDate = null,
-                Fine = 0,
-                Status = LoanStatus.DangMuon
-            });
+                var bid = PickBookInStock();
+                if (!picked.Add(bid)) continue;
+                var b = books.First(x => x.BookId == bid);
+                var qty = Math.Min(b.Quantity, rnd.Next(1, 3));
+                var unit = b.SalePrice ?? b.Price;
 
-            // đang mượn => giảm tồn kho
-            books.First(b => b.BookId == bid).Quantity -= 1;
-        }
+                order.Items.Add(new OrderItem
+                {
+                    BookId = bid,
+                    Quantity = qty,
+                    UnitPrice = unit,
+                    LineTotal = unit * qty
+                });
 
-        // 5 quá hạn (chưa trả)
-        for (int i = 0; i < 5; i++)
-        {
-            var uid = PickUserWithLessThan3Open();
-            var bid = PickAvailableBook();
-
-            var borrow = DateTime.Today.AddDays(-rnd.Next(20, 40));
-            var due = borrow.AddDays(14); // chắc chắn < hôm nay
-
-            // Tính phạt nóng cho sách quá hạn
-            var overdueDays = (DateTime.Today - due).Days;
-            var fine = overdueDays > 0 ? overdueDays * 5000m : 0m;
-
-            loans.Add(new Loan
-            {
-                UserId = uid,
-                BookId = bid,
-                BorrowDate = borrow,
-                DueDate = due,
-                ReturnDate = null,
-                Fine = fine, 
-                Status = LoanStatus.QuaHan
-            });
-
-            books.First(b => b.BookId == bid).Quantity -= 1;
-        }
-
-        db.Loans.AddRange(loans);
-
-        // Cập nhật TotalFine demo: cộng các khoản fine của phiếu đã trả
-        var fineByUser = loans
-            .Where(l => l.Fine > 0)
-            .GroupBy(l => l.UserId)
-            .ToDictionary(g => g.Key, g => g.Sum(x => x.Fine));
-
-        foreach (var u in users.Where(x => x.Role == 2))
-        {
-            if (fineByUser.TryGetValue(u.Id, out var total))
-            {
-                u.TotalFine = total;
+                b.Quantity -= qty;
             }
-            // Khóa tài khoản nếu nợ > 50,000
-            if (u.TotalFine > 50000)
-            {
-                u.IsActive = false;
-            }
+
+            order.Subtotal = order.Items.Sum(x => x.LineTotal);
+            order.Total = order.Subtotal + order.ShippingFee - order.Discount;
+
+            orders.Add(order);
         }
 
+        db.Orders.AddRange(orders);
         await db.SaveChangesAsync();
     }
 }

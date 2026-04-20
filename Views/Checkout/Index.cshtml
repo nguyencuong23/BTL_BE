@@ -1,0 +1,92 @@
+@model QuanLyThuVienTruongHoc.Models.ViewModels.CheckoutViewModel
+@using QuanLyThuVienTruongHoc.Models.Commerce
+@using QuanLyThuVienTruongHoc.Helpers
+@inject QuanLyThuVienTruongHoc.Services.SystemSettingsService SettingsService
+
+@{
+    ViewData["Title"] = "Thanh toán";
+    Layout = "~/Views/Shared/_ClientLayout.cshtml";
+
+    var bankName = await SettingsService.GetValueAsync(SettingsKeys.BankName, "");
+    var bankAccountName = await SettingsService.GetValueAsync(SettingsKeys.BankAccountName, "");
+    var bankAccountNumber = await SettingsService.GetValueAsync(SettingsKeys.BankAccountNumber, "");
+}
+
+<div class="container py-4">
+    <h3 class="fw-bold mb-3"><i class="fas fa-credit-card me-2"></i>Thanh toán</h3>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <form asp-action="PlaceOrder" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            <label asp-for="ReceiverName" class="form-label"></label>
+                            <input asp-for="ReceiverName" class="form-control" />
+                            <span asp-validation-for="ReceiverName" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="ReceiverPhone" class="form-label"></label>
+                            <input asp-for="ReceiverPhone" class="form-control" />
+                            <span asp-validation-for="ReceiverPhone" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="ShippingAddress" class="form-label"></label>
+                            <textarea asp-for="ShippingAddress" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="ShippingAddress" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Note" class="form-label"></label>
+                            <textarea asp-for="Note" class="form-control" rows="2"></textarea>
+                            <span asp-validation-for="Note" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="PaymentMethod" class="form-label"></label>
+                            <select asp-for="PaymentMethod" class="form-select" asp-items="Html.GetEnumSelectList<PaymentMethod>()"></select>
+                            <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+                            <div class="form-text">COD: trả tiền khi nhận hàng. Chuyển khoản: đơn sẽ ở trạng thái chờ xác nhận.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="BankTransferReference" class="form-label"></label>
+                            <input asp-for="BankTransferReference" class="form-control" />
+                            <span asp-validation-for="BankTransferReference" class="text-danger"></span>
+                            <div class="form-text">Gợi ý: nhập mã giao dịch hoặc nội dung chuyển khoản để admin xác nhận nhanh hơn.</div>
+                        </div>
+
+                        <button class="btn btn-primary btn-lg w-100" type="submit">
+                            Đặt hàng ngay
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-2">Hướng dẫn chuyển khoản</h5>
+                    <div class="text-muted small mb-3">Nếu chọn “BankTransfer”, bạn có thể chuyển khoản theo thông tin sau và ghi mã đơn/mã tham chiếu.</div>
+                    <ul class="list-unstyled small mb-0">
+                        <li class="mb-2"><b>Ngân hàng</b>: @(!string.IsNullOrWhiteSpace(bankName) ? bankName : "Chưa cấu hình")</li>
+                        <li class="mb-2"><b>Số tài khoản</b>: @(!string.IsNullOrWhiteSpace(bankAccountNumber) ? bankAccountNumber : "Chưa cấu hình")</li>
+                        <li class="mb-2"><b>Chủ tài khoản</b>: @(!string.IsNullOrWhiteSpace(bankAccountName) ? bankAccountName : "Chưa cấu hình")</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

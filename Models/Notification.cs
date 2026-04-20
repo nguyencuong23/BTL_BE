@@ -4,11 +4,16 @@ namespace QuanLyThuVienTruongHoc.Models
 {
     public enum NotificationType
     {
+        // Legacy (library)
         NearDue = 1,
         Overdue = 2,
         System = 3,
-        /// <summary>Tiền phạt gần ngưỡng 50k (sắp bị khóa tài khoản).</summary>
-        FineWarning = 4
+        /// <summary>Legacy: Tiền phạt gần ngưỡng (không dùng ở shop).</summary>
+        FineWarning = 4,
+
+        // E-commerce
+        PaymentPending = 5,
+        OrderStatus = 6
     }
 
     public class Notification
@@ -38,7 +43,7 @@ namespace QuanLyThuVienTruongHoc.Models
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         /// <summary>
-        /// Id phiên mượn (LoanId) hoặc thực thể liên quan.
+        /// Id thực thể liên quan (OrderId, ...).
         /// </summary>
         public int? RelatedEntityId { get; set; }
 
