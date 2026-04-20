@@ -58,9 +58,16 @@ namespace QuanLyThuVienTruongHoc.Models.Users
         [Display(Name = "Đã thanh toán")]
         public decimal PaidAmount { get; set; } = 0;
 
+        [StringLength(500)]
+        [Display(Name = "Ghi chú khách hàng")]
+        public string? CustomerNote { get; set; }
+
         [Display(Name = "Ngày tạo")]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         public ICollection<Loan> Loans { get; set; } = new List<Loan>();
+
+        public ICollection<Commerce.Address> Addresses { get; set; } = new List<Commerce.Address>();
+        public ICollection<Commerce.Order> Orders { get; set; } = new List<Commerce.Order>();
     }
 }

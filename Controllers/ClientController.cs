@@ -48,46 +48,10 @@ namespace QuanLyThuVienTruongHoc.Controllers
         }
 
         [Authorize]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Borrow(string bookId, DateTime dueDate)
+        public IActionResult Borrow()
         {
-            var username = User.Identity?.Name;
-            if (string.IsNullOrEmpty(username)) return RedirectToAction("Login", "Account");
-
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
-            if (user == null) return RedirectToAction("Login", "Account");
-
-            var book = await _context.Books.FindAsync(bookId);
-            if (book == null)
-            {
-                TempData["Error"] = "Sách không tồn tại.";
-                return RedirectToAction(nameof(Search));
-            }
-
-            if (book.Quantity <= 0)
-            {
-                TempData["Error"] = "Sách đã hết, vui lòng chọn cuốn khác.";
-                return RedirectToAction(nameof(Search));
-            }
-
-            var loan = new QuanLyThuVienTruongHoc.Models.Library.Loan
-            {
-                BookId = bookId,
-                UserId = user.Id,
-                BorrowDate = DateTime.Now,
-                DueDate = dueDate,
-                Status = Models.Library.LoanStatus.DangMuon, // DangMuon (1)
-                Fine = 0
-            };
-
-            _context.Loans.Add(loan);
-            book.Quantity -= 1;
-            
-            await _context.SaveChangesAsync();
-            
-            TempData["Success"] = "Đăng ký mượn sách thành công!";
-            return RedirectToAction(nameof(Search));
+            // Legacy route from library version - redirect to shop cart
+            return RedirectToAction("Index", "Cart");
         }
 
         public IActionResult News()
@@ -96,22 +60,10 @@ namespace QuanLyThuVienTruongHoc.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> Loans()
+        public IActionResult Loans()
         {
-            var username = User.Identity?.Name;
-            if (string.IsNullOrEmpty(username)) return RedirectToAction("Login", "Account");
-
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
-            if (user == null) return RedirectToAction("Login", "Account");
-
-            var myLoans = await _context.Loans
-                .AsNoTracking()
-                .Include(l => l.Book)
-                .Where(l => l.UserId == user.Id)
-                .OrderByDescending(l => l.BorrowDate)
-                .ToListAsync();
-
-            return View(myLoans);
+            // Legacy page - redirect to new Orders page
+            return RedirectToAction("Index", "Orders");
         }
 
         [Authorize]

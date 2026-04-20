@@ -69,12 +69,17 @@ namespace QuanLyThuVienTruongHoc.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-            [Bind("BookId,Title,Author,Publisher,CategoryId,PublishYear,Quantity,Location")] Book book,
+            [Bind("BookId,Title,Author,Publisher,Isbn,CategoryId,Price,SalePrice,Description,Slug,IsPublished,PublishYear,Quantity,Location")] Book book,
             IFormFile? imageFile)
         {
             if (book.PublishYear > DateTime.Now.Year)
             {
                 ModelState.AddModelError("PublishYear", "Năm xuất bản không được lớn hơn năm hiện tại");
+            }
+
+            if (book.SalePrice.HasValue && book.SalePrice.Value > book.Price)
+            {
+                ModelState.AddModelError("SalePrice", "Giá khuyến mãi không được lớn hơn giá bán.");
             }
 
             if (!ModelState.IsValid)
@@ -135,7 +140,7 @@ namespace QuanLyThuVienTruongHoc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
             string id,
-            [Bind("BookId,Title,Author,Publisher,CategoryId,PublishYear,Quantity,Location")] Book book,
+            [Bind("BookId,Title,Author,Publisher,Isbn,CategoryId,Price,SalePrice,Description,Slug,IsPublished,PublishYear,Quantity,Location")] Book book,
             IFormFile? imageFile)
         {
             if (id != book.BookId) return NotFound();
@@ -146,6 +151,11 @@ namespace QuanLyThuVienTruongHoc.Controllers
             if (book.PublishYear > DateTime.Now.Year)
             {
                 ModelState.AddModelError("PublishYear", "Năm xuất bản không được lớn hơn năm hiện tại");
+            }
+
+            if (book.SalePrice.HasValue && book.SalePrice.Value > book.Price)
+            {
+                ModelState.AddModelError("SalePrice", "Giá khuyến mãi không được lớn hơn giá bán.");
             }
 
             // Fix: Giữ nguyên thể loại cũ vì form Edit không có field này

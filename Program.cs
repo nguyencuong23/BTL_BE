@@ -25,6 +25,7 @@ builder.Services.AddScoped<QuanLyThuVienTruongHoc.Services.SystemSettingsService
 builder.Services.AddScoped<QuanLyThuVienTruongHoc.Services.NotificationService>();
 builder.Services.AddScoped<QuanLyThuVienTruongHoc.Services.IEmailSender, QuanLyThuVienTruongHoc.Services.EmailSender>();
 builder.Services.AddScoped<QuanLyThuVienTruongHoc.Services.IOtpService, QuanLyThuVienTruongHoc.Services.OtpService>();
+builder.Services.AddScoped<QuanLyThuVienTruongHoc.Services.CartService>();
 
 
 

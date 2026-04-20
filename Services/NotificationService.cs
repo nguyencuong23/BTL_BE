@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using QuanLyThuVienTruongHoc.Data;
 using QuanLyThuVienTruongHoc.Models;
-using QuanLyThuVienTruongHoc.Models.Library;
+using QuanLyThuVienTruongHoc.Models.Commerce;
 
 namespace QuanLyThuVienTruongHoc.Services
 {
@@ -14,20 +14,10 @@ namespace QuanLyThuVienTruongHoc.Services
             _context = context;
         }
 
-        /// <summary>
-        /// Quét và tạo thông báo: (1) Còn 7 ngày đến hạn, (2) Quá hạn, (3) Tiền phạt gần ≥30k (sắp bị khóa 50k).
-        /// Tránh tạo trùng theo cùng ngày + LoanId/Type.
-        /// </summary>
         public async Task CheckAndGenerateNotificationsAsync(int userId)
         {
             var today = DateTime.Today;
             var todayEnd = today.AddDays(1);
-
-            // Phiên mượn đang mượn (chưa trả)
-            var activeLoans = await _context.Loans
-                .Include(l => l.Book)
-                .Where(l => l.UserId == userId && l.ReturnDate == null && l.Status == LoanStatus.DangMuon)
-                .ToListAsync();
 
             var existingToday = await _context.Notifications
                 .Where(n => n.UserId == userId && n.CreatedAt >= today && n.CreatedAt < todayEnd)
@@ -39,73 +29,32 @@ namespace QuanLyThuVienTruongHoc.Services
                 .Select(x => (x.RelatedEntityId!.Value, x.Type))
                 .ToHashSet();
 
-            // Có thông báo FineWarning hôm nay chưa (RelatedEntityId null cho loại này)
-            var hasFineWarningToday = existingToday.Any(x => x.Type == NotificationType.FineWarning);
+            // E-commerce: pending bank transfer confirmation
+            var pendingTransfers = await _context.Orders
+                .AsNoTracking()
+                .Where(o => o.UserId == userId &&
+                            o.PaymentMethod == PaymentMethod.BankTransfer &&
+                            o.PaymentStatus == PaymentStatus.PendingConfirmation &&
+                            o.Status != OrderStatus.Cancelled)
+                .OrderByDescending(o => o.CreatedAt)
+                .Take(10)
+                .Select(o => new { o.OrderId, o.OrderCode })
+                .ToListAsync();
 
-            foreach (var loan in activeLoans)
+            foreach (var o in pendingTransfers)
             {
-                var dueDate = loan.DueDate.Date;
-                var bookTitle = loan.Book?.Title ?? loan.BookId;
-
-                // 1) Quá hạn: DueDate < Today
-                if (dueDate < today)
+                if (existingSet.Contains((o.OrderId, NotificationType.PaymentPending))) continue;
+                _context.Notifications.Add(new Notification
                 {
-                    if (!existingSet.Contains((loan.LoanId, NotificationType.Overdue)))
-                    {
-                        _context.Notifications.Add(new Notification
-                        {
-                            UserId = userId,
-                            Type = NotificationType.Overdue,
-                            Title = "Sách trả quá hạn",
-                            Message = $"Sách \"{bookTitle}\" đã quá hạn trả (hạn: {dueDate:dd/MM/yyyy}). Vui lòng trả sách.",
-                            Link = "/Client/Loans",
-                            RelatedEntityId = loan.LoanId,
-                            IsRead = false
-                        });
-                        existingSet.Add((loan.LoanId, NotificationType.Overdue));
-                    }
-                }
-                // 2) Sắp đến hạn: còn 7 ngày trở lại (0 <= (DueDate - Today) <= 7)
-                else if (dueDate >= today && (dueDate - today).TotalDays <= 7)
-                {
-                    if (!existingSet.Contains((loan.LoanId, NotificationType.NearDue)))
-                    {
-                        var daysLeft = (int)(dueDate - today).TotalDays;
-                        _context.Notifications.Add(new Notification
-                        {
-                            UserId = userId,
-                            Type = NotificationType.NearDue,
-                            Title = "Sắp đến hạn trả sách",
-                            Message = daysLeft == 0
-                                ? $"Sách \"{bookTitle}\" hết hạn trả hôm nay ({dueDate:dd/MM/yyyy}). Vui lòng trả đúng hạn."
-                                : $"Sách \"{bookTitle}\" còn {daysLeft} ngày đến hạn trả ({dueDate:dd/MM/yyyy}).",
-                            Link = "/Client/Loans",
-                            RelatedEntityId = loan.LoanId,
-                            IsRead = false
-                        });
-                        existingSet.Add((loan.LoanId, NotificationType.NearDue));
-                    }
-                }
-            }
-
-            // 3) Cảnh báo tiền phạt: tổng nợ (TotalFine - PaidAmount) > 0
-            var user = await _context.Users.FindAsync(userId);
-            if (user != null && !hasFineWarningToday)
-            {
-                var debt = user.TotalFine - user.PaidAmount;
-                if (debt > 0)
-                {
-                    _context.Notifications.Add(new Notification
-                    {
-                        UserId = userId,
-                        Type = NotificationType.FineWarning,
-                        Title = "Cảnh báo tiền phạt",
-                        Message = $"Bạn đang có tiền phạt {debt:N0} đ. Vui lòng thanh toán để tránh bị khóa tài khoản.",
-                        Link = "/Profile",
-                        RelatedEntityId = null,
-                        IsRead = false
-                    });
-                }
+                    UserId = userId,
+                    Type = NotificationType.PaymentPending,
+                    Title = "Chờ xác nhận chuyển khoản",
+                    Message = $"Đơn {o.OrderCode} đang chờ admin xác nhận chuyển khoản.",
+                    Link = $"/Orders/Details/{o.OrderId}",
+                    RelatedEntityId = o.OrderId,
+                    IsRead = false
+                });
+                existingSet.Add((o.OrderId, NotificationType.PaymentPending));
             }
 
             await _context.SaveChangesAsync();

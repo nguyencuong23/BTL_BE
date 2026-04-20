@@ -19,7 +19,7 @@ namespace QuanLyThuVienTruongHoc.Controllers
             _context = context;
         }
 
-        // GET: Readers
+        // GET: Customers (legacy controller name)
         public async Task<IActionResult> Index(int? status, string sortOrder)
         {
             var usersQuery = _context.Users.Where(u => u.Role == 2).Include(u => u.Loans).AsQueryable();
@@ -82,18 +82,12 @@ namespace QuanLyThuVienTruongHoc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("StudentCode,Username,PasswordHash,FullName,Email,PhoneNumber,IsActive,TotalFine")] User user)
         {
-            // Tự động set Role = 2 cho Sinh viên
+            // Tự động set Role = 2 cho Khách hàng
             user.Role = 2;
             user.CreatedAt = DateTime.Now;
 
             // Remove Role from ModelState vì chúng ta set manual
             ModelState.Remove("Role");
-
-            // StudentCode is required for Readers
-            if (string.IsNullOrWhiteSpace(user.StudentCode))
-            {
-                ModelState.AddModelError("StudentCode", "Mã sinh viên không được để trống");
-            }
 
             // Server-side format validation
             if (!string.IsNullOrEmpty(user.Email))
@@ -137,11 +131,6 @@ namespace QuanLyThuVienTruongHoc.Controllers
             if (!string.IsNullOrEmpty(user.PhoneNumber) && await _context.Users.AnyAsync(u => u.PhoneNumber == user.PhoneNumber))
             {
                 ModelState.AddModelError("PhoneNumber", "Số điện thoại đã được sử dụng");
-            }
-
-            if (await _context.Users.AnyAsync(u => u.StudentCode == user.StudentCode))
-            {
-                ModelState.AddModelError("StudentCode", "Mã sinh viên đã tồn tại");
             }
 
             if (ModelState.IsValid)
@@ -201,12 +190,6 @@ namespace QuanLyThuVienTruongHoc.Controllers
             ModelState.Remove("Role");
             // Remove PasswordHash from ModelState - we preserve it from existing user
             ModelState.Remove("PasswordHash");
-
-            // StudentCode is required for Readers
-            if (string.IsNullOrWhiteSpace(user.StudentCode))
-            {
-                ModelState.AddModelError("StudentCode", "Mã sinh viên không được để trống");
-            }
 
             // Server-side format validation
             if (!string.IsNullOrEmpty(user.Email))

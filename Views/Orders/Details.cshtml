@@ -1,0 +1,74 @@
+@model QuanLyThuVienTruongHoc.Models.Commerce.Order
+@using QuanLyThuVienTruongHoc.Models.Commerce
+
+@{
+    ViewData["Title"] = "Chi tiết đơn hàng";
+    Layout = "~/Views/Shared/_ClientLayout.cshtml";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="fw-bold m-0"><i class="fas fa-receipt me-2"></i>Đơn @Model.OrderCode</h3>
+        <a asp-action="Index" class="btn btn-outline-secondary">Quay lại</a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3">Thông tin giao hàng</h5>
+                    <div><b>Người nhận</b>: @Model.ReceiverName</div>
+                    <div><b>SĐT</b>: @Model.ReceiverPhone</div>
+                    <div><b>Địa chỉ</b>: @Model.ShippingAddress</div>
+                    @if (!string.IsNullOrWhiteSpace(Model.Note))
+                    {
+                        <div class="mt-2"><b>Ghi chú</b>: @Model.Note</div>
+                    }
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mt-3">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3">Trạng thái</h5>
+                    <div><b>Đơn hàng</b>: @Model.Status</div>
+                    <div><b>Thanh toán</b>: @Model.PaymentMethod (@Model.PaymentStatus)</div>
+                    @if (Model.PaymentMethod == PaymentMethod.BankTransfer && !string.IsNullOrWhiteSpace(Model.BankTransferReference))
+                    {
+                        <div class="text-muted small mt-2">Tham chiếu chuyển khoản: @Model.BankTransferReference</div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3">Sản phẩm</h5>
+                    <ul class="list-unstyled mb-3">
+                        @foreach (var it in Model.Items)
+                        {
+                            <li class="d-flex justify-content-between border-bottom py-2">
+                                <span class="me-2">@it.Book?.Title x @it.Quantity</span>
+                                <span class="text-nowrap">@it.LineTotal.ToString("N0") đ</span>
+                            </li>
+                        }
+                    </ul>
+                    <div class="d-flex justify-content-between">
+                        <span>Tạm tính</span><b>@Model.Subtotal.ToString("N0") đ</b>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Phí ship</span><b>@Model.ShippingFee.ToString("N0") đ</b>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Giảm giá</span><b>@Model.Discount.ToString("N0") đ</b>
+                    </div>
+                    <hr />
+                    <div class="d-flex justify-content-between fs-5">
+                        <span>Tổng</span><b>@Model.Total.ToString("N0") đ</b>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

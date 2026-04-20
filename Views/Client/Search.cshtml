@@ -1,7 +1,7 @@
-﻿@model IEnumerable<QuanLyThuVienTruongHoc.Models.Library.Book>
+@model IEnumerable<QuanLyThuVienTruongHoc.Models.Library.Book>
 
 @{
-    ViewData["Title"] = "Tra cứu Tài liệu";
+    ViewData["Title"] = "Cửa hàng sách";
 }
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -9,15 +9,15 @@
 
 <section class="doc-lookup-hero">
     <div class="container text-center">
-        <h1 class="hero-title">KHO TÀI LIỆU SỐ & THƯ VIỆN</h1>
-        <p class="hero-subtitle">Tra cứu vị trí sách và tài liệu trong toàn bộ hệ thống</p>
+        <h1 class="hero-title">CỬA HÀNG SÁCH ONLINE</h1>
+        <p class="hero-subtitle">Tìm kiếm sách theo tên hoặc tác giả, xem chi tiết và thêm vào giỏ</p>
 
         <div class="search-box-wrapper animate-slide-down">
             <form method="get" asp-action="Search">
                 <div class="search-input-group">
                     <div class="input-divider"></div>
 
-                    <input type="text" name="search" class="search-input" placeholder="Nhập tên sách, tác giả để tìm kiếm" value="@Context.Request.Query["search"]">
+                    <input type="text" name="search" class="search-input" placeholder="Nhập tên sách hoặc tác giả..." value="@Context.Request.Query["search"]">
 
                     <button type="submit" class="btn-search-doc">
                         <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
@@ -54,6 +54,7 @@
                 var isAvailable = book.Quantity > 0;
                 var locationDisplay = !string.IsNullOrEmpty(book.Location) ? book.Location : "Đang cập nhật";
                 var imgUrl = !string.IsNullOrEmpty(book.ImagePath) ? book.ImagePath : "https://via.placeholder.com/300x450?text=No+Image";
+                var unitPrice = book.SalePrice ?? book.Price;
 
                 <div class="col-lg-3 col-md-4 col-sm-6 animate-fade-in">
                     <div class="book-card" onclick="openDetailModal('@book.BookId')">
@@ -78,6 +79,20 @@
                             </div>
                             <h3 class="book-title" title="@book.Title">@book.Title</h3>
                             <p class="book-author"><i class="fa-solid fa-pen-nib"></i> @book.Author</p>
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <div class="fw-bold" style="color:#0f172a;">
+                                    @if (book.SalePrice.HasValue && book.SalePrice.Value < book.Price)
+                                    {
+                                        <span class="me-2">@unitPrice.ToString("N0") đ</span>
+                                        <span class="text-muted text-decoration-line-through small">@book.Price.ToString("N0") đ</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@unitPrice.ToString("N0") đ</span>
+                                    }
+                                </div>
+                                <small class="text-muted">Kho: @book.Quantity</small>
+                            </div>
                         </div>
                     </div>
 
@@ -88,6 +103,8 @@
                         <span class="data-category">@book.Category?.Name</span>
                         <span class="data-location">@locationDisplay</span>
                         <span class="data-quantity">@book.Quantity</span>
+                        <span class="data-price">@book.Price</span>
+                        <span class="data-sale-price">@book.SalePrice</span>
                         <span class="data-image">@imgUrl</span>
                         <span class="data-publisher">@book.Publisher</span>
                         <span class="data-year">@book.PublishYear</span>
@@ -113,7 +130,6 @@
     <div id="csrf-container">
         @Html.AntiForgeryToken()
     </div>
-    <input type="hidden" id="default-due-date" value="@DateTime.Now.AddDays(14).ToString("yyyy-MM-dd")" />
 </div>
 
 <script src="~/js/search.js" asp-append-version="true"></script>

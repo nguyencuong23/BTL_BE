@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using QuanLyThuVienTruongHoc.Models;
+using QuanLyThuVienTruongHoc.Models.Commerce;
 using QuanLyThuVienTruongHoc.Models.Library;
 using QuanLyThuVienTruongHoc.Models.Users;
 
@@ -16,6 +17,9 @@ namespace QuanLyThuVienTruongHoc.Data
         public DbSet<Category> Categories { get; set; } = null!;
         public DbSet<Book> Books { get; set; } = null!;
         public DbSet<Loan> Loans { get; set; } = null!;
+        public DbSet<Order> Orders { get; set; } = null!;
+        public DbSet<OrderItem> OrderItems { get; set; } = null!;
+        public DbSet<Address> Addresses { get; set; } = null!;
         public DbSet<QuanLyThuVienTruongHoc.Models.System.Setting> Settings { get; set; } = null!;
         public DbSet<PasswordResetOtp> PasswordResetOtps { get; set; } = null!;
         public DbSet<Notification> Notifications { get; set; } = null!;
@@ -40,6 +44,14 @@ namespace QuanLyThuVienTruongHoc.Data
                 .Property(l => l.Fine)
                 .HasPrecision(18, 0);
 
+            modelBuilder.Entity<Book>()
+                .Property(b => b.Price)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Book>()
+                .Property(b => b.SalePrice)
+                .HasPrecision(18, 2);
+
             modelBuilder.Entity<User>()
                 .HasIndex(x => x.Email)
                 .IsUnique();
@@ -57,6 +69,22 @@ namespace QuanLyThuVienTruongHoc.Data
 
             modelBuilder.Entity<Notification>()
                 .HasIndex(n => n.UserId);
+
+            modelBuilder.Entity<Order>()
+                .HasIndex(o => o.OrderCode)
+                .IsUnique();
+
+            modelBuilder.Entity<Order>()
+                .HasIndex(o => o.UserId);
+
+            modelBuilder.Entity<OrderItem>()
+                .HasIndex(i => i.OrderId);
+
+            modelBuilder.Entity<OrderItem>()
+                .HasIndex(i => i.BookId);
+
+            modelBuilder.Entity<Address>()
+                .HasIndex(a => a.UserId);
         }
     }
 }
